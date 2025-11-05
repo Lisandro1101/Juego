@@ -53,6 +53,91 @@ function getEventId() {
 }
 
 /**
+ * ⭐️ NUEVO: Motor de Temas Dinámico
+ * Itera sobre el objeto de tema de Firebase y lo inyecta como
+ * variables CSS en el <head>.
+ * @param {object} themeConfig - El objeto config.theme de Firebase.
+ */
+function applyDynamicTheme(themeConfig) {
+    if (!themeConfig) {
+        console.warn("No se encontró tema, usando defaults.");
+        return;
+    }
+
+    const styleTag = document.createElement('style');
+    let cssVariables = ":root {\n";
+
+    // 1. Iterar sobre las claves del tema (ej: 'color_primary')
+    for (const key in themeConfig) {
+        // Ignorar objetos anidados como 'icons' (los manejamos por separado)
+        if (typeof themeConfig[key] === 'object' && themeConfig[key] !== null) {
+            continue;
+        }
+
+        const value = themeConfig[key];
+        
+        // Si el valor está vacío o nulo, no lo agregamos
+        if (!value) {
+            continue; 
+        }
+
+        // Convertir 'color_primary' a '--color-primary'
+        // Convertir 'portal_bg' a '--portal-bg'
+        const cssVarName = `--${key.replace(/_/g, '-')}`; 
+        
+        // Añadir la variable al string
+        // ej:    --color-primary: #FF0000;
+        cssVariables += `    ${cssVarName}: ${value};\n`;
+    }
+
+    cssVariables += "}\n";
+
+    // 2. Manejar la fuente por separado
+    if (themeConfig.font_family) { // Usando la variable global
+        cssVariables += `
+            body {
+                font-family: ${themeConfig.font_family};
+            }
+        `;
+    }
+
+    // 3. Manejar la imagen de fondo por separado
+    if (themeConfig.background_image_url) {
+         cssVariables += `
+            body {
+                background-image: url('${themeConfig.background_image_url}') !important;
+                background-size: cover;
+                background-position: center;
+            }
+        `;
+    }
+
+    // 4. Inyectar en el <head>
+    styleTag.innerHTML = cssVariables;
+    document.head.appendChild(styleTag);
+    
+    // 5. Manejar los iconos (como ya lo hacías)
+    if (themeConfig.icons) {
+        const icons = themeConfig.icons;
+        // Helper function to update icons by class
+        const updateIcons = (className, icon) => {
+            if (!icon) return; // No hacer nada si el icono no está definido
+            document.querySelectorAll(className).forEach(el => el.textContent = icon);
+        };
+
+        updateIcons('.icon-main', icons.icon_main);
+        updateIcons('.icon-portal', icons.icon_portal);
+        updateIcons('.icon-trivia', icons.icon_trivia);
+        updateIcons('.icon-memory', icons.icon_memory);
+        updateIcons('.icon-hangman', icons.icon_hangman);
+        updateIcons('.icon-ranking', icons.icon_ranking);
+        updateIcons('.icon-win', icons.icon_win);
+    }
+}
+
+
+/**
+ * ⭐️ FUNCIÓN loadEventConfig (MODIFICADA) ⭐️
  * Carga la configuración (tema, features, status) desde Firebase
  * y la aplica a la página.
  * @param {string} eventId - El ID del evento actual.
@@ -84,28 +169,9 @@ async function loadEventConfig(eventId) {
         throw new Error("El evento está deshabilitado.");
     }
 
-    // --- 2. APLICAR TEMA VISUAL ---
-    if (config.theme) {
-        const theme = config.theme;
-        const styleTag = document.createElement('style');
-        // Usa los valores de la DB o los valores por defecto de tu style.css
-        styleTag.innerHTML = `
-            :root {
-                --bee-yellow: ${theme.color_primary || '#FFC107'};
-                --bee-black: ${theme.color_text || '#212529'};
-                --honey-gold: ${theme.color_secondary || '#FF9800'};
-            }
-            body {
-                font-family: ${theme.font_family || "'Poppins', sans-serif"};
-                ${theme.background_image_url ? 
-                `background-image: url('${theme.background_image_url}') !important;
-                 background-size: cover;
-                 background-position: center;` 
-                : ''}
-            }
-        `;
-        document.head.appendChild(styleTag);
-    }
+    // --- 2. APLICAR TEMA VISUAL (REEMPLAZADO) ---
+    // ¡Toda la lógica de estilo anterior se reemplaza por esta única función!
+    applyDynamicTheme(config.theme);
     
     // --- 3. APLICAR FUNCIONALIDADES (Juegos) ---
     if (config.features && config.features.games_enabled === false) {
@@ -121,7 +187,7 @@ async function loadEventConfig(eventId) {
 
 
 // =======================================================================
-// FUNCIONES DE RECUPERACIÓN Y RENDERIZACIÓN DE RECUERDOS (Sin cambios)
+// FUNCIONES DE RECUPERACIÓN Y RENDERIZACIÓN DE RECUERDOS (MODIFICADA)
 // =======================================================================
 
 function renderMemories(memories) {
@@ -154,9 +220,11 @@ function renderMemories(memories) {
         const date = memory.timestamp ? new Date(memory.timestamp) : new Date();
         const formattedDate = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
+        // ⭐️ MODIFICADO: Reemplazado 🐝 por <span class="icon-portal">
+        // El contenido de este span se llenará gracias a applyDynamicTheme
         memoryItem.innerHTML = `
             <div class="flex items-start justify-between">
-                <p class="font-bold text-gray-800 text-sm"><span class="text-honey-gold">🐝</span> ${memory.name}</p>
+                <p class="font-bold text-gray-800 text-sm"><span class="text-honey-gold icon-portal">💬</span> ${memory.name}</p>
                 <p class="text-xs text-gray-500">${formattedDate}</p>
             </div>
             ${memory.message && memory.message.trim() ? `<p class="text-gray-600 mt-1 mb-2 text-sm">${memory.message}</p>` : ''}
@@ -188,7 +256,7 @@ function listenForMemories() {
 
 // =======================================================================
 // --- NUEVO: FUNCIÓN DE INICIALIZACIÓN DEL PORTAL ---
-// (Separa la lógica del DOM de la carga inicial)
+// (Sin cambios internos)
 // =======================================================================
 function initializePortal() {
     // DECLARACIONES DEL DOM
@@ -316,7 +384,17 @@ function initializePortal() {
                 };
 
                 await push(memoriesRef, newMemory);
-                alert('¡Recuerdo enviado con éxito!');
+                
+                // ⭐️ MOSTRAR TOAST PERSONALIZADO
+                const toast = document.getElementById('custom-toast-message');
+                if (toast) {
+                    toast.classList.add('show');
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                    }, 4000); // Ocultar después de 4 segundos
+                } else {
+                    alert('¡Recuerdo enviado con éxito!');
+                }
                 
             } catch (error) {
                 console.error("Error al enviar el recuerdo:", error);

@@ -3,69 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trivia de la Abejita Chiquitita 🐝</title>
+    <title>Trivia <span class="icon-main">🐝</span></title>
     <link rel="stylesheet" href="style.css"> 
     
     <style>
-        /* Variables y Estilos Generales */
+        /* * :root define los valores POR DEFECTO.
+         * La función applyDynamicTheme() en script.js
+         * sobrescribirá estas variables con las de Firebase.
+        */
         :root {
-            --bee-yellow: #FACC15; 
-            --bee-black: #1F2937; 
-            --honey-gold: #e69900; /* Miel más oscura */
+            /* Colores Globales (de respaldo) */
+            --color-primary: #FACC15; 
+            --color-secondary: #e69900;
+            --color-text: #1F2937;
+            --color-success: #4CAF50;
+            --color-success-dark: #388E3C;
+            --color-danger: #E53935;
+            --color-danger-dark: #C62828;
+            --color-text-light: #FFFFFF;
+
+            /* Botón de Trivia (de respaldo) */
+            --btn-trivia-bg: #ffb300;
+            --btn-trivia-bg-hover: #ff9900;
+            --btn-trivia-text-color: var(--color-text-light);
+            --btn-trivia-border-color: var(--color-secondary);
+            --btn-trivia-shadow-color: var(--color-secondary);
+            --btn-trivia-border-radius: 12px;
+            --btn-trivia-padding: 15px 20px;
+            --btn-trivia-font-size: 1.1em;
+            --btn-trivia-shadow: 0 5px; /* Solo la forma */
         }
         
         .quiz-section {
             padding: 20px;
         }
 
-        /* DEFINICIÓN DEL BOTÓN DE OPCIÓN (Clase usada en script.js) */
+        /* DEFINICIÓN DEL BOTÓN DE OPCIÓN (Ahora 100% variable) */
         .option-btn {
             width: 100%;
-            padding: 15px 20px;
+            padding: var(--btn-trivia-padding);
             margin: 8px 0;
-            border-radius: 12px;
-            font-size: 1.1em;
+            border-radius: var(--btn-trivia-border-radius);
+            font-size: var(--btn-trivia-font-size);
             font-weight: bold;
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
             
             /* Estilo Moderno Temático */
-            background-color: #ffb300; /* Amarillo Abeja */
-            border: 3px solid var(--honey-gold);
-            color: white;
-            box-shadow: 0 5px var(--honey-gold); /* Sombra "presionable" */
+            background-color: var(--btn-trivia-bg);
+            border: 3px solid var(--btn-trivia-border-color);
+            color: var(--btn-trivia-text-color);
+            box-shadow: var(--btn-trivia-shadow) var(--btn-trivia-shadow-color);
         }
 
         .option-btn:hover:not(:disabled) {
-            background-color: #ff9900; 
+            background-color: var(--btn-trivia-bg-hover); 
             transform: translateY(-2px);
-            box-shadow: 0 7px var(--honey-gold);
+            box-shadow: 0 7px var(--btn-trivia-shadow-color); /* Sombra más grande en hover */
         }
 
         .option-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 2px var(--honey-gold);
+            box-shadow: 0 2px var(--btn-trivia-shadow-color);
         }
         
-        /* 🚨 FEEDBACK DE RESPUESTA */
+        /* 🚨 FEEDBACK DE RESPUESTA (Usando variables globales) */
         .option-btn:disabled {
             opacity: 0.9;
         }
         
         .option-btn.correct {
-            background-color: #4CAF50 !important; /* Verde sólido */
-            border-color: #388E3C !important;
-            color: white !important;
-            box-shadow: 0 5px #388E3C !important;
+            background-color: var(--color-success) !important;
+            border-color: var(--color-success-dark) !important;
+            color: var(--color-text-light) !important;
+            box-shadow: var(--btn-trivia-shadow) var(--color-success-dark) !important;
             transform: none !important;
         }
 
         .option-btn.incorrect {
-            background-color: #E53935 !important; /* Rojo sólido */
-            border-color: #C62828 !important;
-            color: white !important;
-            box-shadow: 0 5px #C62828 !important;
+            background-color: var(--color-danger) !important;
+            border-color: var(--color-danger-dark) !important;
+            color: var(--color-text-light) !important;
+            box-shadow: var(--btn-trivia-shadow) var(--color-danger-dark) !important;
             transform: none !important;
         }
         
@@ -77,7 +97,7 @@
 <body>
 
     <div class="quiz-container player-mode">
-        <h1>🍯 Trivia del 1er Año de la Abejita 🐝</h1>
+        <h1><span class="icon-trivia">✍️</span> Trivia del Evento <span class="icon-main">🐝</span></h1>
         
         <form id="start-form">
             <div id="start-screen" class="quiz-section" style="padding: 20px;">
@@ -94,6 +114,13 @@
                 <p id="player-no-questions-msg" style="color: red; font-weight: bold;" class="hidden">El anfitrión debe cargar las preguntas primero.</p>
                 
                 <button type="submit" id="start-game-btn" class="save-btn" style="background: #4caf50;">INICIAR JUEGO</button>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" onclick="window.location.href='index.html'" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
+                        Volver al Portal
+                    </button>
+                </div>
+
             </div>
         </form>
         <div id="game-mode" class="quiz-section hidden">
@@ -115,7 +142,7 @@
         </div>
 
         <div id="results" class="results-container hidden">
-            <h2>🎉 ¡Resultados Finales! 🎉</h2>
+            <h2><span class="icon-win">🎉</span> ¡Resultados Finales! <span class="icon-win">🎉</span></h2>
             <p id="final-score">Tu puntuación es de: 0</p>
             <button onclick="location.reload()" style="background: #e69900; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Jugar de Nuevo</button>
         </div>

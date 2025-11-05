@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anfitrión - Trivia Abejita 🐝</title>
+    <title>Anfitrión - <span class="icon-main">🐝</span></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -12,6 +12,14 @@
             --bee-yellow: #FACC15; /* Tailwind yellow-400 */
             --bee-black: #1F2937; /* Tailwind gray-800 */
             --honey-gold: #F59E0B; /* Tailwind amber-500 */
+            
+            /* ⭐️ VALORES DE RESPALDO PARA RANKING ⭐️ */
+            --ranking-trivia-winner-bg: #FFCC00;
+            --ranking-trivia-winner-text: #1F2937;
+            --ranking-trivia-winner-border: #F59E0B;
+            --ranking-memory-winner-bg: #FFCC00;
+            --ranking-memory-winner-text: #1F2937;
+            --ranking-memory-winner-border: #F59E0B;
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -74,14 +82,23 @@
             background-color: #dc2626; /* red-600 */
         }
 
-        /* 🏆 Estilo para el ganador del Ranking */
-        .top-winner {
-            background-color: #FFCC00 !important; /* Miel brillante */
-            color: var(--bee-black) !important;
+        /* ⭐️🏆 ESTILOS DE GANADOR REFACTORIZADOS 🏆⭐️ */
+        .top-winner-trivia {
+            background-color: var(--ranking-trivia-winner-bg) !important;
+            color: var(--ranking-trivia-winner-text) !important;
             font-weight: 900 !important;
-            border: 3px solid var(--honey-gold) !important;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); /* Sombra de oro */
+            border: 3px solid var(--ranking-trivia-winner-border) !important;
+            box-shadow: 0 0 15px var(--ranking-trivia-winner-bg);
         }
+        
+        .top-winner-memory {
+            background-color: var(--ranking-memory-winner-bg) !important;
+            color: var(--ranking-memory-winner-text) !important;
+            font-weight: 900 !important;
+            border: 3px solid var(--ranking-memory-winner-border) !important;
+            box-shadow: 0 0 15px var(--ranking-memory-winner-bg);
+        }
+
 
         /* --- NUEVO --- Estilos para el juego de memoria */
         .image-preview-item {
@@ -120,20 +137,22 @@
         <header class="text-center mb-6">
             <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">
                 <span class="text-yellow-500 text-5xl">🛠️</span>
-                <span id="header-title">Panel de Control - Abejita</span>
-                <span class="text-yellow-500 text-5xl">🐝</span>
+                <span id="header-title">Panel de Control</span>
+                <span class="text-yellow-500 text-5xl icon-main">🐝</span>
             </h1>
         </header>
 
         <div class="mode-selector mb-6 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
             <p class="text-sm text-gray-700">Enlaces para jugadores:</p>
-            <a href="player.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Trivia 🐝]</a>
+            <a href="player.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Trivia <span class="icon-trivia">✍️</span>]</a>
             <br>
-            <a href="memory.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Memoria 🧠]</a>
+            <a href="memory.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Memoria <span class="icon-memory">🧠</span>]</a>
+            <br>
+            <a href="hangman.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Ahorcado <span class="icon-hangman">💀</span>]</a>
         </div>
 
         <div id="admin-mode" class="quiz-section p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">✍️ Cargar y Editar Preguntas (Trivia)</h2>
+            <h2 class="text-xl font-bold mb-4 text-gray-800"><span class="icon-trivia">✍️</span> Cargar y Editar Preguntas (Trivia)</h2>
             
             <form id="question-form" class="space-y-3">
                 
@@ -173,7 +192,7 @@
 
         <div class="ranking-section mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-400 shadow-xl">
             <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-                <span class="text-yellow-500 text-3xl">🏆</span>
+                <span class="text-yellow-500 text-3xl icon-ranking">🏆</span>
                 <span>Ranking de la Colmena (Trivia)</span>
             </h2>
             <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Puntuación y luego menor tiempo.</p>
@@ -220,9 +239,9 @@
             </button>
         </div>
 
-        <div class="ranking-section mt-8 p-4 bg-blue-50 rounded-xl border border-blue-400 shadow-xl">
+        <div class="ranking-section mt-8 p-4 bg-blue-50 rounded-xl border border-blue-400 shadow-xl" aria-label="Ranking de Memoria">
             <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-                <span class="text-blue-500 text-3xl">🧠</span>
+                <span class="text-blue-500 text-3xl icon-memory">🧠</span>
                 <span>Ranking de Memoria</span>
             </h2>
             <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Menor tiempo.</p>
@@ -232,7 +251,7 @@
         </div>
 
         <div id="hangman-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">✍️ Palabras para el Ahorcado 🐝</h2>
+            <h2 class="text-xl font-bold mb-4 text-gray-800"><span class="icon-hangman">💀</span> Palabras para el Ahorcado</h2>
             
             <form id="hangman-word-form" class="space-y-3">
                 <div>

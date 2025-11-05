@@ -3,20 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Memoria de la Abejita 🧠</title>
+    <title>Juego de Memoria <span class="icon-memory">🧠</span></title>
     <link rel="stylesheet" href="style.css"> 
     
     <style>
+        /* ⭐️ VALORES DE RESPALDO PARA EL JUEGO DE MEMORIA ⭐️ */
+        :root {
+            --mem-card-height: 110px;
+            --mem-card-border-radius: 10px;
+            --mem-card-back-bg: var(--honey-gold, #F59E0B);
+            --mem-card-back-border-color: var(--bee-black, #1F2937);
+        }
+    
         /* Estilos específicos para la cuadrícula del juego de memoria */
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* 4 columnas por defecto */
-        gap: 5px;
-        padding: 10px;
-        /* 💡 Aumentado el ancho máximo para dar más espacio a las cartas */
-        max-width: 600px; 
-        margin: 20px auto;
-    }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columnas por defecto */
+            gap: 5px;
+            padding: 10px;
+            /* 💡 Aumentado el ancho máximo para dar más espacio a las cartas */
+            max-width: 600px; 
+            margin: 20px auto;
+        }
 
         /* 💡 SOLUCIÓN RÁPIDA: Ocultar los elementos de la cuadrícula por defecto */
         #memory-game-grid {
@@ -25,12 +33,12 @@
             transition: opacity 0.5s;
         }
 
-        /* Estilos de la tarjeta (mantenidos de la versión anterior) */
+        /* ⭐️ ESTILOS DE CARTA AHORA CON VARIABLES ⭐️ */
         .card {
-            background-color: var(--honey-gold);
-            border: 3px solid var(--bee-black);
-            height: 110px; 
-            border-radius: 10px;
+            background-color: transparent; /* El fondo lo da el inner */
+            border: none; /* El borde lo da el back */
+            height: var(--mem-card-height); 
+            border-radius: var(--mem-card-border-radius);
             cursor: pointer;
             position: relative;
             transform-style: preserve-3d;
@@ -118,20 +126,27 @@
             color: var(--bee-black);
             transform: rotateY(180deg);
             padding: 2px; 
+            /* ⭐️ Aseguramos que el radius de la carta se aplique aquí */
+            border-radius: var(--mem-card-border-radius);
+            overflow: hidden; /* Para que la imagen no se salga */
         }
 
         .card-front img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain; 
-            border-radius: 5px;
+            border-radius: 5px; /* Un radius más pequeño para la imagen interna */
         }
 
+        /* ⭐️ ESTILO DEL REVERSO DE LA CARTA AHORA CON VARIABLES ⭐️ */
         .card-back {
-            background-color: var(--honey-gold);
-            border: 3px solid var(--bee-black);
+            background-color: var(--mem-card-back-bg);
+            border: 3px solid var(--mem-card-back-border-color);
             color: white;
             font-size: 1.5em;
+            /* ⭐️ Aseguramos que el radius de la carta se aplique aquí */
+            border-radius: var(--mem-card-border-radius);
+            overflow: hidden;
         }
 
         /* Estilo para los resultados */
@@ -149,7 +164,7 @@
     <div class="quiz-container">
         
         <div id="start-screen" class="quiz-section">
-            <h1 class="title">Juego de Memoria 🧠</h1>
+            <h1 class="title">Juego de Memoria <span class="icon-memory">🧠</span></h1>
             <p class="mb-4">Ingresa tu nombre para comenzar a encontrar las parejas:</p>
             
             <label for="player-name-input" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
@@ -179,7 +194,7 @@
             </div>
 
             <div id="results" class="results-container hidden">
-                <h2>✨ ¡Memoria Completada! ✨</h2>
+                <h2><span class="icon-win">🎉</span> ¡Memoria Completada! <span class="icon-win">🎉</span></h2>
                 <p id="final-time">Tu tiempo fue de: 0 segundos</p>
                 
                 <button onclick="window.location.href='index.html'" class="save-btn mt-4" style="background: var(--honey-gold);">Volver al Portal</button>

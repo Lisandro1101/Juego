@@ -6,7 +6,7 @@
     <title>👑 Panel de Super-Administrador</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* --- ESTILOS MEJORADOS (MOBILE-FIRST) --- */
+        /* (Estilos sin cambios) */
         :root {
             --bee-yellow: #FACC15;
             --bee-black: #1F2937;
@@ -49,6 +49,14 @@
             margin-top: 1.25rem;
             margin-bottom: 0.25rem;
         }
+        /* ⭐️ NUEVO: Estilo para inputs de icono */
+        .icon-input {
+            font-size: 1.5rem;
+            text-align: center;
+            padding: 0.5rem;
+            width: 70px;
+        }
+        
         .btn-admin {
             background-color: var(--bee-black);
             color: var(--bee-yellow);
@@ -136,7 +144,7 @@
         input:checked + .slider { background-color: #4ade80; }
         input:checked + .slider:before { transform: translateX(22px); }
 
-        /* --- ⭐️ NUEVOS ESTILOS (Reutilizados de host.html) --- */
+        /* --- ⭐️ ESTILOS DE LA LISTA DE EVENTOS ⭐️ --- */
         .question-item {
             display: flex;
             justify-content: space-between;
@@ -150,6 +158,28 @@
             flex-grow: 1;
             margin-right: 1rem;
         }
+        /* Contenedor de botones */
+        .question-item > div:last-child {
+            display: flex;
+            gap: 0.5rem; /* Espacio entre botones */
+            flex-shrink: 0;
+        }
+
+        /* ⭐️ NUEVO BOTÓN 'CARGAR' ⭐️ */
+        .load-btn {
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.5rem;
+            font-size: 0.75rem;
+            line-height: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .load-btn:hover {
+            background-color: #2563eb; /* blue-600 */
+        }
+
         .delete-btn {
             background-color: #ef4444; /* red-500 */
             color: white;
@@ -163,6 +193,39 @@
         .delete-btn:hover {
             background-color: #dc2626; /* red-600 */
         }
+
+        /* (Resto de estilos sin cambios) */
+        details > summary {
+            font-size: 1.25rem;
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        details[open] > summary {
+            margin-bottom: 1.5rem;
+        }
+        .grid-cols-2-responsive {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .grid-cols-2-responsive {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* ⭐️ NUEVO: Estilo para slider de opacidad */
+        .opacity-slider-wrapper {
+            margin-top: 0.5rem;
+        }
+        .opacity-slider-wrapper input[type="range"] {
+            width: 100%;
+        }
+
     </style>
 </head>
 <body>
@@ -208,29 +271,76 @@
                 </div>
             </div>
             
-            <div class="mt-6 border-t pt-4">
-                <h2 class="text-xl font-bold mb-4">🎨 Personalización del Tema</h2>
+            <details class="mt-6 border-t pt-4">
+                <summary>🎨 Tema Global</summary>
                 
                 <div>
-                    <label class="input-label">Paleta de Colores:</label>
+                    <label class="input-label">Paleta de Colores Globales:</label>
                     <div class="flex flex-wrap gap-4 mt-2">
                         <div class="color-picker-wrapper">
                             <input type="color" id="color-primary" value="#FACC15">
-                            <span class="text-sm">Primario<br>(--bee-yellow)</span>
+                            <span class="text-sm">Primario<br>(--color-primary)</span>
                         </div>
                         <div class="color-picker-wrapper">
                             <input type="color" id="color-secondary" value="#F59E0B">
-                            <span class="text-sm">Secundario<br>(--honey-gold)</span>
+                            <span class="text-sm">Secundario<br>(--color-secondary)</span>
                         </div>
                         <div class="color-picker-wrapper">
                             <input type="color" id="color-text" value="#1F2937">
-                            <span class="text-sm">Texto<br>(--bee-black)</span>
+                            <span class="text-sm">Texto<br>(--color-text)</span>
+                        </div>
+                    </div>
+                     <div class="flex flex-wrap gap-4 mt-2">
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-success" value="#4CAF50">
+                            <span class="text-sm">Éxito (Verde)<br>(--color-success)</span>
+                        </div>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-danger" value="#E53935">
+                            <span class="text-sm">Error (Rojo)<br>(--color-danger)</span>
+                        </div>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color-text-light" value="#FFFFFF">
+                            <span class="text-sm">Texto Claro<br>(--color-text-light)</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-4">
-                    <label for="font-family" class="input-label">Fuente Principal:</label>
+                    <label class="input-label">Iconos y Emojis Globales:</label>
+                    <div class="flex flex-wrap gap-4 mt-2">
+                        <div>
+                            <span class="text-sm">Principal</span>
+                            <input type="text" id="icon-main" class="input-field icon-input" value="🐝" maxlength="2">
+                        </div>
+                        <div>
+                            <span class="text-sm">Portal</span>
+                            <input type="text" id="icon-portal" class="input-field icon-input" value="💬" maxlength="2">
+                        </div>
+                        <div>
+                            <span class="text-sm">Trivia</span>
+                            <input type="text" id="icon-trivia" class="input-field icon-input" value="✍️" maxlength="2">
+                        </div>
+                        <div>
+                            <span class="text-sm">Memoria</span>
+                            <input type="text" id="icon-memory" class="input-field icon-input" value="🧠" maxlength="2">
+                        </div>
+                        <div>
+                            <span class="text-sm">Ahorcado</span>
+                            <input type="text" id="icon-hangman" class="input-field icon-input" value="💀" maxlength="2">
+                        </div>
+                        <div>
+                            <span class="text-sm">Ranking</span>
+                            <input type="text" id="icon-ranking" class="input-field icon-input" value="🏆" maxlength="2">
+                        </div>
+                        <div>
+                            <span class="text-sm">Ganar</span>
+                            <input type="text" id="icon-win" class="input-field icon-input" value="🎉" maxlength="2">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label for="font-family" class="input-label">Fuente Principal (Global):</label>
                     <select id="font-family" class="input-field">
                         <option value="'Inter', sans-serif">Inter (Moderna)</option>
                         <option value="'Poppins', sans-serif">Poppins (Elegante)</option>
@@ -241,12 +351,173 @@
                 </div>
 
                 <div class="mt-4">
-                    <label for="bg-image" class="input-label">Imagen de Fondo (Opcional):</label>
+                    <label for="bg-image" class="input-label">Imagen de Fondo (Global):</label>
                     <input type="file" id="bg-image" class="input-field" accept="image/jpeg, image/png, image/webp">
                     <p class="text-xs text-gray-500 mt-1">Si subes una nueva, reemplazará a la anterior.</p>
+                    
+                    <div id="bg-image-preview" class="mt-2"></div>
                 </div>
-            </div>
+            </details>
             
+            <details class="mt-6 border-t pt-4">
+                <summary>🖼️ Personalización del Portal (index.html)</summary>
+                
+                <h3 class="text-lg font-bold">Contenedor Principal (.portal-container)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div>
+                        <label for="portal-bg" class="text-sm font-bold">Color de Fondo</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="portal-bg" value="#FFFFFF">
+                        </div>
+                        <div class="opacity-slider-wrapper">
+                             <label for="portal-bg-opacity" class="text-sm font-bold">Opacidad Fondo (1.0 = Sólido)</label>
+                             <input type="range" id="portal-bg-opacity" min="0.1" max="1" step="0.05" value="1.0" class="input-field">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="portal-border-radius" class="text-sm font-bold">Radio de Borde</label>
+                        <input type="text" id="portal-border-radius" class="input-field" placeholder="Ej: 1.5rem">
+                    </div>
+                </div>
+                
+                <h3 class="text-lg font-bold mt-6">Título (h1)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="portal-title-color" value="#1F2937">
+                        <span class="text-sm">Color del Título</span>
+                    </div>
+                    <div>
+                        <label for="portal-title-font-size" class="text-sm font-bold">Tamaño de Fuente</label>
+                        <input type="text" id="portal-title-font-size" class="input-field" placeholder="Ej: 2rem">
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold mt-6">Botones del Portal (.btn-portal)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-portal-bg" value="#FACC15">
+                        <span class="text-sm">Color de Fondo</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-portal-text-color" value="#1F2937">
+                        <span class="text-sm">Color de Texto</span>
+                    </div>
+                    <div>
+                        <label for="btn-portal-border-radius" class="text-sm font-bold">Radio de Borde</s-label>
+                        <input type="text" id="btn-portal-border-radius" class="input-field" placeholder="Ej: 0.75rem">
+                    </div>
+                     <div>
+                        <label for="btn-portal-shadow-color" class="text-sm font-bold">Color de Sombra</label>
+                        <input type="color" id="btn-portal-shadow-color" value="#F59E0B">
+                    </div>
+                </div>
+            </details>
+
+            <details class="mt-6 border-t pt-4">
+                <summary>✍️ Personalización de Trivia (player.html)</summary>
+                
+                <h3 class="text-lg font-bold">Botón de Opción (.option-btn)</h3>
+                <p class="text-xs text-gray-500 mb-3">Controla la apariencia de los botones de respuesta.</p>
+                
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-trivia-bg" value="#ffb300">
+                        <span class="text-sm">Fondo (Normal)</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-trivia-bg-hover" value="#ff9900">
+                        <span class="text-sm">Fondo (Hover)</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-trivia-text-color" value="#FFFFFF">
+                        <span class="text-sm">Color de Texto</span>
+                    </div>
+                     <div class="color-picker-wrapper">
+                        <input type="color" id="btn-trivia-border-color" value="#e69900">
+                        <span class="text-sm">Color de Borde</span>
+                    </div>
+                     <div class="color-picker-wrapper">
+                        <input type="color" id="btn-trivia-shadow-color" value="#e69900">
+                        <span class="text-sm">Color de Sombra</span>
+                    </div>
+                    <div>
+                        <label for="btn-trivia-border-radius" class="text-sm font-bold">Radio de Borde (Forma)</label>
+                        <input type="text" id="btn-trivia-border-radius" class="input-field" placeholder="Ej: 12px o 50px">
+                    </div>
+                     <div>
+                        <label for="btn-trivia-font-size" class="text-sm font-bold">Tamaño de Fuente</label>
+                        <input type="text" id="btn-trivia-font-size" class="input-field" placeholder="Ej: 1.1em">
+                    </div>
+                    <div>
+                        <label for="btn-trivia-padding" class="text-sm font-bold">Padding (Relleno)</label>
+                        <input type="text" id="btn-trivia-padding" class="input-field" placeholder="Ej: 15px 20px">
+                    </div>
+                    <div>
+                        <label for="btn-trivia-shadow" class="text-sm font-bold">Forma de Sombra</label>
+                        <input type="text" id="btn-trivia-shadow" class="input-field" placeholder="Ej: 0 5px">
+                    </div>
+                </div>
+            </details>
+            
+            <details class="mt-6 border-t pt-4">
+                <summary>🧠 Personalización de Memoria (memory.html)</summary>
+                
+                <h3 class="text-lg font-bold">Carta del Juego (.card / .card-back)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="mem-card-back-bg" value="#F59E0B">
+                        <span class="text-sm">Fondo (Reverso)</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="mem-card-back-border-color" value="#1F2937">
+                        <span class="text-sm">Borde (Reverso)</span>
+                    </div>
+                    <div>
+                        <label for="mem-card-height" class="text-sm font-bold">Altura de la Carta</label>
+                        <input type="text" id="mem-card-height" class="input-field" placeholder="Ej: 110px">
+                    </div>
+                    <div>
+                        <label for="mem-card-border-radius" class="text-sm font-bold">Radio de Borde (Forma)</label>
+                        <input type="text" id="mem-card-border-radius" class="input-field" placeholder="Ej: 10px">
+                    </div>
+                </div>
+            </details>
+
+            <details class="mt-6 border-t pt-4">
+                <summary>🏆 Personalización de Rankings</summary>
+                
+                <h3 class="text-lg font-bold">Ganador de Trivia (.top-winner-trivia)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="ranking-trivia-winner-bg" value="#FFCC00">
+                        <span class="text-sm">Fondo</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="ranking-trivia-winner-text" value="#1F2937">
+                        <span class="text-sm">Texto</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="ranking-trivia-winner-border" value="#F59E0B">
+                        <span class="text-sm">Borde</span>
+                    </div>
+                </div>
+                
+                <h3 class="text-lg font-bold mt-6">Ganador de Memoria (.top-winner-memory)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="ranking-memory-winner-bg" value="#cceeff">
+                        <span class="text-sm">Fondo</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="ranking-memory-winner-text" value="#0056b3">
+                        <span class="text-sm">Texto</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="ranking-memory-winner-border" value="#007bff">
+                        <span class="text-sm">Borde</span>
+                    </div>
+                </div>
+            </details>
             <button type="submit" id="save-event-btn" class="btn-admin">
                 Guardar Configuración del Evento
             </button>
@@ -260,7 +531,7 @@
                 <li class="p-2 text-gray-500 italic text-center">Cargando eventos...</li>
             </ul>
         </div>
-        </div>
+    </div>
 
     <script type="module" src="super-admin.js?v=1.0"></script>
 </body>

@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ranking de la Colmena 🏆</title>
+    <title>Ranking <span class="icon-ranking">🏆</span></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css"> 
     
     <style>
+        /* ⭐️ VALORES DE RESPALDO PARA RANKING ⭐️ */
+        :root {
+            --ranking-trivia-winner-bg: #FFCC00;
+            --ranking-trivia-winner-text: #1F2937;
+            --ranking-trivia-winner-border: #F59E0B;
+            --ranking-memory-winner-bg: #FFCC00;
+            --ranking-memory-winner-text: #1F2937;
+            --ranking-memory-winner-border: #F59E0B;
+        }
+
         /* Estilos específicos para esta página de ranking */
         body {
             /* Anulamos el 'display: flex' de style.css para permitir el scroll */
@@ -45,22 +55,32 @@
             border-radius: 0.5rem;
             border: 1px solid #e5e7eb; /* gray-200 */
         }
-        .top-winner {
-            background-color: #FFCC00 !important; /* Miel brillante */
-            color: var(--bee-black) !important;
+
+        /* ⭐️🏆 ESTILOS DE GANADOR REFACTORIZADOS 🏆⭐️ */
+        .top-winner-trivia {
+            background-color: var(--ranking-trivia-winner-bg) !important;
+            color: var(--ranking-trivia-winner-text) !important;
             font-weight: 900 !important;
-            border: 3px solid var(--honey-gold) !important;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); /* Sombra de oro */
+            border: 3px solid var(--ranking-trivia-winner-border) !important;
+            box-shadow: 0 0 15px var(--ranking-trivia-winner-bg);
+        }
+        
+        .top-winner-memory {
+            background-color: var(--ranking-memory-winner-bg) !important;
+            color: var(--ranking-memory-winner-text) !important;
+            font-weight: 900 !important;
+            border: 3px solid var(--ranking-memory-winner-border) !important;
+            box-shadow: 0 0 15px var(--ranking-memory-winner-bg);
         }
     </style>
 </head>
 <body>
 
-    <h1>🏆 Rankings de la Colmena 🐝</h1>
+    <h1><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
 
     <div class="ranking-box">
         <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-            <span class="text-yellow-500 text-3xl">🏆</span>
+            <span class="text-yellow-500 text-3xl icon-trivia">✍️</span>
             <span>Ranking de la Colmena (Trivia)</span>
         </h2>
         <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Puntuación y luego menor tiempo.</p>
@@ -72,7 +92,7 @@
 
     <div class="ranking-box">
         <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-            <span class="text-blue-500 text-3xl">🧠</span>
+            <span class="text-blue-500 text-3xl icon-memory">🧠</span>
             <span>Ranking de Memoria</span>
         </h2>
         <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Menor tiempo.</p>

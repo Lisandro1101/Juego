@@ -35,6 +35,43 @@
             border: 1px solid #e2e8f0; /* Borde suave */
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); /* Sombra para dar efecto "flotante" */
         }
+        
+        /* --- ⭐️ NUEVO: MOTOR DE TEMAS ⭐️ --- */
+        /* Estas reglas leen las variables que super-admin.html guarda */
+        
+        /* * Aplica los estilos al contenedor principal del portal
+         * (Usa las variables de "Personalización del Portal")
+        */
+        .portal-container {
+            background-color: var(--portal-bg);
+            border-radius: var(--portal-border-radius);
+        }
+
+        /* Aplica los estilos al H1 principal */
+        .portal-container h1 {
+            color: var(--portal-title-color);
+            font-size: var(--portal-title-font-size);
+        }
+        
+        /* * Aplica los estilos a los botones del portal.
+         * Asumimos que .btn-portal está definido en tu 'style.css'.
+         * Estas reglas SOBRESCRIBIRÁN los valores de ese archivo
+         * con los valores de la base de datos.
+        */
+        .btn-portal {
+            background-color: var(--btn-portal-bg);
+            color: var(--btn-portal-text-color);
+            border-radius: var(--btn-portal-border-radius);
+            
+            /* * Asumimos que tu .btn-portal usa un box-shadow de 4px.
+             * Si tu 'style.css' lo define diferente,
+             * deberás ajustar esto o añadir más variables.
+            */
+            box-shadow: 0 4px var(--btn-portal-shadow-color);
+            border: 2px solid var(--btn-portal-shadow-color);
+        }
+        /* --- ⭐️ FIN DEL MOTOR DE TEMAS ⭐️ --- */
+
     </style>
 </head>
 <body>

@@ -77,8 +77,94 @@ function getEventId() {
     return eventId;
 }
 
+
 /**
- * Carga la configuración del evento (tema, estado, features) desde la DB.
+ * ⭐️ NUEVO: Motor de Temas Dinámico
+ * (Copiado de portalScript.js)
+ * Itera sobre el objeto de tema de Firebase y lo inyecta como
+ * variables CSS en el <head>.
+ * @param {object} themeConfig - El objeto config.theme de Firebase.
+ */
+function applyDynamicTheme(themeConfig) {
+    if (!themeConfig) {
+        console.warn("No se encontró tema, usando defaults.");
+        return;
+    }
+
+    const styleTag = document.createElement('style');
+    let cssVariables = ":root {\n";
+
+    // 1. Iterar sobre las claves del tema (ej: 'color_primary')
+    for (const key in themeConfig) {
+        // Ignorar objetos anidados como 'icons' (los manejamos por separado)
+        if (typeof themeConfig[key] === 'object' && themeConfig[key] !== null) {
+            continue;
+        }
+
+        const value = themeConfig[key];
+        
+        // Si el valor está vacío o nulo, no lo agregamos
+        if (!value) {
+            continue; 
+        }
+
+        // Convertir 'color_primary' a '--color-primary'
+        const cssVarName = `--${key.replace(/_/g, '-')}`; 
+        
+        // Añadir la variable al string
+        // ej:    --color-primary: #FF0000;
+        cssVariables += `    ${cssVarName}: ${value};\n`;
+    }
+
+    cssVariables += "}\n";
+
+    // 2. Manejar la fuente por separado
+    if (themeConfig.font_family) { // Usando la variable global
+        cssVariables += `
+            body {
+                font-family: ${themeConfig.font_family};
+            }
+        `;
+    }
+
+    // 3. Manejar la imagen de fondo por separado
+    if (themeConfig.background_image_url) {
+         cssVariables += `
+            body {
+                background-image: url('${themeConfig.background_image_url}') !important;
+                background-size: cover;
+                background-position: center;
+            }
+        `;
+    }
+
+    // 4. Inyectar en el <head>
+    styleTag.innerHTML = cssVariables;
+    document.head.appendChild(styleTag);
+    
+    // 5. Manejar los iconos (como ya lo hacías)
+    if (themeConfig.icons) {
+        const icons = themeConfig.icons;
+        // Helper function to update icons by class
+        const updateIcons = (className, icon) => {
+            if (!icon) return; // No hacer nada si el icono no está definido
+            document.querySelectorAll(className).forEach(el => el.textContent = icon);
+        };
+
+        updateIcons('.icon-main', icons.icon_main);
+        updateIcons('.icon-portal', icons.icon_portal);
+        updateIcons('.icon-trivia', icons.icon_trivia);
+        updateIcons('.icon-memory', icons.icon_memory);
+        updateIcons('.icon-hangman', icons.icon_hangman);
+        updateIcons('.icon-ranking', icons.icon_ranking);
+        updateIcons('.icon-win', icons.icon_win);
+    }
+}
+
+
+/**
+ * ⭐️ FUNCIÓN loadEventConfig (MODIFICADA) ⭐️
+ * Carga la configuración (tema, estado, features) desde la DB.
  * Aplica los estilos y oculta/muestra secciones.
  * Bloquea la app si el evento está inactivo.
  */
@@ -99,6 +185,7 @@ async function loadEventConfig(eventId) {
             if (isHost || isRanking) {
                  console.warn("Host/Ranking: Cuidado, no hay config. Se usarán defaults.");
             } else {
+                // Si es una página de jugador y no hay config, es un error.
                 throw new Error("Configuración de evento no encontrada.");
             }
         }
@@ -122,27 +209,9 @@ async function loadEventConfig(eventId) {
         throw new Error("El evento está deshabilitado.");
     }
 
-    // --- 2. APLICAR TEMA VISUAL ---
-    if (config.theme) {
-        const theme = config.theme;
-        const styleTag = document.createElement('style');
-        styleTag.innerHTML = `
-            :root {
-                --bee-yellow: ${theme.color_primary || '#FACC15'};
-                --honey-gold: ${theme.color_secondary || '#F59E0B'};
-                --bee-black: ${theme.color_text || '#1F2937'};
-            }
-            body {
-                font-family: ${theme.font_family || "'Inter', sans-serif"};
-                ${theme.background_image_url ? 
-                `background-image: url('${theme.background_image_url}') !important;
-                 background-size: cover;
-                 background-position: center;` 
-                : ''}
-            }
-        `;
-        document.head.appendChild(styleTag);
-    }
+    // --- 2. APLICAR TEMA VISUAL (REEMPLAZADO) ---
+    // ¡Toda la lógica de estilo anterior se reemplaza por esta única función!
+    applyDynamicTheme(config.theme);
     
     // --- 3. APLICAR FUNCIONALIDADES (Juegos) ---
     // Ocultar secciones si los juegos están deshabilitados
@@ -162,6 +231,11 @@ async function loadEventConfig(eventId) {
             if (memoryAdmin) memoryAdmin.style.display = 'none';
             if (memoryRanking) memoryRanking.style.display = 'none';
             if (hangmanAdmin) hangmanAdmin.style.display = 'none';
+            
+            // Actualizar título en host si los juegos están off
+            const headerTitle = document.getElementById('header-title');
+            if(headerTitle) headerTitle.innerHTML = `Panel: ${eventId} <br><span style="font-size: 0.6em; color: red;">(Juegos Deshabilitados)</span>`;
+
         }
         
         // Ocultar en ranking.html
@@ -268,7 +342,8 @@ function renderTriviaRanking(results) {
     }
     results.forEach((r, index) => {
         const li = document.createElement('li');
-        li.className = `question-item ${index === 0 ? 'top-winner' : ''}`;
+        // ⭐️⭐️⭐️ CAMBIO AQUÍ ⭐️⭐️⭐️
+        li.className = `question-item ${index === 0 ? 'top-winner-trivia' : ''}`;
         li.style.display = 'flex';
         li.style.justifyContent = 'space-between';
         li.style.alignItems = 'center';
@@ -400,7 +475,8 @@ function renderMemoryRanking(results) {
     }
     results.forEach((r, index) => {
         const li = document.createElement('li');
-        li.className = `question-item ${index === 0 ? 'top-winner' : ''}`; 
+        // ⭐️⭐️⭐️ CAMBIO AQUÍ ⭐️⭐️⭐️
+        li.className = `question-item ${index === 0 ? 'top-winner-memory' : ''}`; 
         li.style.display = 'flex';
         li.style.justifyContent = 'space-between';
         li.style.alignItems = 'center';
@@ -1208,6 +1284,9 @@ function initializeHangmanGame() {
 // --- ¡¡¡NUEVO!!! LÓGICA PARA LA PÁGINA DE RANKING (ranking.html) ---
 // =======================================================================
 function initializeRankingPage() {
+    // --- NUEVO: Actualizar enlaces (si los hubiera) ---
+    // (ranking.html no tiene botón de "Volver al portal", pero si lo tuviera, iría aquí)
+    
     // Simplemente llama a las funciones de escucha y les pasa
     // las funciones de renderizado que ya existen.
     listenForRankings(renderTriviaRanking);
@@ -1247,6 +1326,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             initializeHangmanGame();
         } else if (path.includes('ranking.html')) {
             // --- ¡¡¡BUG CORREGIDO!!! ---
+            // (La vez pasada olvidamos llamar a esta función)
             initializeRankingPage();
         }
 
