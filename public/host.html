@@ -25,9 +25,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bee-yellow);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            /* ⭐️ CORRECCIÓN: Se eliminó display: flex y justify-content: center */
+            /* ⭐️ CORRECCIÓN: Se alineó con super-admin.html */
             padding: 1rem;
         }
         .container {
@@ -38,6 +37,8 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             padding: 1.5rem;
             transition: all 0.3s ease-in-out;
+            /* ⭐️ CORRECCIÓN: Se añadió margin auto para centrar */
+            margin: 2rem auto;
         }
         /* Botón Primario */
         .btn-bee {
@@ -132,7 +133,29 @@
 </head>
 <body class="p-4 sm:p-8">
 
-    <div class="container admin-mode">
+    <div id="host-login-container" class="container" style="max-width: 400px; display: none;">
+        <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">
+            <span class="text-yellow-500 text-5xl">🛠️</span>
+            <span>Acceso de Anfitrión</span>
+        </h1>
+        <p class="text-center text-gray-600 my-4">Ingresa para administrar tu evento.</p>
+        
+        <form id="host-login-form" class="space-y-4">
+            <div>
+                <label for="host-login-email" class="block text-sm font-bold text-gray-700">Email:</label>
+                <input type="email" id="host-login-email" class="w-full p-3 border border-yellow-300 rounded-lg" required>
+            </div>
+            <div>
+                <label for="host-login-password" class="block text-sm font-bold text-gray-700">Contraseña:</label>
+                <input type="password" id="host-login-password" class="w-full p-3 border border-yellow-300 rounded-lg" required>
+            </div>
+            <button type="submit" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                Ingresar
+            </button>
+            <p id="host-login-error" class="text-center text-red-500 mt-4"></p>
+        </form>
+    </div>
+    <div id="host-panel-container" class="container admin-mode" style="display: none;">
         
         <header class="text-center mb-6">
             <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">

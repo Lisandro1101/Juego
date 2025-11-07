@@ -12,14 +12,17 @@
             --bee-black: #1F2937;
             --honey-gold: #F59E0B;
         }
+        
+        /* ⭐️ CORRECCIÓN DE ESTILO ⭐️ */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bee-black);
             color: white;
-            display: flex;
-            justify-content: center;
+            /* Se eliminó display: flex y justify-content: center */
             padding: 1rem; /* Padding para móviles */
         }
+        
+        /* ⭐️ CORRECCIÓN DE ESTILO ⭐️ */
         .container {
             width: 100%;
             max-width: 600px;
@@ -29,7 +32,10 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             /* Padding más pequeño para móvil, más grande para desktop */
             padding: 1.5rem;
+            /* Se añadió margin: auto para centrar */
+            margin: 2rem auto;
         }
+        
         @media (min-width: 640px) {
             .container {
                 padding: 2.5rem;
@@ -230,7 +236,25 @@
 </head>
 <body>
 
-    <div class="container">
+    <div id="login-container" class="container" style="max-width: 400px;">
+        <h1 class="text-3xl font-black text-center mb-6">
+            👑 Acceso de Admin
+        </h1>
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label for="login-email" class="input-label">Email:</label>
+                <input type="email" id="login-email" class="input-field" required>
+            </div>
+            <div>
+                <label for="login-password" class="input-label">Contraseña:</label>
+                <input type="password" id="login-password" class="input-field" required>
+            </div>
+            <button type="submit" class="btn-admin">Ingresar</button>
+            <p id="login-error" class="text-center text-red-500 mt-4"></p>
+        </form>
+    </div>
+    <div id="panel-admin" class="container" style="display: none;">
+        
         <h1 class="text-3xl font-black text-center mb-6">
             👑 Panel de Eventos
         </h1>

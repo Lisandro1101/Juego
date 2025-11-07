@@ -1,5 +1,18 @@
 {
   "projects": {
     "default": "juegos-cumple"
-  }
+  },
+  "targets": {
+    "juegos-cumple": {
+      "hosting": {
+        "web-publica": [
+          "juegos-cumple"
+        ],
+        "app-juego": [
+          "apptufiesta"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

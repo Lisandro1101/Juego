@@ -1,7 +1,10 @@
-// REEMPLAZA TUS IMPORTACIONES EN script.js CON ESTO:
+// ⭐️⭐️⭐️ IMPORTACIONES DE AUTH AÑADIDAS ⭐️⭐️⭐️
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+// ⭐️⭐️⭐️ FIN DE IMPORTACIONES ⭐️⭐️⭐️
+
 // =======================================================================
 // CONFIGURACIÓN DE FIREBASE (Sin cambios)
 // =======================================================================
@@ -23,6 +26,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app); 
+const auth = getAuth(app); // ⭐️⭐️⭐️ INICIALIZACIÓN DE AUTH AÑADIDA ⭐️⭐️⭐️
 
 // --- NUEVO: Refs y ID de Evento Globales (se asignarán en DOMContentLoaded) ---
 let EVENT_ID;
@@ -55,7 +59,8 @@ let hangmanPlayerName = '';
 
 
 // =======================================================================
-// --- NUEVO: LÓGICA DE EVENTO Y CONFIGURACIÓN ---
+// --- LÓGICA DE EVENTO Y CONFIGURACIÓN ---
+// (Tu código original, sin cambios)
 // =======================================================================
 
 /**
@@ -79,11 +84,8 @@ function getEventId() {
 
 
 /**
- * ⭐️ NUEVO: Motor de Temas Dinámico
- * (Copiado de portalScript.js)
- * Itera sobre el objeto de tema de Firebase y lo inyecta como
- * variables CSS en el <head>.
- * @param {object} themeConfig - El objeto config.theme de Firebase.
+ * ⭐️ Motor de Temas Dinámico
+ * (Tu código original, sin cambios)
  */
 function applyDynamicTheme(themeConfig) {
     if (!themeConfig) {
@@ -94,32 +96,22 @@ function applyDynamicTheme(themeConfig) {
     const styleTag = document.createElement('style');
     let cssVariables = ":root {\n";
 
-    // 1. Iterar sobre las claves del tema (ej: 'color_primary')
+    // 1. Iterar sobre las claves del tema
     for (const key in themeConfig) {
-        // Ignorar objetos anidados como 'icons' (los manejamos por separado)
         if (typeof themeConfig[key] === 'object' && themeConfig[key] !== null) {
             continue;
         }
-
         const value = themeConfig[key];
-        
-        // Si el valor está vacío o nulo, no lo agregamos
         if (!value) {
             continue; 
         }
-
-        // Convertir 'color_primary' a '--color-primary'
         const cssVarName = `--${key.replace(/_/g, '-')}`; 
-        
-        // Añadir la variable al string
-        // ej:    --color-primary: #FF0000;
         cssVariables += `    ${cssVarName}: ${value};\n`;
     }
-
     cssVariables += "}\n";
 
-    // 2. Manejar la fuente por separado
-    if (themeConfig.font_family) { // Usando la variable global
+    // 2. Manejar la fuente
+    if (themeConfig.font_family) { 
         cssVariables += `
             body {
                 font-family: ${themeConfig.font_family};
@@ -127,7 +119,7 @@ function applyDynamicTheme(themeConfig) {
         `;
     }
 
-    // 3. Manejar la imagen de fondo por separado
+    // 3. Manejar la imagen de fondo
     if (themeConfig.background_image_url) {
          cssVariables += `
             body {
@@ -142,15 +134,13 @@ function applyDynamicTheme(themeConfig) {
     styleTag.innerHTML = cssVariables;
     document.head.appendChild(styleTag);
     
-    // 5. Manejar los iconos (como ya lo hacías)
+    // 5. Manejar los iconos
     if (themeConfig.icons) {
         const icons = themeConfig.icons;
-        // Helper function to update icons by class
         const updateIcons = (className, icon) => {
-            if (!icon) return; // No hacer nada si el icono no está definido
+            if (!icon) return; 
             document.querySelectorAll(className).forEach(el => el.textContent = icon);
         };
-
         updateIcons('.icon-main', icons.icon_main);
         updateIcons('.icon-portal', icons.icon_portal);
         updateIcons('.icon-trivia', icons.icon_trivia);
@@ -164,9 +154,7 @@ function applyDynamicTheme(themeConfig) {
 
 /**
  * ⭐️ FUNCIÓN loadEventConfig (MODIFICADA) ⭐️
- * Carga la configuración (tema, estado, features) desde la DB.
- * Aplica los estilos y oculta/muestra secciones.
- * Bloquea la app si el evento está inactivo.
+ * (Tu código original, sin cambios)
  */
 async function loadEventConfig(eventId) {
     const configRef = ref(database, `events/${eventId}/config`);
@@ -181,11 +169,9 @@ async function loadEventConfig(eventId) {
             const isHost = window.location.pathname.includes('host.html');
             const isRanking = window.location.pathname.includes('ranking.html');
             
-            // Si es el host o ranking, puede seguir con defaults.
             if (isHost || isRanking) {
                  console.warn("Host/Ranking: Cuidado, no hay config. Se usarán defaults.");
             } else {
-                // Si es una página de jugador y no hay config, es un error.
                 throw new Error("Configuración de evento no encontrada.");
             }
         }
@@ -198,7 +184,6 @@ async function loadEventConfig(eventId) {
     const isHost = window.location.pathname.includes('host.html');
     const isRanking = window.location.pathname.includes('ranking.html');
 
-    // No bloqueamos al host ni a la pág de ranking, ellos sí pueden entrar.
     if (!isHost && !isRanking && (!config.status || config.status.is_active === false)) {
         document.body.innerHTML = `
             <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #333;">
@@ -209,14 +194,11 @@ async function loadEventConfig(eventId) {
         throw new Error("El evento está deshabilitado.");
     }
 
-    // --- 2. APLICAR TEMA VISUAL (REEMPLAZADO) ---
-    // ¡Toda la lógica de estilo anterior se reemplaza por esta única función!
+    // --- 2. APLICAR TEMA VISUAL ---
     applyDynamicTheme(config.theme);
     
     // --- 3. APLICAR FUNCIONALIDADES (Juegos) ---
-    // Ocultar secciones si los juegos están deshabilitados
     if (config.features && config.features.games_enabled === false) {
-        // Ocultar en host.html
         if (isHost) {
             const triviaAdmin = document.querySelector('.quiz-section'); 
             const triviaRanking = document.querySelector('.ranking-section'); 
@@ -232,24 +214,18 @@ async function loadEventConfig(eventId) {
             if (memoryRanking) memoryRanking.style.display = 'none';
             if (hangmanAdmin) hangmanAdmin.style.display = 'none';
             
-            // Actualizar título en host si los juegos están off
             const headerTitle = document.getElementById('header-title');
             if(headerTitle) headerTitle.innerHTML = `Panel: ${eventId} <br><span style="font-size: 0.6em; color: red;">(Juegos Deshabilitados)</span>`;
-
         }
         
-        // Ocultar en ranking.html
         if (isRanking) {
-             // Oculta todas las cajas de ranking
              document.querySelectorAll('.ranking-box').forEach(box => box.style.display = 'none');
-             // Muestra un mensaje
              document.body.innerHTML = `
                 <h1 style="text-align: center;">Módulo de Juegos Deshabilitado</h1>
                 <p style="text-align: center;">Este módulo no está activo para este evento.</p>
              `;
         }
 
-        // Bloquear páginas de juegos
         if (!isHost && !isRanking) {
             document.body.innerHTML = `
                 <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #333;">
@@ -266,7 +242,7 @@ async function loadEventConfig(eventId) {
 
 // =======================================================================
 // FUNCIONES DE UTILIDAD Y ALMACENAMIENTO (TRIVIA)
-// (Sin cambios)
+// (Tu código original, sin cambios)
 // =======================================================================
 
 function fixFirebaseArray(data) {
@@ -300,7 +276,6 @@ function saveNewQuestion(questionData) {
 }
 
 function deleteQuestion(id) {
-    // ⭐️ CORRECCIÓN: Se construye la ruta completa
     const questionToRemoveRef = ref(database, `events/${EVENT_ID}/data/questions/${id}`);
     return remove(questionToRemoveRef);
 }
@@ -308,8 +283,6 @@ function deleteQuestion(id) {
 function saveFinalResult(data) {
     return push(rankingsRef, data); 
 }
-
-// --- Funciones de Renderizado de Ranking (Usadas por Host y Ranking.html) ---
 
 function listenForRankings(renderCallback) {
     onValue(rankingsRef, (snapshot) => {
@@ -320,14 +293,13 @@ function listenForRankings(renderCallback) {
                 rankingList.push(data[key]);
             });
         }
-        renderCallback(rankingList); // Llama a la función de renderizado específica
+        renderCallback(rankingList); 
     });
 }
 
 function renderTriviaRanking(results) {
     const container = document.getElementById('ranking-list');
-    if (!container) return; // No hacer nada si el contenedor no existe
-
+    if (!container) return; 
     results.forEach(r => {
         r.rankingValue = r.score - (r.time / 10); 
     });
@@ -342,7 +314,6 @@ function renderTriviaRanking(results) {
     }
     results.forEach((r, index) => {
         const li = document.createElement('li');
-        // ⭐️⭐️⭐️ CAMBIO AQUÍ ⭐️⭐️⭐️
         li.className = `question-item ${index === 0 ? 'top-winner-trivia' : ''}`;
         li.style.display = 'flex';
         li.style.justifyContent = 'space-between';
@@ -363,7 +334,7 @@ function renderTriviaRanking(results) {
 
 // =======================================================================
 // --- FUNCIONES DE ALMACENAMIENTO (JUEGO DE MEMORIA) ---
-// (Sin cambios)
+// (Tu código original, sin cambios)
 // =======================================================================
 
 async function uploadMemoryImages(files, progressCallback, statusCallback) {
@@ -371,7 +342,6 @@ async function uploadMemoryImages(files, progressCallback, statusCallback) {
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const uniqueName = `${Date.now()}-${file.name}`;
-        // ⭐️ CORRECCIÓN: Ruta de Storage
         const sRef = storageRef(storage, `events/${EVENT_ID}/data/memoryImages/${uniqueName}`);
         statusCallback(`Subiendo ${i + 1} de ${files.length}: ${file.name}`);
         const uploadTask = uploadBytesResumable(sRef, file);
@@ -439,7 +409,6 @@ async function deleteSingleMemoryImage(id, storagePath) {
     try {
         const sRef = storageRef(storage, storagePath);
         await deleteObject(sRef);
-        // ⭐️ CORRECCIÓN: Ruta completa
         const dbImgRef = ref(database, `events/${EVENT_ID}/data/memoryImages/${id}`);
         await remove(dbImgRef);
     } catch (error) {
@@ -465,7 +434,7 @@ function listenForMemoryRankings(renderCallback) {
 
 function renderMemoryRanking(results) {
     const container = document.getElementById('memory-ranking-list');
-    if (!container) return; // No hacer nada si el contenedor no existe
+    if (!container) return; 
 
     results.sort((a, b) => a.time - b.time); 
     container.innerHTML = '';
@@ -475,7 +444,6 @@ function renderMemoryRanking(results) {
     }
     results.forEach((r, index) => {
         const li = document.createElement('li');
-        // ⭐️⭐️⭐️ CAMBIO AQUÍ ⭐️⭐️⭐️
         li.className = `question-item ${index === 0 ? 'top-winner-memory' : ''}`; 
         li.style.display = 'flex';
         li.style.justifyContent = 'space-between';
@@ -496,6 +464,7 @@ function renderMemoryRanking(results) {
 
 // =======================================================================
 // MODO ANFITRIÓN (host.html)
+// (Tu código original, sin cambios)
 // =======================================================================
 
 function initializeHost() {
@@ -513,7 +482,6 @@ function initializeHost() {
     const questionsList = document.getElementById('questions-list');
     const clearAllBtn = document.getElementById('clear-all-btn');
 
-    // Llama a las funciones de escucha y pasa la función de renderizado
     listenForQuestions(renderQuestionsList);
     listenForRankings(renderTriviaRanking); 
 
@@ -562,7 +530,7 @@ function initializeHost() {
         }
     });
 
-    function renderQuestionsList(questions) { // Recibe las preguntas como argumento
+    function renderQuestionsList(questions) { 
         questionsList.innerHTML = '';
         if (questions.length === 0) {
             questionsList.innerHTML = '<li class="text-gray-500 italic p-2">Aún no hay preguntas cargadas...</li>';
@@ -594,7 +562,6 @@ function initializeHost() {
     const progressStatus = document.getElementById('memory-upload-status');
     const saveMemoryBtn = document.getElementById('save-memory-images-btn');
 
-    // Llama a las funciones de escucha
     listenForMemoryImages(renderMemoryImagesList);
     listenForMemoryRankings(renderMemoryRanking);
 
@@ -706,7 +673,6 @@ function initializeHost() {
         if (e.target.classList.contains('delete-btn')) {
             const idToDelete = e.target.dataset.id;
             try {
-                // ⭐️ CORRECCIÓN: Ruta completa
                 const wordRef = ref(database, `events/${EVENT_ID}/data/hangmanWords/${idToDelete}`);
                 await remove(wordRef);
             } catch (error) {
@@ -715,7 +681,6 @@ function initializeHost() {
         }
     });
     
-    // ⭐️ NUEVA FUNCIÓN (Faltaba en tu código original)
     function listenForHangmanWords(renderCallback) {
         onValue(hangmanWordsRef, (snapshot) => {
             const words = [];
@@ -756,6 +721,7 @@ function initializeHost() {
 
 // =======================================================================
 // MODO JUGADOR (player.html) - LÓGICA DE TRIVIA
+// (Tu código original, sin cambios)
 // =======================================================================
 
 function initializePlayer() {
@@ -918,6 +884,7 @@ function initializePlayer() {
 
 // =======================================================================
 // LÓGICA DEL JUEGO DE MEMORIA (memory.html)
+// (Tu código original, sin cambios)
 // =======================================================================
 
 // 1. Carga las URLs de Firebase y prepara el tablero
@@ -1115,6 +1082,7 @@ function shuffle(array) {
 
 // =======================================================================
 // LÓGICA DEL JUEGO DEL AHORCADO (hangman.html)
+// (Tu código original, sin cambios)
 // =======================================================================
 
 async function startHangmanGame() {
@@ -1281,21 +1249,17 @@ function initializeHangmanGame() {
 }
 
 // =======================================================================
-// --- ¡¡¡NUEVO!!! LÓGICA PARA LA PÁGINA DE RANKING (ranking.html) ---
+// --- LÓGICA PARA LA PÁGINA DE RANKING (ranking.html) ---
+// (Tu código original, sin cambios)
 // =======================================================================
 function initializeRankingPage() {
-    // --- NUEVO: Actualizar enlaces (si los hubiera) ---
-    // (ranking.html no tiene botón de "Volver al portal", pero si lo tuviera, iría aquí)
-    
-    // Simplemente llama a las funciones de escucha y les pasa
-    // las funciones de renderizado que ya existen.
     listenForRankings(renderTriviaRanking);
     listenForMemoryRankings(renderMemoryRanking);
 }
 
 
 // =======================================================================
-// INICIALIZACIÓN PRINCIPAL: DETECCIÓN DE PÁGINA (MODIFICADA)
+// ⭐️⭐️⭐️ INICIALIZACIÓN PRINCIPAL: REESTRUCTURADA CON AUTH ⭐️⭐️⭐️
 // =======================================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1306,7 +1270,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 2. Cargar la configuración (bloquea si está inactivo o juegos off)
         await loadEventConfig(EVENT_ID);
 
-        // 3. Asignar las referencias principales de la base de datos (⭐️ CORREGIDO)
+        // 3. Asignar las referencias principales de la base de datos
         const basePath = `events/${EVENT_ID}/data`;
         questionsRef = ref(database, `${basePath}/questions`);
         rankingsRef = ref(database, `${basePath}/rankings`);
@@ -1314,20 +1278,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         memoryRankingsRef = ref(database, `${basePath}/memoryRankings`);
         hangmanWordsRef = ref(database, `${basePath}/hangmanWords`);
 
-        // 4. Si todo está bien, inicializar la página actual
+        // 4. NUEVO: Enrutador de Autenticación
+        // Decide si la página es pública o protegida
         const path = window.location.pathname;
+
         if (path.includes('host.html')) {
-            initializeHost();
-        } else if (path.includes('player.html')) {
-            initializePlayer();
-        } else if (path.includes('memory.html')) {
-            initializeMemoryGame();
-        } else if (path.includes('hangman.html')) {
-            initializeHangmanGame();
-        } else if (path.includes('ranking.html')) {
-            // --- ¡¡¡BUG CORREGIDO!!! ---
-            // (La vez pasada olvidamos llamar a esta función)
-            initializeRankingPage();
+            // Esta es una página protegida, necesita login de cliente
+            handleHostAuth();
+        } else {
+            // Esta es una página pública (player, memory, hangman, ranking)
+            // Simplemente la inicializamos
+            initializeAppPage(path);
         }
 
     } catch (error) {
@@ -1335,3 +1296,98 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error("Error al inicializar la aplicación:", error.message);
     }
 });
+
+/**
+ * ⭐️ NUEVA FUNCIÓN: Maneja la autenticación de la página HOST
+ * Verifica si el usuario logueado tiene permisos para ESTE evento.
+ */
+function handleHostAuth() {
+    const loginContainer = document.getElementById('host-login-container');
+    const panelContainer = document.getElementById('host-panel-container');
+    const loginForm = document.getElementById('host-login-form');
+    const loginError = document.getElementById('host-login-error');
+
+    // Mostramos el login por defecto
+    loginContainer.style.display = 'block';
+
+    // Manejador del formulario de login
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginError.textContent = '';
+        const email = document.getElementById('host-login-email').value;
+        const password = document.getElementById('host-login-password').value;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            // Si el login es exitoso, el 'onAuthStateChanged' se encargará del resto
+        } catch (error) {
+            console.error("Error de login:", error.message);
+            loginError.textContent = "Error: Email o contraseña incorrecta.";
+        }
+    });
+
+    // Escuchamos los cambios de Auth
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            // --- Verificación de Permiso ---
+            // ¿Este usuario (user.uid) tiene permiso para ESTE evento (EVENT_ID)?
+            const adminRef = ref(database, `event_admins/${EVENT_ID}/admin_uid`);
+            let snapshot;
+            try {
+                snapshot = await get(adminRef);
+            } catch (dbError) {
+                // Esto probablemente ocurra si las reglas de la DB no están puestas
+                console.error("Error al leer permisos de la DB:", dbError.message);
+                loginError.textContent = "Error de permisos. Contacta al administrador.";
+                signOut(auth);
+                return;
+            }
+
+            if (snapshot.exists() && snapshot.val() === user.uid) {
+                // ¡PERMISO CONCEDIDO!
+                loginContainer.style.display = 'none';
+                panelContainer.style.display = 'block';
+
+                // Añadimos botón de "Salir"
+                const header = panelContainer.querySelector('header');
+                if (header && !document.getElementById('host-logout-btn')) {
+                    header.insertAdjacentHTML('afterbegin', '<button id="host-logout-btn" style="background: #ef4444; color: white; padding: 5px 10px; border-radius: 5px; float: right; cursor: pointer;">Salir</button>');
+                    document.getElementById('host-logout-btn').addEventListener('click', () => {
+                        if(confirm("¿Seguro que quieres salir del panel?")) {
+                            signOut(auth);
+                        }
+                    });
+                }
+                
+                // Ahora sí, inicializamos el panel de Host
+                initializeHost();
+            } else {
+                // Logueado pero SIN permiso para este evento
+                signOut(auth);
+                loginError.textContent = "No tienes permiso para ver este evento.";
+                loginContainer.style.display = 'block';
+                panelContainer.style.display = 'none';
+            }
+        } else {
+            // Usuario no logueado
+            loginContainer.style.display = 'block';
+            panelContainer.style.display = 'none';
+        }
+    });
+}
+
+/**
+ * ⭐️ NUEVA FUNCIÓN: Inicializa la página pública solicitada
+ * (Esto es el 'else' de tu 'DOMContentLoaded' original)
+ */
+function initializeAppPage(path) {
+    if (path.includes('player.html')) {
+        initializePlayer();
+    } else if (path.includes('memory.html')) {
+        initializeMemoryGame();
+    } else if (path.includes('hangman.html')) {
+        initializeHangmanGame();
+    } else if (path.includes('ranking.html')) {
+        initializeRankingPage();
+    }
+}

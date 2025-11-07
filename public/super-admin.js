@@ -1,5 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-// ⭐️ IMPORTACIONES ACTUALIZADAS (se agregó 'get')
+// ⭐️⭐️⭐️ NUEVAS IMPORTACIONES DE AUTH ⭐️⭐️⭐️
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+// ⭐️⭐️⭐️ FIN NUEVAS IMPORTACIONES ⭐️⭐️⭐️
+
 import { getDatabase, ref, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 
@@ -21,79 +24,152 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app);
 
-// =======================================================================
-// ⭐️ NUEVAS FUNCIONES DE AYUDA PARA RGBA ⭐️
-// =======================================================================
+// ⭐️⭐️⭐️ INICIO: NUEVA LÓGICA DE AUTENTICACIÓN ⭐️⭐️⭐️
+const auth = getAuth(app);
+
+// ❗️❗️❗️ CAMBIA ESTO por tu email de super-administrador
+const SUPER_ADMIN_EMAIL = "lisandrodileva@gmail.com"; 
+
+// --- Referencias a los contenedores del HTML ---
+const loginContainer = document.getElementById('login-container');
+const panelAdmin = document.getElementById('panel-admin');
+const loginForm = document.getElementById('login-form');
+const loginError = document.getElementById('login-error');
 
 /**
- * Convierte un color Hex (ej: #FF0000) y una opacidad (ej: 0.8) a un string rgba().
- * @param {string} hex - El color en formato hexadecimal.
- * @param {number | string} opacity - La opacidad (0.1 a 1.0).
- * @returns {string} - El color en formato rgba().
+ * 1. Escuchar cambios de estado de Auth
+ * Esto decide si mostrar el Login o el Panel de Admin
  */
-function hexToRgba(hex, opacity = 1) {
-    if (!hex || hex === '') return null; // No convertir si no hay color
-    
-    // Expandir formato corto (ej. "03F") a formato completo (ej. "0033FF")
-    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
-    hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+onAuthStateChanged(auth, (user) => {
+    if (user && user.email === SUPER_ADMIN_EMAIL) {
+        // Usuario logueado Y es el Super Admin
+        loginContainer.style.display = 'none';
+        panelAdmin.style.display = 'block';
+        
+        // Añadimos un botón de "Salir"
+        panelAdmin.insertAdjacentHTML('afterbegin', '<button id="logout-btn" style="background: #ef4444; color: white; padding: 5px 10px; border-radius: 5px; float: right; cursor: pointer;">Salir</button>');
+        
+        // Damos funcionalidad al botón de Salir
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            if (confirm("¿Seguro que quieres salir?")) {
+                signOut(auth);
+            }
+        });
+        
+        // ¡INICIAMOS TU CÓDIGO!
+        // Llamamos a la función que contiene TODO tu código original
+        initializeSuperAdminPanel(); 
 
-    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    if (!result) {
-        console.warn("Formato hex inválido:", hex);
-        return hex; // Devolver el valor original si no es un hex válido
+    } else {
+        // No hay usuario o no es el admin
+        loginContainer.style.display = 'block';
+        panelAdmin.style.display = 'none';
+        // Si el usuario estaba logueado pero NO era el admin, lo deslogueamos
+        if (user) {
+            signOut(auth);
+        }
     }
-    
-    const r = parseInt(result[1], 16);
-    const g = parseInt(result[2], 16);
-    const b = parseInt(result[3], 16);
-    
-    // Si la opacidad es 1, devolver el hex original (más limpio)
-    if (parseFloat(opacity) === 1) {
-        return hex;
-    }
-    
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-}
+});
 
 /**
- * Convierte un string rgba() (ej: rgba(255, 0, 0, 0.8)) a un objeto { hex, opacity }.
- * @param {string} rgba - El string de color.
- * @returns {{hex: string, opacity: string}} - El color hex y la opacidad.
+ * 2. Manejador del formulario de login
  */
-function rgbaToHexAndOpacity(rgba) {
-    if (!rgba || rgba === '') return { hex: '#FFFFFF', opacity: '1.0' };
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.textContent = '';
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
 
-    // Caso 1: Ya es un color Hex (opacidad 1)
-    if (rgba.startsWith('#')) {
-        return { hex: rgba, opacity: '1.0' };
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+        // El 'onAuthStateChanged' se encargará de mostrar el panel
+    } catch (error) {
+        console.error("Error de login:", error.message);
+        loginError.textContent = "Error: Email o contraseña incorrecta.";
     }
-    
-    // Caso 2: Es un string rgba()
-    let match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
-    if (!match) {
-        console.warn("Formato rgba inválido, usando defaults:", rgba);
-        return { hex: '#FFFFFF', opacity: '1.0' }; // Valor por defecto
+});
+// ⭐️⭐️⭐️ FIN: NUEVA LÓGICA DE AUTENTICACIÓN ⭐️⭐️⭐️
+
+
+// ⭐️⭐️⭐️ INICIO: CÓDIGO ORIGINAL ENVUELTO ⭐️⭐️⭐️
+// Todo tu código original de super-admin.js va ahora
+// dentro de esta función.
+function initializeSuperAdminPanel() {
+
+    // =======================================================================
+    // ⭐️ FUNCIONES DE AYUDA PARA RGBA ⭐️ (Tu código original)
+    // =======================================================================
+
+    /**
+     * Convierte un color Hex (ej: #FF0000) y una opacidad (ej: 0.8) a un string rgba().
+     * @param {string} hex - El color en formato hexadecimal.
+     * @param {number | string} opacity - La opacidad (0.1 a 1.0).
+     * @returns {string} - El color en formato rgba().
+     */
+    function hexToRgba(hex, opacity = 1) {
+        if (!hex || hex === '') return null; // No convertir si no hay color
+        
+        // Expandir formato corto (ej. "03F") a formato completo (ej. "0033FF")
+        let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+        hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+
+        let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        if (!result) {
+            console.warn("Formato hex inválido:", hex);
+            return hex; // Devolver el valor original si no es un hex válido
+        }
+        
+        const r = parseInt(result[1], 16);
+        const g = parseInt(result[2], 16);
+        const b = parseInt(result[3], 16);
+        
+        // Si la opacidad es 1, devolver el hex original (más limpio)
+        if (parseFloat(opacity) === 1) {
+            return hex;
+        }
+        
+        return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
 
-    // Convertir R, G, B a Hex
-    const r = parseInt(match[1]).toString(16).padStart(2, '0');
-    const g = parseInt(match[2]).toString(16).padStart(2, '0');
-    const b = parseInt(match[3]).toString(16).padStart(2, '0');
-    const hex = `#${r}${g}${b}`;
-    
-    // Obtener opacidad (si no existe, es 1.0)
-    const opacity = match[4] !== undefined ? match[4] : '1.0';
+    /**
+     * Convierte un string rgba() (ej: rgba(255, 0, 0, 0.8)) a un objeto { hex, opacity }.
+     * @param {string} rgba - El string de color.
+     * @returns {{hex: string, opacity: string}} - El color hex y la opacidad.
+     */
+    function rgbaToHexAndOpacity(rgba) {
+        if (!rgba || rgba === '') return { hex: '#FFFFFF', opacity: '1.0' };
 
-    return { hex, opacity };
-}
+        // Caso 1: Ya es un color Hex (opacidad 1)
+        if (rgba.startsWith('#')) {
+            return { hex: rgba, opacity: '1.0' };
+        }
+        
+        // Caso 2: Es un string rgba()
+        let match = rgba.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/);
+        if (!match) {
+            console.warn("Formato rgba inválido, usando defaults:", rgba);
+            return { hex: '#FFFFFF', opacity: '1.0' }; // Valor por defecto
+        }
+
+        // Convertir R, G, B a Hex
+        const r = parseInt(match[1]).toString(16).padStart(2, '0');
+        const g = parseInt(match[2]).toString(16).padStart(2, '0');
+        const b = parseInt(match[3]).toString(16).padStart(2, '0');
+        const hex = `#${r}${g}${b}`;
+        
+        // Obtener opacidad (si no existe, es 1.0)
+        const opacity = match[4] !== undefined ? match[4] : '1.0';
+
+        return { hex, opacity };
+    }
 
 
-// =======================================================================
-// LÓGICA PRINCIPAL DEL SUPER-ADMIN
-// =======================================================================
+    // =======================================================================
+    // LÓGICA PRINCIPAL DEL SUPER-ADMIN (Tu código original)
+    // ⭐️ MODIFICACIÓN: Quité el 'DOMContentLoaded' que envolvía esto.
+    //    Ahora se ejecuta cuando 'initializeSuperAdminPanel' es llamada.
+    // =======================================================================
 
-document.addEventListener('DOMContentLoaded', () => {
     // 1. DEFINIR VARIABLES DEL FORMULARIO
     const form = document.getElementById('event-form');
     const saveBtn = document.getElementById('save-event-btn');
@@ -419,4 +495,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-});
+
+} // ⭐️⭐️⭐️ FIN: CÓDIGO ORIGINAL ENVUELTO ⭐️⭐️⭐️
