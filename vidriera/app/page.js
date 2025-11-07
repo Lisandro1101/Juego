@@ -18,7 +18,7 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-screen bg-zinc-950 text-gray-200">
       
-      {/* --- NAVEGACIÓN (BOTÓN CORREGIDO) --- */}
+      {/* --- NAVEGACIÓN (BOTÓN ELIMINADO) --- */}
       <nav className="sticky top-0 z-50 backdrop-blur-lg border-b border-white/10">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <motion.div 
@@ -29,13 +29,11 @@ export default function LandingPage() {
             🐝 TuFiestaDigital
           </motion.div>
           
-          {/* ⭐️ CORRECCIÓN 1: Este botón ahora hace scroll a la sección de acceso ⭐️ */}
-          <a
-            href="#acceso" // ⬅️ Apunta a la nueva sección de acceso
-            className="px-5 py-2 text-sm font-semibold text-black bg-yellow-400 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105 hover:bg-yellow-300"
-          >
-            Acceder al Evento
-          </a>
+          {/* ⭐️ BOTÓN ELIMINADO ⭐️ 
+              Ahora el layout 'justify-between' solo dejará el logo a la izquierda.
+              Si prefieres el logo centrado, cambia 'justify-between' por 'justify-center'.
+          */}
+          
         </div>
       </nav>
 
@@ -67,7 +65,7 @@ export default function LandingPage() {
         </motion.section>
 
 
-        {/* ⭐️ CORRECCIÓN 2: NUEVA SECCIÓN DE ACCESO (PARA INVITADOS Y ANFITRIONES) ⭐️ */}
+        {/* --- SECCIÓN DE ACCESO (PARA INVITADOS Y ANFITRIONES) --- */}
         <section id="acceso" className="pb-24 pt-12 text-center bg-black bg-opacity-20">
           <div className="container mx-auto px-6">
             <h2 className="text-4xl font-black mb-16">
@@ -245,10 +243,9 @@ export default function LandingPage() {
 
       </main>
 
-      {/* --- FOOTER (SE ELIMINA EL LINK REDUNDANTE) --- */}
+      {/* --- FOOTER --- */}
       <footer className="py-12 border-t border-white/10">
         <div className="container mx-auto px-6 text-center">
-          {/* El link de "Acceso Anfitriones" ya no es necesario aquí */}
           <p className="text-gray-500 mt-4">
             &copy; 2025 Tu Fiesta Digital. Todos los derechos reservados.
           </p>
