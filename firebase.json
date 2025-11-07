@@ -2,7 +2,7 @@
   "hosting": [
     {
       "target": "web-publica",
-      "public": "vidriera",
+      "public": "vidriera/out",  
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -17,7 +17,7 @@
     },
     {
       "target": "app-juego",
-      "public": "public",
+      "public": "public",       
       "ignore": [
         "firebase.json",
         "**/.*",
