@@ -29,14 +29,12 @@ export default function LandingPage() {
             🐝 TuFiestaDigital
           </motion.div>
           
-          {/* ⭐️ CORRECCIÓN 2: Este botón ahora es para el ANFITRIÓN ⭐️ */}
+          {/* ⭐️ CORRECCIÓN 1: Este botón ahora hace scroll a la sección de acceso ⭐️ */}
           <a
-            href="https://app.tufiestadigital.com.ar/host.html" // ⬅️ Apunta a HOST.HTML
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#acceso" // ⬅️ Apunta a la nueva sección de acceso
             className="px-5 py-2 text-sm font-semibold text-black bg-yellow-400 rounded-lg shadow-lg transition-transform duration-200 hover:scale-105 hover:bg-yellow-300"
           >
-            Acceso Anfitrión
+            Acceder al Evento
           </a>
         </div>
       </nav>
@@ -58,7 +56,6 @@ export default function LandingPage() {
             Involucra a tus invitados con trivias personalizadas, juegos de memoria
             y un álbum de recuerdos digital en tiempo real.
           </p>
-          {/* El botón de "Planes" ahora apunta a la sección de características */}
           <motion.a
             href="#caracteristicas" 
             whileHover={{ scale: 1.05 }}
@@ -70,46 +67,84 @@ export default function LandingPage() {
         </motion.section>
 
 
-        {/* ⭐️ CORRECCIÓN 1: SECCIÓN DE INGRESO (MOVIDA AQUÍ ARRIBA) ⭐️ */}
-        <section id="ingresar" className="pb-24 pt-12 text-center bg-black bg-opacity-20">
+        {/* ⭐️ CORRECCIÓN 2: NUEVA SECCIÓN DE ACCESO (PARA INVITADOS Y ANFITRIONES) ⭐️ */}
+        <section id="acceso" className="pb-24 pt-12 text-center bg-black bg-opacity-20">
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-black mb-6">
-              ¿Fuiste invitado a un evento?
+            <h2 className="text-4xl font-black mb-16">
+              ¿Listo para ingresar?
             </h2>
-            <p className="text-lg text-gray-400 max-w-xl mx-auto mb-8">
-              Escribe el código (ID) del evento que te pasó el anfitrión 
-              para ingresar.
-            </p>
             
-            {/* Formulario que redirige al invitado */}
-            <form 
-              className="flex justify-center max-w-lg mx-auto"
-              onSubmit={(e) => {
-                e.preventDefault();
-                // @ts-ignore
-                const eventId = e.target.elements.eventId.value.trim().toLowerCase();
-                if (eventId) {
-                  // Redirigimos al invitado al portal correcto en el subdominio
-                  window.location.href = `https://app.tufiestadigital.com.ar/index.html?event=${eventId}`;
-                } else {
-                  alert("Por favor, escribe un ID de evento.");
-                }
-              }}
-            >
-              <input 
-                type="text"
-                name="eventId" // Le damos un nombre para acceder a él
-                placeholder="Ej: boda-ana-y-pablo"
-                required
-                className="px-6 py-4 w-full rounded-l-lg border-0 bg-zinc-800 text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-400"
-              />
-              <button 
-                type="submit"
-                className="px-6 py-4 font-bold text-black bg-yellow-400 rounded-r-lg"
-              >
-                Ingresar
-              </button>
-            </form>
+            <div className="grid md:grid-cols-2 gap-10 max-w-4xl mx-auto">
+
+              {/* --- Formulario de INVITADO --- */}
+              <div className="bg-zinc-900 p-8 rounded-2xl border border-white/10">
+                <h3 className="text-2xl font-bold mb-4 text-yellow-400">Soy Invitado</h3>
+                <p className="text-gray-400 mb-6">Ingresa el ID del evento para unirte a la fiesta.</p>
+                <form 
+                  className="flex"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    // @ts-ignore
+                    const eventId = e.target.elements.guestEventId.value.trim().toLowerCase();
+                    if (eventId) {
+                      // Redirige al INVITADO a index.html
+                      window.location.href = `https://app.tufiestadigital.com.ar/index.html?event=${eventId}`;
+                    } else {
+                      alert("Por favor, escribe un ID de evento.");
+                    }
+                  }}
+                >
+                  <input 
+                    type="text"
+                    name="guestEventId"
+                    placeholder="Ej: boda-ana-y-pablo"
+                    required
+                    className="px-6 py-4 w-full rounded-l-lg border-0 bg-zinc-800 text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-400"
+                  />
+                  <button 
+                    type="submit"
+                    className="px-6 py-4 font-bold text-black bg-yellow-400 rounded-r-lg"
+                  >
+                    Entrar
+                  </button>
+                </form>
+              </div>
+
+              {/* --- Formulario de ANFITRIÓN --- */}
+              <div className="bg-zinc-900 p-8 rounded-2xl border border-white/10">
+                <h3 className="text-2xl font-bold mb-4 text-yellow-400">Soy Anfitrión</h3>
+                <p className="text-gray-400 mb-6">Ingresa el ID de tu evento para administrarlo.</p>
+                <form 
+                  className="flex"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    // @ts-ignore
+                    const eventId = e.target.elements.hostEventId.value.trim().toLowerCase();
+                    if (eventId) {
+                      // Redirige al ANFITRIÓN a host.html (que pedirá login)
+                      window.location.href = `https://app.tufiestadigital.com.ar/host.html?event=${eventId}`;
+                    } else {
+                      alert("Por favor, escribe el ID de tu evento.");
+                    }
+                  }}
+                >
+                  <input 
+                    type="text"
+                    name="hostEventId"
+                    placeholder="Escribe el ID de tu evento"
+                    required
+                    className="px-6 py-4 w-full rounded-l-lg border-0 bg-zinc-800 text-white placeholder-gray-500 focus:ring-2 focus:ring-yellow-400"
+                  />
+                  <button 
+                    type="submit"
+                    className="px-6 py-4 font-bold text-black bg-yellow-400 rounded-r-lg"
+                  >
+                    Administrar
+                  </button>
+                </form>
+              </div>
+
+            </div>
           </div>
         </section>
 
@@ -210,19 +245,10 @@ export default function LandingPage() {
 
       </main>
 
-      {/* --- FOOTER (SE MANTIENE IGUAL) --- */}
+      {/* --- FOOTER (SE ELIMINA EL LINK REDUNDANTE) --- */}
       <footer className="py-12 border-t border-white/10">
         <div className="container mx-auto px-6 text-center">
-          {/* Link sutil para ANFITRIONES */}
-          <a 
-             href="https://app.tufiestadigital.com.ar/host.html"
-             target="_blank"
-             rel="noopener noreferrer"
-             className="text-gray-400 hover:text-yellow-400"
-          >
-            Acceso de Anfitriones
-          </a>
-          
+          {/* El link de "Acceso Anfitriones" ya no es necesario aquí */}
           <p className="text-gray-500 mt-4">
             &copy; 2025 Tu Fiesta Digital. Todos los derechos reservados.
           </p>
