@@ -10,11 +10,10 @@ const IconTrivia = () => <span className="text-3xl">✍️</span>;
 const IconMemoria = () => <span className="text-3xl">🧠</span>;
 const IconRecuerdos = () => <span className="text-3xl">🖼️</span>;
 
-// ⭐️ CORRECCIÓN DEFINITIVA: Componente con el logo oficial de WhatsApp
+// ⭐️ NUEVO: Componente que usa la imagen SVG desde la carpeta /public
 const WhatsAppIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-8 h-8 text-white fill-current">
-    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157.1zM223.9 439.6c-38.2 0-73.7-11.8-103.6-32.5L38.8 451.8l29.9-81.2c-22.7-32.5-36.1-72.2-36.1-115.3 0-108.7 88.4-197.1 197.1-197.1 53 0 101.6 20.6 138.6 57.6 37 37 57.6 85.6 57.6 138.6-.1 108.7-88.5 197-197.2 197zM338.3 298.1c-3.7-1.9-22.1-10.9-25.6-12.1-3.4-1.2-5.9-1.9-8.4 1.9-2.5 3.7-9.7 12.1-11.8 14.6-2.2 2.5-4.3 2.8-8.1 1-3.7-1.9-15.7-5.8-29.9-18.4-11.1-9.8-18.6-21.9-20.8-25.6-2.2-3.7-.2-5.9 1.7-7.6.1-.1 1.7-2 3.7-4.3.1-.1 2.2-2.5 3.3-4.3.9-1.9.4-3.7-.2-5.6-1.9-3.7-8.4-20.1-11.5-27.5-3.1-7.4-6.2-6.4-8.4-6.4-2.2 0-4.8 0-7.3 0-2.5 0-6.7 1-10.2 4.8s-11.5 11.2-11.5 27.5c0 16.3 11.8 31.9 13.4 34.1 1.6 2.2 23.3 35.5 56.6 49.9 33.3 14.3 33.3 10.7 39.3 10.1 6-0.6 22.1-9 25.2-17.6 3.1-8.7 3.1-16.3 2.2-17.6-1-1.2-3.4-1.9-7.2-3.7z" />
-  </svg>
+  // eslint-disable-next-line @next/next/no-img-element
+  <img src="/whatsapp.svg" alt="WhatsApp" className="w-8 h-8" />
 );
 
 export default function LandingPage() {
