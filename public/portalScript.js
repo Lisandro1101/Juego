@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getDatabase, ref as dbRef, push, onValue, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
-// =======================================================================
+import { runTransaction } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"; // ⭐️ NUEVA IMPORTACIÓN
 // CONFIGURACIÓN DE FIREBASE (Se mantiene igual)
 // =======================================================================
 const firebaseConfig = {
@@ -57,17 +57,18 @@ function getEventId() {
  * Itera sobre el objeto de tema de Firebase y lo inyecta como
  * variables CSS en el <head>.
  * @param {object} themeConfig - El objeto config.theme de Firebase.
+ * @param {object} textsConfig - El objeto config.texts de Firebase.
  */
-function applyDynamicTheme(themeConfig) {
-    if (!themeConfig) {
+function applyDynamicTheme(themeConfig, textsConfig) {
+    if (!themeConfig && !textsConfig) {
         console.warn("No se encontró tema, usando defaults.");
         return;
     }
 
     const styleTag = document.createElement('style');
     let cssVariables = ":root {\n";
-
-    // 1. Iterar sobre las claves del tema (ej: 'color_primary')
+    
+    // 1. Iterar sobre las claves del TEMA (colores, fuentes, etc.)
     for (const key in themeConfig) {
         // Ignorar objetos anidados como 'icons' (los manejamos por separado)
         if (typeof themeConfig[key] === 'object' && themeConfig[key] !== null) {
@@ -88,6 +89,13 @@ function applyDynamicTheme(themeConfig) {
         // Añadir la variable al string
         // ej:    --color-primary: #FF0000;
         cssVariables += `    ${cssVarName}: ${value};\n`;
+    }
+    
+    // 2. ⭐️ CORREGIDO: Iterar sobre las claves de TEXTOS (color, tamaño de fuente)
+    if (textsConfig) {
+        for (const key in textsConfig) {
+            if (textsConfig[key]) cssVariables += `    --${key.replace(/_/g, '-')}: ${textsConfig[key]};\n`;
+        }
     }
 
     cssVariables += "}\n";
@@ -121,8 +129,14 @@ function applyDynamicTheme(themeConfig) {
         const icons = themeConfig.icons;
         // Helper function to update icons by class
         const updateIcons = (className, icon) => {
-            if (!icon) return; // No hacer nada si el icono no está definido
-            document.querySelectorAll(className).forEach(el => el.textContent = icon);
+            document.querySelectorAll(className).forEach(el => {
+                if (icon && icon.trim() !== '') {
+                    el.textContent = icon;
+                    el.style.display = ''; // Asegurarse de que sea visible
+                } else {
+                    el.style.display = 'none'; // Ocultar si no hay icono
+                }
+            });
         };
 
         updateIcons('.icon-main', icons.icon_main);
@@ -132,6 +146,10 @@ function applyDynamicTheme(themeConfig) {
         updateIcons('.icon-hangman', icons.icon_hangman);
         updateIcons('.icon-ranking', icons.icon_ranking);
         updateIcons('.icon-win', icons.icon_win);
+        updateIcons('.icon-games', icons.icon_games);
+        updateIcons('.icon-memories', icons.icon_memories);
+        // También para el botón del menú de juegos
+        updateIcons('.icon-menu-juegos', icons.icon_games);
     }
 }
 
@@ -170,9 +188,39 @@ async function loadEventConfig(eventId) {
     }
 
     // --- 2. APLICAR TEMA VISUAL (REEMPLAZADO) ---
-    // ¡Toda la lógica de estilo anterior se reemplaza por esta única función!
-    applyDynamicTheme(config.theme);
+    // ⭐️ CORREGIDO: Pasamos ambos objetos, theme y texts, a la función.
+    applyDynamicTheme(config.theme, config.texts);
     
+    // --- NUEVO: Aplicar Textos Dinámicos ---
+    if (config.texts) {
+        const portalGreeting = document.getElementById('portal-greeting-text');
+        if (portalGreeting && config.texts.portal_greeting) {
+            portalGreeting.innerHTML = config.texts.portal_greeting;
+        }
+        const portalTitle = document.getElementById('portal-title-text');
+        if (portalTitle && config.texts.portal_title) {
+            portalTitle.innerHTML = config.texts.portal_title; // Usar innerHTML para que renderice emojis
+        }
+        const portalSubtitle = document.getElementById('portal-subtitle-text');
+        if (portalSubtitle && config.texts.portal_subtitle) {
+            portalSubtitle.innerHTML = config.texts.portal_subtitle;
+        }
+
+        // ⭐️ NUEVO: Aplicar textos de botones de juegos
+        const triviaBtnText = document.getElementById('juegos-menu-trivia-text');
+        if (triviaBtnText && config.texts.juegos_menu_trivia) {
+            triviaBtnText.textContent = config.texts.juegos_menu_trivia;
+        }
+        const memoryBtnText = document.getElementById('juegos-menu-memory-text');
+        if (memoryBtnText && config.texts.juegos_menu_memory) {
+            memoryBtnText.textContent = config.texts.juegos_menu_memory;
+        }
+        const hangmanBtnText = document.getElementById('juegos-menu-hangman-text');
+        if (hangmanBtnText && config.texts.juegos_menu_hangman) {
+            hangmanBtnText.textContent = config.texts.juegos_menu_hangman;
+        }
+    }
+
     // --- 3. APLICAR FUNCIONALIDADES (Juegos) ---
     if (config.features && config.features.games_enabled === false) {
         // Si los juegos están deshabilitados, oculta el botón del menú de juegos
@@ -189,6 +237,24 @@ async function loadEventConfig(eventId) {
 // =======================================================================
 // FUNCIONES DE RECUPERACIÓN Y RENDERIZACIÓN DE RECUERDOS (MODIFICADA)
 // =======================================================================
+
+/**
+ * ⭐️ NUEVO: Incrementa el contador de 'likes' para un recuerdo específico.
+ * @param {string} memoryId - El ID del recuerdo al que se le da like.
+ */
+function handleLike(memoryId) {
+    const memoryLikeRef = dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/likeCount`);
+    
+    // Usamos una transacción para evitar problemas de concurrencia
+    runTransaction(memoryLikeRef, (currentLikes) => {
+        // Si currentLikes es null (nunca se ha dado like), lo inicializamos en 1.
+        // De lo contrario, lo incrementamos.
+        return (currentLikes || 0) + 1;
+    }).catch(error => {
+        console.error("Error en la transacción del like:", error);
+    });
+}
+
 
 function renderMemories(memories) {
     const memoriesList = document.getElementById('memories-list');
@@ -220,15 +286,48 @@ function renderMemories(memories) {
         const date = memory.timestamp ? new Date(memory.timestamp) : new Date();
         const formattedDate = date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
-        // ⭐️ MODIFICADO: Reemplazado 🐝 por <span class="icon-portal">
-        // El contenido de este span se llenará gracias a applyDynamicTheme
+        // ⭐️ NUEVO: Generar HTML para comentarios
+        let commentsHtml = '<div class="comments-section mt-2 space-y-2">';
+        if (memory.comments) {
+            Object.values(memory.comments).forEach(comment => {
+                commentsHtml += `
+                    <div class="comment-item text-xs bg-gray-100 p-2 rounded-md">
+                        <p class="font-bold text-gray-700">${comment.name}:</p>
+                        <p class="text-gray-600">${comment.comment}</p>
+                    </div>
+                `;
+            });
+        }
+        commentsHtml += '</div>';
+
+        // ⭐️ NUEVO: HTML para la sección de interacción (Likes y formulario de comentario)
+        const likeCount = memory.likeCount || 0;
+        const interactionSection = `
+            <div class="interaction-section mt-3 flex items-center justify-between">
+                <button data-memory-id="${memory.id}" class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                    <span class="like-count font-semibold text-sm">${likeCount}</span>
+                </button>
+            </div>
+            <form class="comment-form mt-2">
+                <input type="hidden" name="memoryId" value="${memory.id}">
+                <div class="flex gap-2">
+                    <input type="text" name="commenterName" required placeholder="Tu Nombre" class="comment-input flex-grow">
+                    <input type="text" name="commentText" required placeholder="Escribe un comentario..." class="comment-input flex-grow-[2]">
+                    <button type="submit" class="comment-submit-btn">Enviar</button>
+                </div>
+            </form>
+        `;
+
         memoryItem.innerHTML = `
             <div class="flex items-start justify-between">
-                <p class="font-bold text-gray-800 text-sm"><span class="text-honey-gold icon-portal">💬</span> ${memory.name}</p>
+                <p class="font-bold text-gray-800 text-sm"><span class="icon-portal">💬</span> ${memory.name}</p>
                 <p class="text-xs text-gray-500">${formattedDate}</p>
             </div>
             ${memory.message && memory.message.trim() ? `<p class="text-gray-600 mt-1 mb-2 text-sm">${memory.message}</p>` : ''}
             ${mediaContent}
+            ${interactionSection}
+            ${commentsHtml}
         `;
         memoriesList.appendChild(memoryItem);
     });
@@ -253,6 +352,37 @@ function listenForMemories() {
         memoriesList.innerHTML = '<p class="text-sm text-red-500 italic">Error al cargar los recuerdos.</p>';
     });
 }
+
+// ⭐️ NUEVO: Delegación de eventos para los nuevos elementos
+document.addEventListener('click', function(e) {
+    // Manejador para el botón de "Me Gusta"
+    if (e.target.closest('.like-btn')) {
+        e.preventDefault();
+        const likeButton = e.target.closest('.like-btn');
+        const memoryId = likeButton.dataset.memoryId;
+        if (memoryId) {
+            handleLike(memoryId);
+        }
+    }
+});
+
+document.addEventListener('submit', async function(e) {
+    // Manejador para el formulario de comentarios
+    if (e.target.classList.contains('comment-form')) {
+        e.preventDefault();
+        const form = e.target;
+        const memoryId = form.elements.memoryId.value;
+        const commenterName = form.elements.commenterName.value.trim();
+        const commentText = form.elements.commentText.value.trim();
+
+        if (!memoryId || !commenterName || !commentText) return;
+
+        const commentsRef = dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/comments`);
+        await push(commentsRef, { name: commenterName, comment: commentText, timestamp: Date.now() });
+        
+        form.reset();
+    }
+});
 
 // =======================================================================
 // --- NUEVO: FUNCIÓN DE INICIALIZACIÓN DEL PORTAL ---

@@ -16,6 +16,8 @@
             --ranking-memory-winner-bg: #FFCC00;
             --ranking-memory-winner-text: #1F2937;
             --ranking-memory-winner-border: #F59E0B;
+            --ranking-container-bg: rgba(255, 255, 255, 0.95);
+            --ranking-container-border-radius: 25px;
         }
 
         /* Estilos específicos para esta página de ranking */
@@ -34,10 +36,10 @@
         }
 
         /* Usamos una clase nueva para no entrar en conflicto con .portal-container */
-        .ranking-box {
-            background-color: rgba(255, 255, 255, 0.95);
+        .ranking-box.ranking-mode {
+            background-color: var(--ranking-container-bg);
             padding: 20px;
-            border-radius: 25px;
+            border-radius: var(--ranking-container-border-radius);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 650px; /* Le damos un ancho máximo */
@@ -76,9 +78,9 @@
 </head>
 <body>
 
-    <h1><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
+    <h1 id="ranking-title-text"><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
 
-    <div class="ranking-box">
+    <div class="ranking-box ranking-mode">
         <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
             <span class="text-yellow-500 text-3xl icon-trivia">✍️</span>
             <span>Ranking de la Colmena (Trivia)</span>
@@ -90,7 +92,7 @@
         </ul>
     </div>
 
-    <div class="ranking-box">
+    <div class="ranking-box ranking-mode">
         <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
             <span class="text-blue-500 text-3xl icon-memory">🧠</span>
             <span>Ranking de Memoria</span>

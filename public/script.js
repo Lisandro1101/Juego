@@ -89,6 +89,9 @@ function getEventId() {
  * (Tu código original, sin cambios)
  */
 function applyDynamicTheme(themeConfig) {
+    // ⭐️ NUEVO: Añadir la configuración de textos también
+    const textsConfig = window.eventConfig ? window.eventConfig.texts : {};
+
     if (!themeConfig) {
         console.warn("No se encontró tema, usando defaults.");
         return;
@@ -97,7 +100,7 @@ function applyDynamicTheme(themeConfig) {
     const styleTag = document.createElement('style');
     let cssVariables = ":root {\n";
 
-    // 1. Iterar sobre las claves del tema
+    // 1. Iterar sobre las claves del TEMA
     for (const key in themeConfig) {
         if (typeof themeConfig[key] === 'object' && themeConfig[key] !== null) {
             continue;
@@ -110,6 +113,13 @@ function applyDynamicTheme(themeConfig) {
         cssVariables += `    ${cssVarName}: ${value};\n`;
     }
     cssVariables += "}\n";
+
+    // 2. ⭐️ NUEVO: Iterar sobre las claves de TEXTOS
+    if (textsConfig) {
+        for (const key in textsConfig) {
+            if (textsConfig[key]) cssVariables += `    --${key.replace(/_/g, '-')}: ${textsConfig[key]};\n`;
+        }
+    }
 
     // 2. Manejar la fuente
     if (themeConfig.font_family) { 
@@ -139,8 +149,14 @@ function applyDynamicTheme(themeConfig) {
     if (themeConfig.icons) {
         const icons = themeConfig.icons;
         const updateIcons = (className, icon) => {
-            if (!icon) return; 
-            document.querySelectorAll(className).forEach(el => el.textContent = icon);
+            document.querySelectorAll(className).forEach(el => {
+                if (icon && icon.trim() !== '') {
+                    el.textContent = icon;
+                    el.style.display = ''; // Asegurarse de que sea visible
+                } else {
+                    el.style.display = 'none'; // Ocultar si no hay icono
+                }
+            });
         };
         updateIcons('.icon-main', icons.icon_main);
         updateIcons('.icon-portal', icons.icon_portal);
@@ -149,6 +165,8 @@ function applyDynamicTheme(themeConfig) {
         updateIcons('.icon-hangman', icons.icon_hangman);
         updateIcons('.icon-ranking', icons.icon_ranking);
         updateIcons('.icon-win', icons.icon_win);
+        updateIcons('.icon-games', icons.icon_games);
+        updateIcons('.icon-memories', icons.icon_memories);
     }
 }
 
@@ -160,6 +178,7 @@ function applyDynamicTheme(themeConfig) {
 async function loadEventConfig(eventId) {
     const configRef = ref(database, `events/${eventId}/config`);
     let config = {};
+    window.eventConfig = {}; // ⭐️ NUEVO: Guardar config globalmente
     
     try {
         const snapshot = await get(configRef);
@@ -180,6 +199,7 @@ async function loadEventConfig(eventId) {
         console.error("Error cargando configuración:", error);
         throw new Error("Error al cargar la configuración del evento.");
     }
+    window.eventConfig = config; // ⭐️ NUEVO: Guardar config globalmente
 
     // --- 1. CHEQUEO DE EVENTO ACTIVO ---
     const isHost = window.location.pathname.includes('host.html');
@@ -238,6 +258,45 @@ async function loadEventConfig(eventId) {
             throw new Error("Módulo de juegos deshabilitado.");
         }
     }
+
+    // --- 4. ⭐️ NUEVO: APLICAR TEXTOS DINÁMICOS ---
+    if (config.texts) {
+        const triviaTitle = document.getElementById('trivia-title-text');
+        if (triviaTitle && config.texts.trivia_title) {
+            triviaTitle.innerHTML = config.texts.trivia_title;
+        }
+        const triviaWelcome = document.getElementById('trivia-welcome-text');
+        if (triviaWelcome && config.texts.trivia_welcome) {
+            triviaWelcome.innerHTML = config.texts.trivia_welcome;
+        }
+        const triviaSubtitle = document.getElementById('trivia-subtitle-text');
+        if (triviaSubtitle && config.texts.trivia_subtitle) {
+            triviaSubtitle.innerHTML = config.texts.trivia_subtitle;
+        }
+
+        // Textos de Memoria
+        const memoryTitle = document.getElementById('memory-title-text');
+        if (memoryTitle && config.texts.memory_title) {
+            memoryTitle.innerHTML = config.texts.memory_title;
+        }
+
+        // ⭐️ NUEVO: Textos de Ahorcado
+        const hangmanTitle = document.getElementById('hangman-title-text');
+        if (hangmanTitle && config.texts.hangman_title) {
+            hangmanTitle.innerHTML = config.texts.hangman_title;
+        }
+        const hangmanSubtitle = document.getElementById('hangman-subtitle-text');
+        if (hangmanSubtitle && config.texts.hangman_subtitle) {
+            hangmanSubtitle.innerHTML = config.texts.hangman_subtitle;
+        }
+
+        // ⭐️ NUEVO: Textos de Ranking
+        const rankingTitle = document.getElementById('ranking-title-text');
+        if (rankingTitle && config.texts.ranking_title) {
+            rankingTitle.innerHTML = config.texts.ranking_title;
+        }
+
+    }
 }
 
 
@@ -269,6 +328,8 @@ function listenForQuestions(callback) {
         }
         console.log(`[Firebase] Preguntas cargadas: ${quizQuestions.length}`);
         if (callback) callback();
+        // ⭐️ CORRECCIÓN: Se pasa la lista de preguntas al callback una sola vez.
+        if (callback) callback(quizQuestions); 
     });
 }
 
@@ -565,6 +626,15 @@ function initializeHost() {
 
     listenForMemoryImages(renderMemoryImagesList);
     listenForMemoryRankings(renderMemoryRanking);
+
+    // --- ⭐️ NUEVO: Lógica de Exportación de Recuerdos ---
+    const exportBtn = document.getElementById('export-memories-btn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', async () => {
+            await exportMemoriesToHTML(EVENT_ID);
+        });
+    }
+    // --- Fin de la lógica de exportación ---
 
     memoryForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1392,5 +1462,176 @@ function initializeAppPage(path) {
         initializeHangmanGame();
     } else if (path.includes('ranking.html')) {
         initializeRankingPage();
+    }
+}
+
+// =======================================================================
+// --- ⭐️ NUEVO: MÓDULO DE EXPORTACIÓN DE RECUERDOS ⭐️ ---
+// =======================================================================
+
+/**
+ * Convierte una URL de un archivo (imagen/video) a un string Base64 (Data URL).
+ * @param {string} url - La URL del archivo en Firebase Storage.
+ * @returns {Promise<string>} Una promesa que resuelve con el Data URL en formato Base64.
+ */
+async function convertUrlToDataURL(url) {
+    // ⭐️ CORRECCIÓN: Usar un proxy para evitar problemas de CORS.
+    // El navegador bloquea la descarga directa de imágenes de otro dominio por seguridad.
+    // Este proxy actúa como intermediario para obtener el archivo.
+    const proxyUrl = `https://cors-anywhere.herokuapp.com/${url}`;
+    try {
+        const response = await fetch(proxyUrl); // ⭐️ CORREGIDO: Se elimina la línea duplicada y se usa solo el proxy.
+        if (!response.ok) {
+            throw new Error(`Error al descargar el archivo: ${response.statusText}`);
+        }
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    } catch (error) {
+        console.error(`No se pudo convertir la URL ${url}:`, error);
+        return null; // Devolver null si hay un error para no romper la exportación
+    }
+}
+
+/**
+ * Función principal para exportar los recuerdos de un evento a un archivo HTML estático.
+ * @param {string} eventId - El ID del evento a exportar.
+ */
+async function exportMemoriesToHTML(eventId) {
+    const exportButton = document.getElementById('export-memories-btn');
+    const originalButtonText = exportButton.innerHTML;
+    exportButton.disabled = true;
+    exportButton.innerHTML = 'Exportando... (puede tardar varios minutos)';
+
+    try {
+        // 1. Obtener la configuración del evento y todos los recuerdos
+        const configRef = ref(database, `events/${eventId}/config`);
+        const memoriesRef = ref(database, `events/${eventId}/data/memories`);
+
+        const [configSnapshot, memoriesSnapshot] = await Promise.all([get(configRef), get(memoriesRef)]);
+
+        if (!memoriesSnapshot.exists()) {
+            alert("No hay recuerdos para exportar en este evento.");
+            return;
+        }
+
+        const config = configSnapshot.val() || {};
+        const memoriesData = memoriesSnapshot.val();
+
+        // 2. Procesar recuerdos y convertir medios a Base64
+        let memoriesHtmlContent = '';
+        const memoriesArray = Object.values(memoriesData).sort((a, b) => b.timestamp - a.timestamp);
+
+        for (const memory of memoriesArray) {
+            let mediaContent = '';
+            if (memory.fileUrl) {
+                // Convertir la URL del archivo a Data URL (Base64)
+                const dataUrl = await convertUrlToDataURL(memory.fileUrl);
+                if (dataUrl) {
+                    const isVideo = memory.fileType && memory.fileType.startsWith('video');
+                    if (isVideo) {
+                        mediaContent = `<video controls src="${dataUrl}" style="width: 100%; max-height: 250px; border-radius: 8px; margin-top: 8px;"></video>`;
+                    } else {
+                        mediaContent = `<img src="${dataUrl}" alt="Recuerdo" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; margin-top: 8px;">`;
+                    }
+                }
+            }
+
+            // Generar HTML para comentarios
+            let commentsHtml = '';
+            if (memory.comments) {
+                commentsHtml = '<div style="margin-top: 10px; padding-left: 15px; border-left: 2px solid #eee;">';
+                Object.values(memory.comments).forEach(comment => {
+                    commentsHtml += `
+                        <div style="font-size: 0.8em; margin-bottom: 5px;">
+                            <strong style="color: #333;">${comment.name}:</strong>
+                            <span style="color: #555;">${comment.comment}</span>
+                        </div>
+                    `;
+                });
+                commentsHtml += '</div>';
+            }
+
+            const likeCount = memory.likeCount || 0;
+            const formattedDate = new Date(memory.timestamp).toLocaleString('es-ES');
+
+            memoriesHtmlContent += `
+                <div class="memory-item">
+                    <p style="font-weight: bold; color: #111;">${memory.name}</p>
+                    <p style="font-size: 0.9em; color: #444; margin-top: 4px;">${memory.message || ''}</p>
+                    ${mediaContent}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 0.8em; color: #666;">
+                        <span>❤️ ${likeCount}</span>
+                        <span>${formattedDate}</span>
+                    </div>
+                    ${commentsHtml}
+                </div>
+            `;
+        }
+
+        // 3. Construir el documento HTML final
+        const theme = config.theme || {};
+        const texts = config.texts || {};
+        const cssVariables = `
+            :root {
+                ${Object.entries(theme).map(([key, value]) => value && typeof value !== 'object' ? `--${key.replace(/_/g, '-')}: ${value};` : '').join('\n')}
+            }
+        `;
+
+        const finalHtml = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Recuerdos de ${eventId}</title>
+                <style>
+                    ${cssVariables}
+                    body {
+                        font-family: ${theme.font_family || 'sans-serif'};
+                        background-color: #f0f2f5;
+                        color: var(--color-text, #333);
+                        margin: 0;
+                        padding: 20px;
+                        ${theme.background_image_url ? `background-image: url('${theme.background_image_url}'); background-size: cover; background-position: center; background-attachment: fixed;` : ''}
+                    }
+                    .container { max-width: 800px; margin: auto; background-color: var(--portal-bg, rgba(255, 255, 255, 0.9)); border-radius: var(--portal-border-radius, 15px); padding: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+                    h1 { color: var(--portal-title-color, #000); text-align: center; }
+                    .memory-item { background-color: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>${texts.portal_title || `Recuerdos del Evento: ${eventId}`}</h1>
+                    <hr>
+                    <div id="memories-list" style="margin-top: 20px;">
+                        ${memoriesHtmlContent}
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+
+        // 4. Crear un Blob y disparar la descarga
+        const blob = new Blob([finalHtml], { type: 'text/html' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `recuerdos-${eventId}.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        alert("¡Exportación completada! Se ha descargado el archivo HTML con todos los recuerdos.");
+
+    } catch (error) {
+        console.error("Error durante la exportación:", error);
+        alert("Ocurrió un error al exportar los recuerdos. Revisa la consola para más detalles.");
+    } finally {
+        exportButton.disabled = false;
+        exportButton.innerHTML = originalButtonText;
     }
 }

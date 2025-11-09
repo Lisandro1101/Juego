@@ -14,6 +14,13 @@
             --mem-card-back-bg: var(--honey-gold, #F59E0B);
             --mem-card-back-border-color: var(--bee-black, #1F2937);
         }
+
+        /* ⭐️ NUEVO: Estilos para el contenedor de Memoria */
+        .quiz-container.memory-mode {
+            background-color: var(--memory-container-bg, rgba(255, 255, 255, 0.9));
+            border-radius: var(--memory-container-border-radius, 15px);
+        }
+
     
         /* Estilos específicos para la cuadrícula del juego de memoria */
         .grid-container {
@@ -161,10 +168,10 @@
 </head>
 <body>
     
-    <div class="quiz-container">
+    <div class="quiz-container memory-mode">
         
         <div id="start-screen" class="quiz-section">
-            <h1 class="title">Juego de Memoria <span class="icon-memory">🧠</span></h1>
+            <h1 id="memory-title-text" class="title">Juego de Memoria <span class="icon-memory">🧠</span></h1>
             <p class="mb-4">Ingresa tu nombre para comenzar a encontrar las parejas:</p>
             
             <label for="player-name-input" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>

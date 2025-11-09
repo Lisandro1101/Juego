@@ -52,6 +52,17 @@
             color: var(--portal-title-color);
             font-size: var(--portal-title-font-size);
         }
+
+        /* Aplica estilos al texto de bienvenida */
+        #portal-greeting-text {
+            color: var(--portal-greeting-color);
+            font-size: var(--portal-greeting-font-size);
+        }
+        /* Aplica estilos al subtítulo */
+        #portal-subtitle-text {
+            color: var(--portal-subtitle-color);
+            font-size: var(--portal-subtitle-font-size);
+        }
         
         /* * Aplica los estilos a los botones del portal.
          * Asumimos que .btn-portal está definido en tu 'style.css'.
@@ -68,29 +79,39 @@
              * deberás ajustar esto o añadir más variables.
             */
             box-shadow: 0 4px var(--btn-portal-shadow-color);
-            border: 2px solid var(--btn-portal-shadow-color);
+            border: 2px solid var(--btn-portal-shadow-color)
         }
+
+        /* ⭐️ NUEVO: Estilos para los botones del menú de juegos */
+        .juegos-dropdown-item {
+            background-color: var(--btn-juegos-menu-bg, var(--spring-green));
+            color: var(--btn-juegos-menu-text-color, white);
+            border-color: var(--btn-juegos-menu-border-color, var(--spring-shadow));
+            box-shadow: 0 4px var(--btn-juegos-menu-shadow-color, var(--spring-shadow));
+            border-radius: var(--btn-juegos-menu-border-radius, 1.5rem);
+        }
+
         /* --- ⭐️ FIN DEL MOTOR DE TEMAS ⭐️ --- */
 
     </style>
 </head>
 <body>
 
-    <a href="ranking.html" target="_blank" id="ranking-trophy-btn" title="Ver Rankings">🏆</a>
+    <a href="ranking.html" target="_blank" id="ranking-trophy-btn" title="Ver Rankings"><span class="icon-ranking">🏆</span></a>
 
     <div class="portal-container py-6 sm:py-8" style="position: relative;"> 
         <header class="mb-6">
-            <p class="text-lg text-gray-500 uppercase font-semibold">¡Bienvenido a la Colmena!</p>
+            <p id="portal-greeting-text" class="text-lg text-gray-500 uppercase font-semibold">¡Bienvenido a la Colmena!</p>
             
-            <h1>Portal de Recuerdos 🍯</h1>
+            <h1 id="portal-title-text">Portal de Recuerdos <span class="icon-main">🐝</span></h1>
             
-            <p class="text-gray-600 mt-2 text-xl">Deja un mensaje, una foto o video capturado.</p>
+            <p id="portal-subtitle-text" class="text-gray-600 mt-2 text-xl">Deja un mensaje, una foto o video capturado.</p>
         </header>
 
         <div style="position: relative;">
             
             <button id="menu-juegos-toggle" class="btn-portal btn-messages">
-                <span class="mr-3 text-2xl">🕹️</span>
+                <span class="mr-3 text-2xl icon-games">🕹️</span>
                 MENÚ DE JUEGOS
                 <span class="ml-3 text-xl">▼</span>
             </button>
@@ -100,16 +121,16 @@
                 
                 <div class="space-y-3">
                     <a href="player.html" target="_blank" class="btn-portal btn-trivia juegos-dropdown-item">
-                        <span class="mr-3 text-2xl">🐝</span>
-                        ¿Cuanto conoces a Amo?
+                        <span class="mr-3 text-2xl icon-trivia">✍️</span>
+                        <span id="juegos-menu-trivia-text">¿Cuanto conoces a Amo?</span>
                     </a>
                 <a href="memory.html" target="_blank" class="btn-portal btn-trivia juegos-dropdown-item">
-                        <span class="mr-3 text-2xl">🧠</span>
-                        Memoria con Amo
+                        <span class="mr-3 text-2xl icon-memory">🧠</span>
+                        <span id="juegos-menu-memory-text">Memoria con Amo</span>
                     </a>
                     <a href="hangman.html" target="_blank" class="btn-portal btn-trivia juegos-dropdown-item">
-                        <span class="mr-3 text-2xl">🤫</span>
-                        Ahorcado
+                        <span class="mr-3 text-2xl icon-hangman">💀</span>
+                        <span id="juegos-menu-hangman-text">Ahorcado</span>
                     </a>
                 </div>
                 <button id="cerrar-menu" class="text-sm text-gray-600 hover:text-gray-800 mt-4 w-full">
@@ -121,7 +142,7 @@
         
         <section class="py-4 rounded-xl border border-gray-200 memory-section-bg">
             <h2 class="text-xl font-bold mb-4 text-gray-800 flex items-center justify-center space-x-2">
-                <span class="text-2xl">💖</span>
+                <span class="text-2xl icon-memories">💖</span>
                 <span>Deja tu Recuerdo</span>
             </h2>
 
@@ -162,12 +183,12 @@
                 </div>
 
                 <button type="submit" id="submit-memory-btn" class="btn-portal btn-messages h-12 mt-4">
-                    Enviar Recuerdo 🎁
+                    Enviar Recuerdo <span class="icon-portal">🎁</span>
                 </button>
             </form>
 
             <h3 class="text-lg font-bold mb-2 text-gray-700">Recuerdos de la Colmena</h3>
-            <div id="memories-list" class="max-h-60 overflow-y-auto py-2 border border-dashed border-gray-300 rounded-lg bg-white">
+            <div id="memories-list" class="space-y-4 max-h-96 overflow-y-auto p-2 border border-dashed border-gray-300 rounded-lg bg-white">
                 <p class="text-sm text-gray-500 italic">Cargando mensajes...</p>
             </div>
             

@@ -7,12 +7,19 @@
     <link rel="stylesheet" href="style.css"> 
     
     <style>
+        :root {
+            --btn-hangman-bg: var(--bee-yellow, #FACC15);
+            --btn-hangman-text-color: var(--bee-black, #1F2937);
+            --btn-hangman-border-color: var(--honey-gold, #F59E0B);
+            --btn-hangman-shadow-color: var(--honey-gold, #F59E0B);
+        }
+
         /* Estilos específicos para el Ahorcado */
-        .hangman-container {
+        .hangman-container.hangman-mode {
             /* Usar el estilo base de quiz-container */
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 15px;
+            background-color: var(--hangman-container-bg, rgba(255, 255, 255, 0.9));
+            border-radius: var(--hangman-container-border-radius, 15px);
+            padding: 20px; /* Mantener padding interno */
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
@@ -50,15 +57,15 @@
 
         .key-btn {
             /* Estilo de tecla */
-            background-color: var(--bee-yellow);
-            color: var(--bee-black);
+            background-color: var(--btn-hangman-bg);
+            color: var(--btn-hangman-text-color);
             font-weight: bold;
-            border: 2px solid var(--honey-gold);
+            border: 2px solid var(--btn-hangman-border-color);
             border-radius: 6px;
             padding: 8px 10px;
             cursor: pointer;
-            transition: all 0.1s;
-            box-shadow: 0 3px var(--honey-gold);
+            transition: all 0.1s; 
+            box-shadow: 0 3px var(--btn-hangman-shadow-color);
             min-width: 35px;
             flex-grow: 1;
         }
@@ -99,11 +106,11 @@
 </head>
 <body>
 
-    <div class="quiz-container hangman-container">
+    <div class="quiz-container hangman-container hangman-mode">
         
         <div id="start-screen-hangman">
-            <h1 class="title">El Ahorcado <span class="icon-hangman">💀</span></h1>
-            <p class="mb-4">Ingresa tu nombre para comenzar a adivinar la palabra secreta:</p>
+            <h1 id="hangman-title-text" class="title">El Ahorcado <span class="icon-hangman">💀</span></h1>
+            <p id="hangman-subtitle-text" class="mb-4">Ingresa tu nombre para comenzar a adivinar la palabra secreta:</p>
             
             <label for="player-name-input-hangman" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
 

@@ -163,6 +163,30 @@ function initializeSuperAdminPanel() {
         return { hex, opacity };
     }
 
+    /**
+     * ⭐️ NUEVO: Rellena los <select> de emojis
+     */
+    function populateEmojiSelectors() {
+        const emojiList = ['🐝', '🍯', '💖', '💬', '✍️', '🧠', '💀', '🏆', '🎉', '🕹️', '🎁', '📸', '🎥', '🤫', '🛠️', '✨', '😊', '🥳', '❤️', '👍', '⭐'];
+        const selectors = document.querySelectorAll('select[id^="icon-"]');
+        
+        selectors.forEach(selector => {
+            selector.innerHTML = ''; // Limpiar opciones previas
+
+            // ⭐️ AÑADIDO: Opción para no tener emoji
+            const noEmojiOption = document.createElement('option');
+            noEmojiOption.value = '';
+            noEmojiOption.textContent = 'Vacío';
+            selector.appendChild(noEmojiOption);
+
+            emojiList.forEach(emoji => {
+                const option = document.createElement('option');
+                option.value = emoji;
+                option.textContent = emoji;
+                selector.appendChild(option);
+            });
+        });
+    }
 
     // =======================================================================
     // LÓGICA PRINCIPAL DEL SUPER-ADMIN (Tu código original)
@@ -186,6 +210,7 @@ function initializeSuperAdminPanel() {
     form.addEventListener('submit', handleFormSubmit);
     onValue(eventsListRef, renderEventsList); 
     eventsListElement.addEventListener('click', handleListClick); 
+    populateEmojiSelectors(); // ⭐️ NUEVO: Llenar los selectores de emojis al iniciar
     
     
     /**
@@ -230,11 +255,13 @@ function initializeSuperAdminPanel() {
         const theme = config.theme || {};
         const features = config.features || {};
         const status = config.status || {};
+        const texts = config.texts || {};
         const icons = theme.icons || {};
 
         // Rellenar Funcionalidades y Estado
         document.getElementById('games-enabled').checked = features.games_enabled !== false;
         document.getElementById('event-active').checked = status.is_active !== false;
+
 
         // Rellenar Tema Global
         document.getElementById('color-primary').value = theme.color_primary || '#FACC15';
@@ -244,15 +271,34 @@ function initializeSuperAdminPanel() {
         document.getElementById('color-danger').value = theme.color_danger || '#E53935';
         document.getElementById('color-text-light').value = theme.color_text_light || '#FFFFFF';
         document.getElementById('font-family').value = theme.font_family || "'Inter', sans-serif";
+        document.getElementById('btn-shadow').value = theme.btn_shadow || '0 5px';
+
+        // Rellenar Textos
+        document.getElementById('text-portal-greeting').value = texts.portal_greeting || '¡Bienvenido a la Colmena!';
+        document.getElementById('text-portal-greeting-color').value = texts.portal_greeting_color || '#6B7280';
+        document.getElementById('text-portal-greeting-font-size').value = texts.portal_greeting_font_size || '';
+        document.getElementById('text-portal-title').value = texts.portal_title || 'Portal de Recuerdos 🍯';
+        document.getElementById('text-portal-subtitle').value = texts.portal_subtitle || 'Deja un mensaje, una foto o video capturado.';
+        document.getElementById('text-portal-subtitle-color').value = texts.portal_subtitle_color || '#4B5563';
+        document.getElementById('text-portal-subtitle-font-size').value = texts.portal_subtitle_font_size || '';
+
+        // ⭐️ NUEVO: Rellenar textos de botones de juegos
+        document.getElementById('text-juegos-menu-trivia').value = texts.juegos_menu_trivia || '¿Cuanto conoces a Amo?';
+        document.getElementById('text-juegos-menu-memory').value = texts.juegos_menu_memory || 'Memoria con Amo';
+        document.getElementById('text-juegos-menu-hangman').value = texts.juegos_menu_hangman || 'Ahorcado';
+
 
         // Rellenar Iconos
-        document.getElementById('icon-main').value = icons.icon_main || '🐝';
-        document.getElementById('icon-portal').value = icons.icon_portal || '💬';
-        document.getElementById('icon-trivia').value = icons.icon_trivia || '✍️';
-        document.getElementById('icon-memory').value = icons.icon_memory || '🧠';
-        document.getElementById('icon-hangman').value = icons.icon_hangman || '💀';
-        document.getElementById('icon-ranking').value = icons.icon_ranking || '🏆';
-        document.getElementById('icon-win').value = icons.icon_win || '🎉';
+        document.getElementById('icon-main').value = icons.icon_main || '🐝'; // Valor por defecto si no existe
+        document.getElementById('icon-portal').value = icons.icon_portal || '💬'; // Valor por defecto si no existe
+        document.getElementById('icon-trivia').value = icons.icon_trivia || '✍️'; // Valor por defecto si no existe
+        document.getElementById('icon-memory').value = icons.icon_memory || '🧠'; // Valor por defecto si no existe
+        document.getElementById('icon-hangman').value = icons.icon_hangman || '💀'; // Valor por defecto si no existe
+        document.getElementById('icon-ranking').value = icons.icon_ranking || '🏆'; // Valor por defecto si no existe
+        document.getElementById('icon-win').value = icons.icon_win || '🎉'; // Valor por defecto si no existe
+        document.getElementById('icon-games').value = icons.icon_games || '🕹️';
+        document.getElementById('icon-memories').value = icons.icon_memories || '💖';
+
 
         // Rellenar Personalización del Portal
         // ⭐️ MODIFICADO: Usar la función de conversión para 'portal_bg'
@@ -268,6 +314,22 @@ function initializeSuperAdminPanel() {
         document.getElementById('btn-portal-border-radius').value = theme.btn_portal_border_radius || '';
         document.getElementById('btn-portal-shadow-color').value = theme.btn_portal_shadow_color || '#F59E0B';
 
+        // ⭐️ NUEVO: Rellenar Personalización de Botones del Menú de Juegos
+        document.getElementById('btn-juegos-menu-bg').value = theme.btn_juegos_menu_bg || '#66BB6A';
+        document.getElementById('btn-juegos-menu-text-color').value = theme.btn_juegos_menu_text_color || '#FFFFFF';
+        document.getElementById('btn-juegos-menu-border-color').value = theme.btn_juegos_menu_border_color || '#388E3C';
+        document.getElementById('btn-juegos-menu-shadow-color').value = theme.btn_juegos_menu_shadow_color || '#388E3C';
+        document.getElementById('btn-juegos-menu-border-radius').value = theme.btn_juegos_menu_border_radius || '';
+
+        // ⭐️ NUEVO: Rellenar Personalización de Trivia (Contenedor y Textos)
+        const triviaContainerBg = rgbaToHexAndOpacity(theme.trivia_container_bg);
+        document.getElementById('trivia-container-bg').value = triviaContainerBg.hex;
+        document.getElementById('trivia-container-bg-opacity').value = triviaContainerBg.opacity;
+        document.getElementById('trivia-container-border-radius').value = theme.trivia_container_border_radius || '';
+        document.getElementById('text-trivia-title').value = texts.trivia_title || 'Trivia del Evento 🐝';
+        document.getElementById('text-trivia-welcome').value = texts.trivia_welcome || '¡Bienvenido a la Colmena!';
+        document.getElementById('text-trivia-subtitle').value = texts.trivia_subtitle || '¿Cuanto sabes de Amo?';
+
         // Rellenar Personalización de Trivia
         document.getElementById('btn-trivia-bg').value = theme.btn_trivia_bg || '#ffb300';
         document.getElementById('btn-trivia-bg-hover').value = theme.btn_trivia_bg_hover || '#ff9900';
@@ -277,15 +339,40 @@ function initializeSuperAdminPanel() {
         document.getElementById('btn-trivia-border-radius').value = theme.btn_trivia_border_radius || '';
         document.getElementById('btn-trivia-font-size').value = theme.btn_trivia_font_size || '';
         document.getElementById('btn-trivia-padding').value = theme.btn_trivia_padding || '';
-        document.getElementById('btn-trivia-shadow').value = theme.btn_trivia_shadow || '';
 
         // Rellenar Personalización de Memoria
+        const memoryContainerBg = rgbaToHexAndOpacity(theme.memory_container_bg);
+        document.getElementById('memory-container-bg').value = memoryContainerBg.hex;
+        document.getElementById('memory-container-bg-opacity').value = memoryContainerBg.opacity;
+        document.getElementById('memory-container-border-radius').value = theme.memory_container_border_radius || '';
+        document.getElementById('text-memory-title').value = texts.memory_title || 'Juego de Memoria 🧠';
+
+        // Rellenar Personalización de Memoria (Cartas)
         document.getElementById('mem-card-back-bg').value = theme.mem_card_back_bg || '#F59E0B';
         document.getElementById('mem-card-back-border-color').value = theme.mem_card_back_border_color || '#1F2937';
         document.getElementById('mem-card-height').value = theme.mem_card_height || '';
         document.getElementById('mem-card-border-radius').value = theme.mem_card_border_radius || '';
 
+        // ⭐️ NUEVO: Rellenar Personalización de Ahorcado
+        const hangmanContainerBg = rgbaToHexAndOpacity(theme.hangman_container_bg);
+        document.getElementById('hangman-container-bg').value = hangmanContainerBg.hex;
+        document.getElementById('hangman-container-bg-opacity').value = hangmanContainerBg.opacity;
+        document.getElementById('hangman-container-border-radius').value = theme.hangman_container_border_radius || '';
+        document.getElementById('text-hangman-title').value = texts.hangman_title || 'El Ahorcado 💀';
+        document.getElementById('text-hangman-subtitle').value = texts.hangman_subtitle || 'Adivina la palabra secreta...';
+        document.getElementById('btn-hangman-bg').value = theme.btn_hangman_bg || '#FACC15';
+        document.getElementById('btn-hangman-text-color').value = theme.btn_hangman_text_color || '#1F2937';
+        document.getElementById('btn-hangman-border-color').value = theme.btn_hangman_border_color || '#F59E0B';
+        document.getElementById('btn-hangman-shadow-color').value = theme.btn_hangman_shadow_color || '#F59E0B';
+
         // Rellenar Personalización de Rankings
+        const rankingContainerBg = rgbaToHexAndOpacity(theme.ranking_container_bg);
+        document.getElementById('ranking-container-bg').value = rankingContainerBg.hex;
+        document.getElementById('ranking-container-bg-opacity').value = rankingContainerBg.opacity;
+        document.getElementById('ranking-container-border-radius').value = theme.ranking_container_border_radius || '';
+        document.getElementById('text-ranking-title').value = texts.ranking_title || 'Rankings de la Colmena 🏆';
+
+        // Rellenar Personalización de Rankings (Ganadores)
         document.getElementById('ranking-trivia-winner-bg').value = theme.ranking_trivia_winner_bg || '#FFCC00';
         document.getElementById('ranking-trivia-winner-text').value = theme.ranking_trivia_winner_text || '#1F2937';
         document.getElementById('ranking-trivia-winner-border').value = theme.ranking_trivia_winner_border || '#F59E0B';
@@ -354,15 +441,18 @@ function initializeSuperAdminPanel() {
             color_danger: document.getElementById('color-danger').value,
             color_text_light: document.getElementById('color-text-light').value,
             font_family: document.getElementById('font-family').value,
+            btn_shadow: document.getElementById('btn-shadow').value.trim() || null,
             
             icons: {
                 icon_main: document.getElementById('icon-main').value || '🐝',
-                icon_portal: document.getElementById('icon-portal').value || '💬',
+                icon_portal: document.getElementById('icon-portal').value || '🎁',
                 icon_trivia: document.getElementById('icon-trivia').value || '✍️',
                 icon_memory: document.getElementById('icon-memory').value || '🧠',
                 icon_hangman: document.getElementById('icon-hangman').value || '💀',
                 icon_ranking: document.getElementById('icon-ranking').value || '🏆',
                 icon_win: document.getElementById('icon-win').value || '🎉',
+                icon_games: document.getElementById('icon-games').value || '🕹️',
+                icon_memories: document.getElementById('icon-memories').value || '💖',
             },
             
             // Personalización del Portal
@@ -375,6 +465,18 @@ function initializeSuperAdminPanel() {
             btn_portal_border_radius: document.getElementById('btn-portal-border-radius').value.trim() || null,
             btn_portal_shadow_color: document.getElementById('btn-portal-shadow-color').value,
 
+            // ⭐️ NUEVO: Personalización de Botones del Menú de Juegos
+            btn_juegos_menu_bg: document.getElementById('btn-juegos-menu-bg').value.trim() || null,
+            btn_juegos_menu_text_color: document.getElementById('btn-juegos-menu-text-color').value.trim() || null,
+            btn_juegos_menu_border_color: document.getElementById('btn-juegos-menu-border-color').value.trim() || null,
+            btn_juegos_menu_shadow_color: document.getElementById('btn-juegos-menu-shadow-color').value.trim() || null,
+            btn_juegos_menu_border_radius: document.getElementById('btn-juegos-menu-border-radius').value.trim() || null,
+
+            // ⭐️ NUEVO: Personalización de Trivia (Contenedor)
+            trivia_container_bg: hexToRgba(document.getElementById('trivia-container-bg').value, document.getElementById('trivia-container-bg-opacity').value),
+            trivia_container_border_radius: document.getElementById('trivia-container-border-radius').value.trim() || null,
+
+
             // Personalización de Trivia
             btn_trivia_bg: document.getElementById('btn-trivia-bg').value.trim() || null,
             btn_trivia_bg_hover: document.getElementById('btn-trivia-bg-hover').value.trim() || null,
@@ -384,15 +486,33 @@ function initializeSuperAdminPanel() {
             btn_trivia_border_radius: document.getElementById('btn-trivia-border-radius').value.trim() || null,
             btn_trivia_font_size: document.getElementById('btn-trivia-font-size').value.trim() || null,
             btn_trivia_padding: document.getElementById('btn-trivia-padding').value.trim() || null,
-            btn_trivia_shadow: document.getElementById('btn-trivia-shadow').value.trim() || null,
 
             // Personalización de Memoria
+            memory_container_bg: hexToRgba(document.getElementById('memory-container-bg').value, document.getElementById('memory-container-bg-opacity').value),
+            memory_container_border_radius: document.getElementById('memory-container-border-radius').value.trim() || null,
+
+
+            // Personalización de Memoria (Cartas)
             mem_card_back_bg: document.getElementById('mem-card-back-bg').value.trim() || null,
             mem_card_back_border_color: document.getElementById('mem-card-back-border-color').value.trim() || null,
             mem_card_height: document.getElementById('mem-card-height').value.trim() || null,
             mem_card_border_radius: document.getElementById('mem-card-border-radius').value.trim() || null,
 
+            // ⭐️ NUEVO: Personalización de Ahorcado
+            hangman_container_bg: hexToRgba(document.getElementById('hangman-container-bg').value, document.getElementById('hangman-container-bg-opacity').value),
+            hangman_container_border_radius: document.getElementById('hangman-container-border-radius').value.trim() || null,
+            btn_hangman_bg: document.getElementById('btn-hangman-bg').value.trim() || null,
+            btn_hangman_text_color: document.getElementById('btn-hangman-text-color').value.trim() || null,
+            btn_hangman_border_color: document.getElementById('btn-hangman-border-color').value.trim() || null,
+            btn_hangman_shadow_color: document.getElementById('btn-hangman-shadow-color').value.trim() || null,
+
+
             // Personalización de Rankings
+            ranking_container_bg: hexToRgba(document.getElementById('ranking-container-bg').value, document.getElementById('ranking-container-bg-opacity').value),
+            ranking_container_border_radius: document.getElementById('ranking-container-border-radius').value.trim() || null,
+
+
+            // Personalización de Rankings (Ganadores)
             ranking_trivia_winner_bg: document.getElementById('ranking-trivia-winner-bg').value.trim() || null,
             ranking_trivia_winner_text: document.getElementById('ranking-trivia-winner-text').value.trim() || null,
             ranking_trivia_winner_border: document.getElementById('ranking-trivia-winner-border').value.trim() || null,
@@ -402,9 +522,37 @@ function initializeSuperAdminPanel() {
 
             background_image_url: currentBgUrl 
         };
+
+        const textsConfig = {
+            portal_greeting: document.getElementById('text-portal-greeting').value.trim() || null,
+            portal_greeting_color: document.getElementById('text-portal-greeting-color').value.trim() || null,
+            portal_greeting_font_size: document.getElementById('text-portal-greeting-font-size').value.trim() || null,
+            portal_title: document.getElementById('text-portal-title').value.trim() || null,
+            portal_subtitle: document.getElementById('text-portal-subtitle').value.trim() || null,
+            portal_subtitle_color: document.getElementById('text-portal-subtitle-color').value.trim() || null,
+            portal_subtitle_font_size: document.getElementById('text-portal-subtitle-font-size').value.trim() || null,
+            
+            // ⭐️ NUEVO: Textos de botones de juegos
+            juegos_menu_trivia: document.getElementById('text-juegos-menu-trivia').value.trim() || null,
+            juegos_menu_memory: document.getElementById('text-juegos-menu-memory').value.trim() || null,
+            juegos_menu_hangman: document.getElementById('text-juegos-menu-hangman').value.trim() || null,
+
+            // ⭐️ NUEVO: Textos de Trivia
+            trivia_title: document.getElementById('text-trivia-title').value.trim() || null,
+            trivia_welcome: document.getElementById('text-trivia-welcome').value.trim() || null,
+            trivia_subtitle: document.getElementById('text-trivia-subtitle').value.trim() || null,
+            // ⭐️ NUEVO: Textos de Memoria
+            memory_title: document.getElementById('text-memory-title').value.trim() || null,
+            // ⭐️ NUEVO: Textos de Ahorcado
+            hangman_title: document.getElementById('text-hangman-title').value.trim() || null,
+            hangman_subtitle: document.getElementById('text-hangman-subtitle').value.trim() || null,
+            // ⭐️ NUEVO: Textos de Ranking
+            ranking_title: document.getElementById('text-ranking-title').value.trim() || null,
+        };
         
         const fullConfig = {
             theme: themeConfig,
+            texts: textsConfig,
             features: { games_enabled: document.getElementById('games-enabled').checked },
             status: { is_active: document.getElementById('event-active').checked }
         };

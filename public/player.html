@@ -34,6 +34,12 @@
             --btn-trivia-shadow: 0 5px; /* Solo la forma */
         }
         
+        /* ⭐️ NUEVO: Estilos para el contenedor de Trivia */
+        .quiz-container.player-mode {
+            background-color: var(--trivia-container-bg, rgba(255, 255, 255, 0.9));
+            border-radius: var(--trivia-container-border-radius, 15px);
+        }
+
         .quiz-section {
             padding: 20px;
         }
@@ -97,15 +103,12 @@
 <body>
 
     <div class="quiz-container player-mode">
-        <h1><span class="icon-trivia">✍️</span> Trivia del Evento <span class="icon-main">🐝</span></h1>
+        <h1 id="trivia-title-text"><span class="icon-trivia">✍️</span> Trivia del Evento <span class="icon-main">🐝</span></h1>
         
         <form id="start-form">
             <div id="start-screen" class="quiz-section" style="padding: 20px;">
-                
-                <h2 style="color: #333; margin-bottom: 15px;">¡Bienvenido a la Colmena!
-                </h2>
-<h3 style="color: #333; margin-bottom: 10px;">¿Cuanto sabes de Amo?
-                </h3>
+                <h2 id="trivia-welcome-text" style="color: #333; margin-bottom: 15px;">¡Bienvenido a la Colmena!</h2>
+                <h3 id="trivia-subtitle-text" style="color: #333; margin-bottom: 10px;">¿Cuanto sabes de Amo?</h3>
 <label for="player-name-input" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
                 <input type="text" id="player-name-input" required placeholder="Escribe tu nombre" 
                        style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 15px; border: 2px solid #ffcc00; border-radius: 5px;"

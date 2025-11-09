@@ -538,3 +538,52 @@ h1 {
     visibility: visible;
     top: 45%; /* Sube un poco al aparecer */
 }
+
+/* --- ⭐️ NUEVO: Estilos para Interacción en Recuerdos ⭐️ --- */
+
+.memory-item {
+    background-color: #fff;
+    border-radius: 0.75rem; /* 12px */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid #f0f0f0;
+}
+
+.like-btn {
+    cursor: pointer;
+}
+
+.like-btn:active svg {
+    transform: scale(1.2);
+    transition: transform 0.1s;
+}
+
+.comment-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem; /* 8px 12px */
+    border: 1px solid #e2e8f0; /* gray-200 */
+    border-radius: 0.5rem; /* 8px */
+    font-size: 0.875rem; /* 14px */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: var(--bee-yellow, #FACC15);
+    box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.5);
+}
+
+.comment-submit-btn {
+    background-color: var(--bee-yellow, #FACC15);
+    color: var(--bee-black, #1F2937);
+    font-weight: 600;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.comment-submit-btn:hover {
+    background-color: var(--honey-gold, #F59E0B);
+}
