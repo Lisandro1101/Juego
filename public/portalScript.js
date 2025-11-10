@@ -508,8 +508,8 @@ function initializePortal() {
                 const newMemory = {
                     name: name,
                     message: message,
-                    fileUrl: fileUrl,
-                    fileType: fileType,
+                    fileUrl: fileUrl, // Mantener consistencia con el resto de la app
+                    fileType: fileType, // Mantener consistencia
                     timestamp: Date.now()
                 };
 

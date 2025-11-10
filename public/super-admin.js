@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 // ⭐️⭐️⭐️ NUEVAS IMPORTACIONES DE AUTH ⭐️⭐️⭐️
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 // ⭐️⭐️⭐️ FIN NUEVAS IMPORTACIONES ⭐️⭐️⭐️
-
+import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getDatabase, ref, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 
@@ -41,33 +41,36 @@ const loginError = document.getElementById('login-error');
  * Esto decide si mostrar el Login o el Panel de Admin
  */
 onAuthStateChanged(auth, (user) => {
-    if (user && user.email === SUPER_ADMIN_EMAIL) {
-        // Usuario logueado Y es el Super Admin
-        loginContainer.style.display = 'none';
-        panelAdmin.style.display = 'block';
-        
-        // Añadimos un botón de "Salir"
-        panelAdmin.insertAdjacentHTML('afterbegin', '<button id="logout-btn" style="background: #ef4444; color: white; padding: 5px 10px; border-radius: 5px; float: right; cursor: pointer;">Salir</button>');
-        
-        // Damos funcionalidad al botón de Salir
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            if (confirm("¿Seguro que quieres salir?")) {
+    if (user) {
+        // Usuario está logueado
+        if (user.email && user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+            // Usuario logueado Y es el Super Admin
+            loginContainer.style.display = 'none';
+            panelAdmin.style.display = 'block';
+            
+            // Añadimos un botón de "Salir" si no existe
+            if (!document.getElementById('logout-btn')) {
+                panelAdmin.insertAdjacentHTML('afterbegin', '<button id="logout-btn" style="background: #ef4444; color: white; padding: 5px 10px; border-radius: 5px; float: right; cursor: pointer;">Salir</button>');
+                document.getElementById('logout-btn').addEventListener('click', () => {
+                    if (confirm("¿Seguro que quieres salir?")) {
+                        signOut(auth);
+                    }
+                });
+            }
+            initializeSuperAdminPanel(); // ¡IMPORTANTE! Llamar a la función de inicialización del panel
+        } else {
+            // Usuario logueado, pero NO es el Super Admin (o user.email es nulo/indefinido)
+            if (user.email) { // Solo desloguear si tenemos un email para comparar
+                console.warn("Usuario logueado no es el Super Admin. Deslogueando:", user.email);
                 signOut(auth);
             }
-        });
-        
-        // ¡INICIAMOS TU CÓDIGO!
-        // Llamamos a la función que contiene TODO tu código original
-        initializeSuperAdminPanel(); 
-
+            loginContainer.style.display = 'block';
+            panelAdmin.style.display = 'none';
+        }
     } else {
-        // No hay usuario o no es el admin
+        // No hay usuario logueado
         loginContainer.style.display = 'block';
         panelAdmin.style.display = 'none';
-        // Si el usuario estaba logueado pero NO era el admin, lo deslogueamos
-        if (user) {
-            signOut(auth);
-        }
     }
 });
 
@@ -77,15 +80,28 @@ onAuthStateChanged(auth, (user) => {
 loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     loginError.textContent = '';
+    const submitButton = loginForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    submitButton.textContent = 'Ingresando...';
+
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
 
     try {
+        // ⭐️ SOLUCIÓN DEFINITIVA: Forzar la persistencia LOCAL.
+        // Esto evita que la sesión se cierre automáticamente después de un tiempo.
+        // Debe llamarse ANTES de signInWithEmailAndPassword.
+        await setPersistence(auth, browserLocalPersistence);
         await signInWithEmailAndPassword(auth, email, password);
-        // El 'onAuthStateChanged' se encargará de mostrar el panel
+        // onAuthStateChanged se encargará de mostrar el panel o dar error de permiso
     } catch (error) {
         console.error("Error de login:", error.message);
-        loginError.textContent = "Error: Email o contraseña incorrecta.";
+        loginError.textContent = "Error: Email o contraseña incorrectos."; // Esto solo se muestra si el login falla
+    } finally {
+        // ⭐️ CORRECCIÓN: Este bloque se ejecuta SIEMPRE, asegurando que el botón se reactive.
+        // Esto soluciona el problema del botón atascado en "Ingresando...".
+        submitButton.disabled = false;
+        submitButton.textContent = 'Ingresar';
     }
 });
 // ⭐️⭐️⭐️ FIN: NUEVA LÓGICA DE AUTENTICACIÓN ⭐️⭐️⭐️
@@ -380,6 +396,16 @@ function initializeSuperAdminPanel() {
         document.getElementById('ranking-memory-winner-text').value = theme.ranking_memory_winner_text || '#0056b3';
         document.getElementById('ranking-memory-winner-border').value = theme.ranking_memory_winner_border || '#007bff';
 
+        // ⭐️ NUEVO: Rellenar Personalización de Anfitrión
+        document.getElementById('host-container-bg').value = theme.host_container_bg || '#FFFFFF';
+        document.getElementById('host-container-border-radius').value = theme.host_container_border_radius || '';
+        document.getElementById('text-host-login-title').value = texts.host_login_title || 'Acceso de Anfitrión';
+        document.getElementById('text-host-panel-title').value = texts.host_panel_title || 'Panel de Control';
+        document.getElementById('text-host-document-title').value = texts.host_document_title || 'Panel de Anfitrión';
+        document.getElementById('btn-host-bg').value = theme.btn_host_bg || '#1F2937';
+        document.getElementById('btn-host-text-color').value = theme.btn_host_text_color || '#FACC15';
+        document.getElementById('btn-host-border-color').value = theme.btn_host_border_color || '#FACC15';
+
         // Rellenar previsualización de imagen
         const preview = document.getElementById('bg-image-preview');
         if (theme.background_image_url) {
@@ -520,6 +546,13 @@ function initializeSuperAdminPanel() {
             ranking_memory_winner_text: document.getElementById('ranking-memory-winner-text').value.trim() || null,
             ranking_memory_winner_border: document.getElementById('ranking-memory-winner-border').value.trim() || null,
 
+            // ⭐️ NUEVO: Personalización de Anfitrión
+            host_container_bg: document.getElementById('host-container-bg').value.trim() || null,
+            host_container_border_radius: document.getElementById('host-container-border-radius').value.trim() || null,
+            btn_host_bg: document.getElementById('btn-host-bg').value.trim() || null,
+            btn_host_text_color: document.getElementById('btn-host-text-color').value.trim() || null,
+            btn_host_border_color: document.getElementById('btn-host-border-color').value.trim() || null,
+
             background_image_url: currentBgUrl 
         };
 
@@ -548,6 +581,10 @@ function initializeSuperAdminPanel() {
             hangman_subtitle: document.getElementById('text-hangman-subtitle').value.trim() || null,
             // ⭐️ NUEVO: Textos de Ranking
             ranking_title: document.getElementById('text-ranking-title').value.trim() || null,
+            // ⭐️ NUEVO: Textos de Anfitrión
+            host_login_title: document.getElementById('text-host-login-title').value.trim() || null,
+            host_panel_title: document.getElementById('text-host-panel-title').value.trim() || null,
+            host_document_title: document.getElementById('text-host-document-title').value.trim() || null,
         };
         
         const fullConfig = {

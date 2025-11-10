@@ -243,11 +243,11 @@
         <form id="login-form" class="space-y-4">
             <div>
                 <label for="login-email" class="input-label">Email:</label>
-                <input type="email" id="login-email" class="input-field" required>
+                <input type="email" id="login-email" class="input-field" required autocomplete="email">
             </div>
             <div>
                 <label for="login-password" class="input-label">Contraseña:</label>
-                <input type="password" id="login-password" class="input-field" required>
+                <input type="password" id="login-password" class="input-field" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn-admin">Ingresar</button>
             <p id="login-error" class="text-center text-red-500 mt-4"></p>
@@ -298,6 +298,20 @@
                     <p class="text-xs text-gray-500 mt-1">
                         Si deshabilitas un evento, nadie podrá ingresar.
                     </p>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h2 class="text-xl font-bold mb-4">🔐 Autenticación de Anfitrión</h2>
+                <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-2 space-y-2">
+                    <p class="text-xs text-gray-600 mb-2">
+                        Define una contraseña única para que el anfitrión de este evento pueda acceder a <code>host.html</code>.
+                        El anfitrión deberá usar el email <strong>host@tufiestadigital.com.ar</strong> y esta contraseña.
+                    </p>
+                    <div>
+                        <label for="auth-event-password" class="input-label !mt-0">Contraseña del Evento:</label>
+                        <input type="text" id="auth-event-password" class="input-field" placeholder="Ej: ClaveSecreta123">
+                    </div>
                 </div>
             </div>
             
@@ -772,6 +786,57 @@
                     <div class="color-picker-wrapper">
                         <input type="color" id="ranking-memory-winner-border" value="#007bff">
                         <span class="text-sm">Borde</span>
+                    </div>
+                </div>
+            </details>
+
+            <details class="mt-6 border-t pt-4">
+                <summary>🛠️ Personalización de Anfitrión (host.html)</summary>
+
+                <h3 class="text-lg font-bold">Contenedor Principal (.container)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div>
+                        <label for="host-container-bg" class="text-sm font-bold">Color de Fondo</label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="host-container-bg" value="#FFFFFF">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="host-container-border-radius" class="text-sm font-bold">Radio de Borde</label>
+                        <input type="text" id="host-container-border-radius" class="input-field" placeholder="Ej: 2rem">
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold mt-6">Textos de Títulos</h3>
+                <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-2 space-y-4">
+                     <div>
+                        <label for="text-host-login-title" class="input-label !mt-0">Título Pantalla de Login:</label>
+                        <input type="text" id="text-host-login-title" class="input-field" placeholder="Acceso de Anfitrión">
+                    </div>
+                     <div>
+                        <label for="text-host-panel-title" class="input-label !mt-0">Título Panel de Control:</label>
+                        <input type="text" id="text-host-panel-title" class="input-field" placeholder="Panel de Control">
+                        <p class="text-xs text-gray-500 mt-1">Puedes usar <code>{EVENT_ID}</code> para mostrar el ID del evento. Ej: Panel para {EVENT_ID}</p>
+                    </div>
+                    <div>
+                        <label for="text-host-document-title" class="input-label !mt-0">Título de la Pestaña (Navegador):</label>
+                        <input type="text" id="text-host-document-title" class="input-field" placeholder="Panel de Anfitrión">
+                    </div>
+                </div>
+
+                <h3 class="text-lg font-bold mt-6">Botones Principales (.btn-bee)</h3>
+                <div class="grid-cols-2-responsive mt-2">
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-host-bg" value="#1F2937">
+                        <span class="text-sm">Fondo</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-host-text-color" value="#FACC15">
+                        <span class="text-sm">Texto</span>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-host-border-color" value="#FACC15">
+                        <span class="text-sm">Borde y Sombra</span>
                     </div>
                 </div>
             </details>

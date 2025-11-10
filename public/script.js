@@ -1,6 +1,7 @@
 // ⭐️⭐️⭐️ IMPORTACIONES DE AUTH AÑADIDAS ⭐️⭐️⭐️
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 // ⭐️⭐️⭐️ FIN DE IMPORTACIONES ⭐️⭐️⭐️
@@ -38,10 +39,10 @@ let currentQuestionIndex = 0;
 let score = 0;
 let timerInterval;
 let timeLeft = 10;
-let playerName = 'Jugador Anónimo';
 let timeBonusTotal = 0; 
 let totalTime = 0; 
 
+let triviaPlayerName = '';
 let memoryGameImages = []; 
 let hasFlippedCard = false;
 let lockBoard = false;
@@ -296,6 +297,22 @@ async function loadEventConfig(eventId) {
             rankingTitle.innerHTML = config.texts.ranking_title;
         }
 
+        // ⭐️ NUEVO: Textos de Anfitrión
+        const hostLoginTitle = document.getElementById('host-login-title-text');
+        if (hostLoginTitle && config.texts.host_login_title) {
+            hostLoginTitle.innerHTML = config.texts.host_login_title;
+        }
+        const hostPanelTitle = document.getElementById('host-panel-title-text');
+        if (hostPanelTitle && config.texts.host_panel_title) {
+            hostPanelTitle.innerHTML = config.texts.host_panel_title;
+        }
+
+        // ⭐️ NUEVO: Título del documento para Host
+        const isHostPage = window.location.pathname.includes('host.html');
+        if (isHostPage && config.texts.host_document_title) {
+            document.title = config.texts.host_document_title;
+        }
+
     }
 }
 
@@ -327,9 +344,8 @@ function listenForQuestions(callback) {
             });
         }
         console.log(`[Firebase] Preguntas cargadas: ${quizQuestions.length}`);
-        if (callback) callback();
-        // ⭐️ CORRECCIÓN: Se pasa la lista de preguntas al callback una sola vez.
-        if (callback) callback(quizQuestions); 
+        // ⭐️ CORRECCIÓN: Se pasa la lista de preguntas al callback una sola vez para evitar renderizados múltiples.
+        if (callback) callback(quizQuestions);
     });
 }
 
@@ -535,8 +551,14 @@ function initializeHost() {
     document.querySelectorAll('a[href="memory.html"]').forEach(a => a.href = `memory.html?event=${EVENT_ID}`);
     document.querySelectorAll('a[href="hangman.html"]').forEach(a => a.href = `hangman.html?event=${EVENT_ID}`);
     // Actualiza el título del header
-    const headerTitle = document.getElementById('header-title');
-    if (headerTitle) headerTitle.textContent = `Panel: ${EVENT_ID}`;
+    // ⭐️ CORREGIDO: Ahora usa el texto personalizado y reemplaza {EVENT_ID}
+    const hostPanelTitle = document.getElementById('host-panel-title-text');
+    if (hostPanelTitle) {
+        // Obtiene el texto que ya fue cargado por loadEventConfig
+        let titleText = hostPanelTitle.textContent || 'Panel: {EVENT_ID}';
+        // Reemplaza la variable por el ID real
+        hostPanelTitle.textContent = titleText.replace('{EVENT_ID}', EVENT_ID);
+    }
 
 
     // --- Lógica de TRIVIA ---
@@ -545,7 +567,6 @@ function initializeHost() {
     const clearAllBtn = document.getElementById('clear-all-btn');
 
     listenForQuestions(renderQuestionsList);
-    listenForRankings(renderTriviaRanking); 
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -625,7 +646,6 @@ function initializeHost() {
     const saveMemoryBtn = document.getElementById('save-memory-images-btn');
 
     listenForMemoryImages(renderMemoryImagesList);
-    listenForMemoryRankings(renderMemoryRanking);
 
     // --- ⭐️ NUEVO: Lógica de Exportación de Recuerdos ---
     const exportBtn = document.getElementById('export-memories-btn');
@@ -828,7 +848,7 @@ function initializePlayer() {
             e.preventDefault();
             const name = nameInput.value.trim();
             if (name) {
-                playerName = name.substring(0, 20);
+                triviaPlayerName = name.substring(0, 20);
                 if (quizQuestions.length > 0) {
                     startGame();
                 } else {
@@ -844,8 +864,8 @@ function initializePlayer() {
         });
     }
 
-    function initializePlayerScreen() {
-        if (quizQuestions.length > 0) {
+    function initializePlayerScreen(questions) {
+        if (questions.length > 0) {
             if (noQuestionsMsg) noQuestionsMsg.classList.add('hidden');
             if (startButton) startButton.disabled = false;
         } else {
@@ -855,7 +875,7 @@ function initializePlayer() {
     }
 
     function startGame() {
-        if (nameDisplay) nameDisplay.textContent = `Jugador: ${playerName}`;
+        if (nameDisplay) nameDisplay.textContent = `Jugador: ${triviaPlayerName}`;
         if (startScreenContainer) startScreenContainer.classList.add('hidden');
         if (gameModeContainer) gameModeContainer.classList.remove('hidden');
         currentQuestionIndex = 0;
@@ -941,9 +961,9 @@ function initializePlayer() {
         const totalPossibleTime = numQuestions * 10;
         totalTime = totalPossibleTime - timeBonusTotal; 
         if (totalTime < 0) totalTime = 0; 
-        if (finalScoreElement) finalScoreElement.textContent = `¡${playerName}, tu puntuación final es de: ${score} puntos! Tiempo total: ${totalTime}s. ¡Gracias por jugar!`;
+        if (finalScoreElement) finalScoreElement.textContent = `¡${triviaPlayerName}, tu puntuación final es de: ${score} puntos! Tiempo total: ${totalTime}s. ¡Gracias por jugar!`;
         const finalData = {
-            name: playerName,
+            name: triviaPlayerName,
             score: score,
             time: totalTime, 
             timestamp: Date.now()
@@ -1385,21 +1405,29 @@ function handleHostAuth() {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         loginError.textContent = '';
+        loginForm.querySelector('button[type="submit"]').disabled = true;
         const email = document.getElementById('host-login-email').value;
         const password = document.getElementById('host-login-password').value;
 
         try {
+            // ⭐️ SOLUCIÓN DEFINITIVA: Forzar la persistencia LOCAL.
+            // Esto evita que la sesión se cierre automáticamente después de un tiempo.
+            // Debe llamarse ANTES de signInWithEmailAndPassword.
+            await setPersistence(auth, browserLocalPersistence);
             await signInWithEmailAndPassword(auth, email, password);
             // Si el login es exitoso, el 'onAuthStateChanged' se encargará del resto
         } catch (error) {
             console.error("Error de login:", error.message);
-            loginError.textContent = "Error: Email o contraseña incorrecta.";
+            loginError.textContent = "Error: Email o contraseña incorrectos.";
+        } finally {
+            loginForm.querySelector('button[type="submit"]').disabled = false;
         }
     });
 
     // Escuchamos los cambios de Auth
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            loginError.textContent = "Verificando permisos..."; // Feedback para el usuario
             // --- Verificación de Permiso ---
             // ¿Este usuario (user.uid) tiene permiso para ESTE evento (EVENT_ID)?
             // ⭐️ CORRECCIÓN DEFINITIVA: Apuntar a la ruta correcta según tu JSON.
@@ -1409,15 +1437,17 @@ function handleHostAuth() {
             try {
                 snapshot = await get(adminRef);
             } catch (dbError) {
-                // Esto probablemente ocurra si las reglas de la DB no están puestas
                 console.error("Error al leer permisos de la DB:", dbError.message);
                 loginError.textContent = "Error de permisos. Contacta al administrador.";
                 signOut(auth);
+                loginContainer.style.display = 'block';
+                panelContainer.style.display = 'none';
                 return;
             }
 
             if (snapshot.exists() && snapshot.val() === user.uid) {
                 // ¡PERMISO CONCEDIDO!
+                loginError.textContent = ""; // Limpiar mensaje
                 loginContainer.style.display = 'none';
                 panelContainer.style.display = 'block';
 
@@ -1435,11 +1465,12 @@ function handleHostAuth() {
                 // Ahora sí, inicializamos el panel de Host
                 initializeHost();
             } else {
-                // Logueado pero SIN permiso para este evento
-                signOut(auth);
+                // ⭐️ CORRECCIÓN: Logueado pero SIN permiso para este evento.
                 loginError.textContent = "No tienes permiso para ver este evento.";
-                loginContainer.style.display = 'block';
-                panelContainer.style.display = 'none';
+                // Retrasamos el signOut para que el usuario pueda leer el mensaje
+                setTimeout(() => {
+                    signOut(auth);
+                }, 2000);
             }
         } else {
             // Usuario no logueado
@@ -1454,6 +1485,7 @@ function handleHostAuth() {
  * (Esto es el 'else' de tu 'DOMContentLoaded' original)
  */
 function initializeAppPage(path) {
+    // ⭐️ CORRECCIÓN: Se elimina la inicialización de juegos de la página de índice.
     if (path.includes('player.html')) {
         initializePlayer();
     } else if (path.includes('memory.html')) {
@@ -1462,6 +1494,8 @@ function initializeAppPage(path) {
         initializeHangmanGame();
     } else if (path.includes('ranking.html')) {
         initializeRankingPage();
+    } else if (path.includes('index.html')) {
+        // Aquí se puede inicializar la lógica específica del portal de recuerdos si es necesario en el futuro.
     }
 }
 
@@ -1475,33 +1509,26 @@ function initializeAppPage(path) {
  * @returns {Promise<string>} Una promesa que resuelve con el Data URL en formato Base64.
  */
 async function convertUrlToDataURL(url) {
-    // ⭐️ SOLUCIÓN DEFINITIVA: Usar una Cloud Function como proxy seguro.
-    // Esto es más robusto y fiable que los proxies públicos.
-    // 1. Obtenemos el tipo de archivo (ej: 'image/jpeg') desde la URL.
-    const responseForType = await fetch(url, { method: 'HEAD' });
-    const contentType = responseForType.headers.get('content-type') || 'application/octet-stream';
-
-    // 2. Construimos la URL de nuestra Cloud Function.
-    //    - Reemplaza `juegos-cumple` si tu ID de proyecto es diferente.
-    //    - Pasamos la URL original como parámetro.
-    const functionUrl = `https://us-central1-juegos-cumple.cloudfunctions.net/imageProxy?url=${encodeURIComponent(url)}`;
-
-    try {
-        // 3. Llamamos a nuestra función.
-        const response = await fetch(functionUrl);
-        if (!response.ok) {
-            throw new Error(`Error en la Cloud Function: ${response.statusText}`);
-        }
-
-        // 4. La función nos devuelve el archivo en Base64. Lo formateamos
-        //    correctamente para que el navegador lo entienda (Data URL).
-        const base64 = await response.text();
-        return `data:${contentType};base64,${base64}`;
-
-    } catch (error) {
-        console.error(`No se pudo convertir la URL ${url}:`, error);
-        return null; // Devolver null si hay un error para no romper la exportación
-    }
+    // ⭐️ SOLUCIÓN DEFINITIVA: Usar XMLHttpRequest y FileReader.
+    // Este método no depende de una Cloud Function y es más fiable para este caso.
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                resolve(reader.result);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(xhr.response);
+        };
+        xhr.onerror = function() {
+            console.error(`Error de red al intentar descargar: ${url}`);
+            reject(new Error(`Fallo de red para la URL: ${url}`));
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob'; // Pedimos la respuesta como un objeto binario (blob)
+        xhr.send();
+    });
 }
 
 /**
@@ -1535,15 +1562,19 @@ async function exportMemoriesToHTML(eventId) {
 
         for (const memory of memoriesArray) {
             let mediaContent = '';
-            if (memory.fileUrl) {
+            // ⭐️ SOLUCIÓN: Usar consistentemente 'fileUrl' y 'fileType', que es como portalScript.js lo guarda.
+            const url = memory.fileUrl;
+            const type = memory.fileType;
+
+            if (url) {
                 // Convertir la URL del archivo a Data URL (Base64)
-                const dataUrl = await convertUrlToDataURL(memory.fileUrl);
+                const dataUrl = await convertUrlToDataURL(url);
                 if (dataUrl) {
-                    const isVideo = memory.fileType && memory.fileType.startsWith('video');
+                    const isVideo = type && type.startsWith('video');
                     if (isVideo) {
                         mediaContent = `<video controls src="${dataUrl}" style="width: 100%; max-height: 250px; border-radius: 8px; margin-top: 8px;"></video>`;
                     } else {
-                        mediaContent = `<img src="${dataUrl}" alt="Recuerdo" style="width: 100%; max-height: 250px; object-fit: cover; border-radius: 8px; margin-top: 8px;">`;
+                        mediaContent = `<img src="${dataUrl}" alt="Recuerdo de ${memory.name}" class="memory-image" style="width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px; margin-top: 8px; cursor: pointer;">`;
                     }
                 }
             }
@@ -1552,11 +1583,12 @@ async function exportMemoriesToHTML(eventId) {
             let commentsHtml = '';
             if (memory.comments) {
                 commentsHtml = '<div style="margin-top: 10px; padding-left: 15px; border-left: 2px solid #eee;">';
+                // ⭐️ CORRECCIÓN: Iterar correctamente sobre los valores de los comentarios
                 Object.values(memory.comments).forEach(comment => {
                     commentsHtml += `
                         <div style="font-size: 0.8em; margin-bottom: 5px;">
-                            <strong style="color: #333;">${comment.name}:</strong>
-                            <span style="color: #555;">${comment.comment}</span>
+                            <strong style="color: #333;">${comment.name || 'Anónimo'}:</strong>
+                            <span style="color: #555;">${comment.comment || ''}</span>
                         </div>
                     `;
                 });
@@ -1610,6 +1642,50 @@ async function exportMemoriesToHTML(eventId) {
                     h1 { color: var(--portal-title-color, #000); text-align: center; }
                     .memory-item { background-color: #fff; border: 1px solid #ddd; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
                 </style>
+                <style>
+                    /* Estilos para el modal (lightbox) */
+                    .modal {
+                        display: none;
+                        position: fixed;
+                        z-index: 1000;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        overflow: auto;
+                        background-color: rgba(0,0,0,0.9);
+                        justify-content: center;
+                        align-items: center;
+                        flex-direction: column; /* Para apilar imagen y botón */
+                    }
+                    .modal-content {
+                        margin: auto;
+                        display: block;
+                        max-width: 90%;
+                        max-height: 80%;
+                    }
+                    .close-modal {
+                        position: absolute;
+                        top: 15px;
+                        right: 35px;
+                        color: #f1f1f1;
+                        font-size: 40px;
+                        font-weight: bold;
+                        cursor: pointer;
+                    }
+                    .download-btn {
+                        display: block;
+                        width: fit-content;
+                        margin: 20px auto;
+                        padding: 12px 20px;
+                        background-color: #4CAF50;
+                        color: white;
+                        text-align: center;
+                        text-decoration: none;
+                        border-radius: 5px;
+                        font-weight: bold;
+                    }
+                </style>
             </head>
             <body>
                 <div class="container">
@@ -1619,6 +1695,27 @@ async function exportMemoriesToHTML(eventId) {
                         ${memoriesHtmlContent}
                     </div>
                 </div>
+
+                <!-- El Modal para maximizar la imagen -->
+                <div id="imageModal" class="modal">
+                    <span class="close-modal">&times;</span>
+                    <img class="modal-content" id="modalImage">
+                    <a id="downloadLink" class="download-btn" href="#" download>Descargar Foto</a>
+                </div>
+
+                <script>
+                    const modal = document.getElementById('imageModal');
+                    const modalImg = document.getElementById('modalImage');
+                    const downloadLink = document.getElementById('downloadLink');
+                    document.querySelectorAll('.memory-image').forEach(img => {
+                        img.onclick = function(){
+                            modal.style.display = "flex";
+                            modalImg.src = this.src;
+                            downloadLink.href = this.src;
+                        }
+                    });
+                    document.querySelector('.close-modal').onclick = () => modal.style.display = "none";
+                </script>
             </body>
             </html>
         `;
@@ -1636,7 +1733,7 @@ async function exportMemoriesToHTML(eventId) {
 
     } catch (error) {
         console.error("Error durante la exportación:", error);
-        alert("Ocurrió un error al exportar los recuerdos. Revisa la consola para más detalles.");
+        alert("Ocurrió un error al exportar los recuerdos. Es posible que un problema de red o de permisos (CORS) lo haya impedido. Revisa la consola para más detalles.");
     } finally {
         exportButton.disabled = false;
         exportButton.innerHTML = originalButtonText;

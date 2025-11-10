@@ -20,6 +20,13 @@
             --ranking-memory-winner-bg: #FFCC00;
             --ranking-memory-winner-text: #1F2937;
             --ranking-memory-winner-border: #F59E0B;
+
+            /* ⭐️ VALORES DE RESPALDO PARA HOST ⭐️ */
+            --host-container-bg: #FFFFFF;
+            --host-container-border-radius: 2rem;
+            --btn-host-bg: var(--bee-black);
+            --btn-host-text-color: var(--bee-yellow);
+            --btn-host-border-color: var(--bee-yellow);
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -32,8 +39,8 @@
         .container {
             width: 100%;
             max-width: 480px;
-            background-color: white;
-            border-radius: 2rem;
+            background-color: var(--host-container-bg);
+            border-radius: var(--host-container-border-radius);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             padding: 1.5rem;
             transition: all 0.3s ease-in-out;
@@ -42,14 +49,14 @@
         }
         /* Botón Primario */
         .btn-bee {
-            background-color: var(--bee-black);
-            color: var(--bee-yellow);
+            background-color: var(--btn-host-bg);
+            color: var(--btn-host-text-color);
             font-weight: bold;
             border-radius: 1.5rem;
             padding: 0.75rem 1.5rem;
             transition: background-color 0.15s;
-            box-shadow: 0 4px var(--bee-yellow);
-            border: 3px solid var(--bee-yellow);
+            box-shadow: 0 4px var(--btn-host-border-color);
+            border: 3px solid var(--btn-host-border-color);
         }
         .btn-bee:hover:not(:disabled) {
             background-color: #374151; /* gray-700 */
@@ -136,18 +143,18 @@
     <div id="host-login-container" class="container" style="max-width: 400px; display: none;">
         <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">
             <span class="text-yellow-500 text-5xl">🛠️</span>
-            <span>Acceso de Anfitrión</span>
+            <span id="host-login-title-text">Acceso de Anfitrión</span>
         </h1>
         <p class="text-center text-gray-600 my-4">Ingresa para administrar tu evento.</p>
         
         <form id="host-login-form" class="space-y-4">
             <div>
                 <label for="host-login-email" class="block text-sm font-bold text-gray-700">Email:</label>
-                <input type="email" id="host-login-email" class="w-full p-3 border border-yellow-300 rounded-lg" required>
+                <input type="email" id="host-login-email" class="w-full p-3 border border-yellow-300 rounded-lg" required autocomplete="email">
             </div>
             <div>
                 <label for="host-login-password" class="block text-sm font-bold text-gray-700">Contraseña:</label>
-                <input type="password" id="host-login-password" class="w-full p-3 border border-yellow-300 rounded-lg" required>
+                <input type="password" id="host-login-password" class="w-full p-3 border border-yellow-300 rounded-lg" required autocomplete="current-password">
             </div>
             <button type="submit" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
                 Ingresar
@@ -160,8 +167,8 @@
         <header class="text-center mb-6">
             <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">
                 <span class="text-yellow-500 text-5xl">🛠️</span>
-                <span id="header-title">Panel de Control</span>
-                <span class="text-yellow-500 text-5xl icon-main">🐝</span>
+                <span id="host-panel-title-text">Panel de Control</span>
+                <span class="text-yellow-500 text-5xl icon-main">⚙️</span>
             </h1>
             
             <!-- ⭐️ NUEVO: Botón de Exportación ⭐️ -->
@@ -218,18 +225,6 @@
                 Limpiar Todas las Preguntas
             </button>
         </div>
-
-        <div class="ranking-section mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-400 shadow-xl">
-            <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-                <span class="text-yellow-500 text-3xl icon-ranking">🏆</span>
-                <span>Ranking de la Colmena (Trivia)</span>
-            </h2>
-            <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Puntuación y luego menor tiempo.</p>
-            <ul id="ranking-list" class="space-y-2">
-                <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
-            </ul>
-        </div>
-        
         <div id="memory-game-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
             <h2 class="text-xl font-bold mb-4 text-gray-800">⚙️ Imágenes del Juego de Memoria</h2>
             
@@ -266,17 +261,6 @@
             <button id="clear-memory-images-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
                 Limpiar Todas las Imágenes
             </button>
-        </div>
-
-        <div class="ranking-section mt-8 p-4 bg-blue-50 rounded-xl border border-blue-400 shadow-xl" aria-label="Ranking de Memoria">
-            <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-                <span class="text-blue-500 text-3xl icon-memory">🧠</span>
-                <span>Ranking de Memoria</span>
-            </h2>
-            <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Menor tiempo.</p>
-            <ul id="memory-ranking-list" class="space-y-2">
-                <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
-            </ul>
         </div>
 
         <div id="hangman-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
