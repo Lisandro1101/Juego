@@ -20,13 +20,14 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app); 
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 
 // =======================================================================
 // VARIABLES GLOBALES DE ARQUITECTURA (NUEVO)
 // =======================================================================
 let EVENT_ID;
 // ⭐️ CORRECCIÓN: 'dataRef' ya no es necesaria, creamos 'memoriesRef' directamente
+let GUEST_NAME = ''; // ⭐️ NUEVO: Variable global para el nombre del invitado
 let memoriesRef;
 
 // =======================================================================
@@ -312,7 +313,7 @@ function renderMemories(memories) {
             <form class="comment-form mt-2">
                 <input type="hidden" name="memoryId" value="${memory.id}">
                 <div class="flex gap-2">
-                    <input type="text" name="commenterName" required placeholder="Tu Nombre" class="comment-input flex-grow">
+                    <input type="text" name="commenterName" required placeholder="Tu Nombre" class="comment-input flex-grow" value="${GUEST_NAME}" readonly>
                     <input type="text" name="commentText" required placeholder="Escribe un comentario..." class="comment-input flex-grow-[2]">
                     <button type="submit" class="comment-submit-btn">Enviar</button>
                 </div>
@@ -372,7 +373,7 @@ document.addEventListener('submit', async function(e) {
         e.preventDefault();
         const form = e.target;
         const memoryId = form.elements.memoryId.value;
-        const commenterName = form.elements.commenterName.value.trim();
+        const commenterName = GUEST_NAME; // ⭐️ CORREGIDO: Usar el nombre global guardado
         const commentText = form.elements.commentText.value.trim();
 
         if (!memoryId || !commenterName || !commentText) return;
@@ -380,9 +381,48 @@ document.addEventListener('submit', async function(e) {
         const commentsRef = dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/comments`);
         await push(commentsRef, { name: commenterName, comment: commentText, timestamp: Date.now() });
         
-        form.reset();
+        // ⭐️ CORREGIDO: Solo limpiar el campo del comentario, no el del nombre
+        form.elements.commentText.value = '';
     }
 });
+
+/**
+ * ⭐️ NUEVO: Maneja la lógica para pedir y guardar el nombre del invitado.
+ */
+function handleGuestName() {
+    const modal = document.getElementById('guest-name-modal');
+    const form = document.getElementById('guest-name-form');
+    const input = document.getElementById('modal-guest-name-input');
+    const memoryNameInput = document.getElementById('guest-name');
+
+    if (!modal || !form || !input || !memoryNameInput) return;
+
+    // Usamos sessionStorage para que el nombre se guarde solo durante la sesión actual.
+    const storageKey = `guestName_${EVENT_ID}`;
+    const storedName = sessionStorage.getItem(storageKey);
+
+    if (storedName) {
+        GUEST_NAME = storedName;
+        memoryNameInput.value = GUEST_NAME;
+        memoryNameInput.readOnly = true; // Hacemos que el campo no se pueda editar.
+        modal.style.display = 'none';
+    } else {
+        modal.style.display = 'flex'; // Mostramos el modal si no hay nombre.
+    }
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = input.value.trim();
+        if (name) {
+            GUEST_NAME = name;
+            sessionStorage.setItem(storageKey, GUEST_NAME);
+            memoryNameInput.value = GUEST_NAME;
+            memoryNameInput.readOnly = true;
+            modal.style.display = 'none';
+        }
+    });
+}
+
 
 // =======================================================================
 // --- NUEVO: FUNCIÓN DE INICIALIZACIÓN DEL PORTAL ---
@@ -404,6 +444,9 @@ function initializePortal() {
     const juegosDropdown = document.getElementById('juegos-dropdown');
     const cerrarMenuBtn = document.getElementById('cerrar-menu');
     
+    // ⭐️ NUEVO: Iniciar el manejador del nombre del invitado
+    handleGuestName();
+
     // --- ¡¡¡BUG CORREGIDO!!! ---
     // Actualiza los enlaces de los juegos para incluir el event_id
     document.querySelectorAll('a[href="player.html"]').forEach(a => a.href = `player.html?event=${EVENT_ID}`);
@@ -460,7 +503,7 @@ function initializePortal() {
         form.addEventListener('submit', async (e) => {
             e.preventDefault(); // ¡Este es el "freno" que ahora funcionará!
             
-            const name = nameInput.value.trim().substring(0, 30);
+            const name = GUEST_NAME; // ⭐️ CORREGIDO: Usar el nombre global guardado
             const message = messageInput.value.trim();
             let file = (fileInputPhoto && fileInputPhoto.files.length > 0) ? fileInputPhoto.files[0] : ((fileInputVideo && fileInputVideo.files.length > 0) ? fileInputVideo.files[0] : null);
             
@@ -528,7 +571,9 @@ function initializePortal() {
                 
             } catch (error) {
                 console.error("Error al enviar el recuerdo:", error);
-                alert(`Error al enviar: ${error.message}`);
+                // ⭐️ CORREGIDO: No se resetea el nombre, solo el mensaje y archivo.
+                messageInput.value = '';
+                fileNameDisplay.textContent = '';
             } finally {
                 form.reset();
                 fileNameDisplay.textContent = '';
