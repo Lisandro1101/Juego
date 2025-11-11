@@ -316,11 +316,11 @@ function renderMemories(memories) {
         const interactionSection = `
             <div class="interaction-section mt-3 flex items-center justify-between">
                 <button data-memory-id="${memory.id}" class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path></svg>
+                    <span class="text-xl">❤️</span>
                     <span class="like-count font-semibold text-sm">${likeCount}</span>
                 </button>
-                <button data-memory-id="${memory.id}" class="comment-bubble-btn">
-                    Comentar
+                <button data-memory-id="${memory.id}" class="comment-bubble-btn flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors">
+                    <span class="text-xl">💬</span>
                 </button>
             </div>
             <form class="comment-form mt-2 hidden">
@@ -380,9 +380,10 @@ document.addEventListener('click', function(e) {
     }
 
     // Manejador para el botón de "Comentar"
-    if (e.target.classList.contains('comment-bubble-btn')) {
+    const commentButton = e.target.closest('.comment-bubble-btn');
+    if (commentButton) {
         e.preventDefault();
-        const memoryItemDiv = e.target.closest('.memory-item');
+        const memoryItemDiv = commentButton.closest('.memory-item');
         if (memoryItemDiv) {
             const commentForm = memoryItemDiv.querySelector('.comment-form');
             if (commentForm) {
