@@ -142,6 +142,16 @@ function applyDynamicTheme(themeConfig) {
         `;
     }
 
+    // ⭐️ NUEVO: Manejar el contorno de texto
+    if (themeConfig.text_stroke_width && themeConfig.text_stroke_color) {
+        cssVariables += `
+            h1, h2, h3, p, span, button, a, div {
+                -webkit-text-stroke-width: ${themeConfig.text_stroke_width};
+                -webkit-text-stroke-color: ${themeConfig.text_stroke_color};
+            }
+        `;
+    }
+
     // 4. Inyectar en el <head>
     styleTag.innerHTML = cssVariables;
     document.head.appendChild(styleTag);
@@ -354,7 +364,7 @@ function saveNewQuestion(questionData) {
 }
 
 function deleteQuestion(id) {
-    const questionToRemoveRef = ref(database, `events/${EVENT_ID}/data/questions/${id}`);
+    const questionToRemoveRef = ref(database, `juegos-cumple-default-rtdb/events/${EVENT_ID}/data/questions/${id}`);
     return remove(questionToRemoveRef);
 }
 
@@ -419,7 +429,7 @@ async function uploadMemoryImages(files, progressCallback, statusCallback) {
     const uploadPromises = [];
     for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const uniqueName = `${Date.now()}-${file.name}`;
+        const uniqueName = `${Date.now()}-${file.name}`; // ⭐️ CORREGIDO: Ruta actualizada
         const sRef = storageRef(storage, `events/${EVENT_ID}/data/memoryImages/${uniqueName}`);
         statusCallback(`Subiendo ${i + 1} de ${files.length}: ${file.name}`);
         const uploadTask = uploadBytesResumable(sRef, file);

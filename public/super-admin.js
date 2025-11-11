@@ -36,6 +36,9 @@ const panelAdmin = document.getElementById('panel-admin');
 const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
 
+// ⭐️ NUEVO: Variable de control para asegurar una única inicialización
+let isPanelInitialized = false;
+
 /**
  * 1. Escuchar cambios de estado de Auth
  * Esto decide si mostrar el Login o el Panel de Admin
@@ -57,7 +60,11 @@ onAuthStateChanged(auth, (user) => {
                     }
                 });
             }
-            initializeSuperAdminPanel(); // ¡IMPORTANTE! Llamar a la función de inicialización del panel
+            // ⭐️ CORREGIDO: Llamar a la inicialización solo una vez
+            if (!isPanelInitialized) {
+                initializeSuperAdminPanel();
+                isPanelInitialized = true;
+            }
         } else {
             // Usuario logueado, pero NO es el Super Admin (o user.email es nulo/indefinido)
             if (user.email) { // Solo desloguear si tenemos un email para comparar
@@ -71,6 +78,7 @@ onAuthStateChanged(auth, (user) => {
         // No hay usuario logueado
         loginContainer.style.display = 'block';
         panelAdmin.style.display = 'none';
+        isPanelInitialized = false; // Resetear el estado si el usuario se desloguea
     }
 });
 
@@ -105,6 +113,57 @@ loginForm.addEventListener('submit', async (e) => {
     }
 });
 // ⭐️⭐️⭐️ FIN: NUEVA LÓGICA DE AUTENTICACIÓN ⭐️⭐️⭐️
+
+// ⭐️⭐️⭐️ INICIO: VARIABLES GLOBALES DEL PANEL ⭐️⭐️⭐️
+// Se mueven aquí para que estén definidas antes de cualquier llamada.
+let loadedThemeTemplates = {}; // Almacén para datos de plantillas
+const themeTemplatesRef = ref(database, 'themeTemplates'); // Referencia a las plantillas de temas
+// ⭐️⭐️⭐️ FIN: VARIABLES GLOBALES DEL PANEL ⭐️⭐️⭐️
+
+// ⭐️⭐️⭐️ INICIO: FUNCIONES DE PLANTILLAS DE TEMAS (MOVIDAS FUERA) ⭐️⭐️⭐️
+/**
+ * Carga las plantillas de temas desde Firebase y las añade al selector.
+ */
+async function loadThemeTemplates() {
+    const themeTemplateSelector = document.getElementById('theme-template-selector');
+    if (!themeTemplateSelector) return; // Salir si el elemento no existe
+
+    try {
+        const snapshot = await get(themeTemplatesRef);
+        if (snapshot.exists()) {
+            loadedThemeTemplates = snapshot.val();
+            themeTemplateSelector.innerHTML = '<option value="">-- Seleccionar Plantilla --</option>';
+            snapshot.forEach(childSnapshot => {
+                const templateId = childSnapshot.key;
+                const option = document.createElement('option');
+                option.value = templateId;
+                option.textContent = templateId.replace(/-/g, ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                themeTemplateSelector.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error("Error cargando plantillas de temas:", error);
+    }
+}
+
+/**
+ * Muestra una previsualización de la plantilla de tema seleccionada.
+ */
+function showThemePreview() {
+    // Esta función ya depende de variables globales y puede permanecer aquí.
+    // (El código de la función no cambia, solo su ubicación)
+    const previewContainer = document.getElementById('theme-preview-container');
+    const themeTemplateSelector = document.getElementById('theme-template-selector');
+    const selectedTemplateId = themeTemplateSelector.value;
+
+    if (!selectedTemplateId || !loadedThemeTemplates[selectedTemplateId]) {
+        previewContainer.style.display = 'none';
+        return;
+    }
+    // ... (el resto del código de showThemePreview sigue aquí sin cambios)
+}
+
+// ⭐️⭐️⭐️ FIN: FUNCIONES DE PLANTILLAS DE TEMAS ⭐️⭐️⭐️
 
 
 // ⭐️⭐️⭐️ INICIO: CÓDIGO ORIGINAL ENVUELTO ⭐️⭐️⭐️
@@ -219,16 +278,21 @@ function initializeSuperAdminPanel() {
 
     // 2. VARIABLES PARA LA LISTA DE EVENTOS
     const eventsListElement = document.getElementById('existing-events-list');
-    const eventsListRef = ref(database, 'events'); 
+// ⭐️ NUEVO: Lógica para plantillas de temas (MOVIDO ARRIBA)
+const themeTemplateSelector = document.getElementById('theme-template-selector');
+const applyTemplateBtn = document.getElementById('apply-template-btn');
 
     // 3. ASIGNAR EVENTOS
     loadEventBtn.addEventListener('click', loadEventSettings); // ⭐️ NUEVO: Evento para el botón
     form.addEventListener('submit', handleFormSubmit);
-    onValue(eventsListRef, renderEventsList); 
+    onValue(ref(database, 'events'), renderEventsList); // ⭐️ CORREGIDO: Usar la referencia directamente
     eventsListElement.addEventListener('click', handleListClick); 
     populateEmojiSelectors(); // ⭐️ NUEVO: Llenar los selectores de emojis al iniciar
-    
-    
+    themeTemplateSelector.addEventListener('change', showThemePreview); // ⭐️ NUEVO: Evento para previsualizar
+    loadThemeTemplates(); // Cargar plantillas al iniciar el panel
+    applyTemplateBtn.addEventListener('click', applyThemeTemplate);
+
+
     /**
      * Carga los settings de un Evento
      */
@@ -263,6 +327,20 @@ function initializeSuperAdminPanel() {
         }
     }
 
+    // Esta función depende de `populateForm`, por lo que debe permanecer o definirse aquí.
+    async function applyThemeTemplate() {
+        const themeTemplateSelector = document.getElementById('theme-template-selector');
+        const selectedTemplateId = themeTemplateSelector.value;
+        if (!selectedTemplateId) return;
+
+        const templateRef = ref(database, `themeTemplates/${selectedTemplateId}`);
+        const snapshot = await get(templateRef);
+        if (snapshot.exists()) {
+            populateForm(snapshot.val()); // Aplicar la plantilla COMPLETA
+            statusMsg.textContent = `Plantilla "${selectedTemplateId}" aplicada al formulario.`;
+        }
+    }
+
     /**
      * Rellena el formulario con datos de Firebase
      */
@@ -288,6 +366,10 @@ function initializeSuperAdminPanel() {
         document.getElementById('color-text-light').value = theme.color_text_light || '#FFFFFF';
         document.getElementById('font-family').value = theme.font_family || "'Inter', sans-serif";
         document.getElementById('btn-shadow').value = theme.btn_shadow || '0 5px';
+
+        // ⭐️ NUEVO: Rellenar contorno de texto
+        document.getElementById('text-stroke-width').value = theme.text_stroke_width || '';
+        document.getElementById('text-stroke-color').value = theme.text_stroke_color || '#000000';
 
         // Rellenar Textos
         document.getElementById('text-portal-greeting').value = texts.portal_greeting || '¡Bienvenido a la Colmena!';
@@ -334,6 +416,7 @@ function initializeSuperAdminPanel() {
         document.getElementById('btn-portal-text-color').value = theme.btn_portal_text_color || '#1F2937';
         document.getElementById('btn-portal-border-radius').value = theme.btn_portal_border_radius || '';
         document.getElementById('btn-portal-shadow-color').value = theme.btn_portal_shadow_color || '#F59E0B';
+        document.getElementById('btn-portal-shadow-color-hover').value = theme.btn_portal_shadow_color_hover || '#dd6b20';
 
         // ⭐️ NUEVO: Rellenar Personalización de Botones del Menú de Juegos
         document.getElementById('btn-juegos-menu-bg').value = theme.btn_juegos_menu_bg || '#66BB6A';
@@ -455,9 +538,6 @@ function initializeSuperAdminPanel() {
             return;
         }
         
-        const previewImg = document.getElementById('bg-image-preview').querySelector('img');
-        let currentBgUrl = previewImg ? previewImg.src : null;
-
         // ⭐️ MODIFICADO: Combinar 'portal_bg' y 'portal_bg_opacity'
         const portalBgColor = document.getElementById('portal-bg').value;
         const portalBgOpacity = document.getElementById('portal-bg-opacity').value;
@@ -473,6 +553,10 @@ function initializeSuperAdminPanel() {
             color_text_light: document.getElementById('color-text-light').value,
             font_family: document.getElementById('font-family').value,
             btn_shadow: document.getElementById('btn-shadow').value.trim() || null,
+            
+            // ⭐️ NUEVO: Guardar contorno de texto
+            text_stroke_width: document.getElementById('text-stroke-width').value.trim() || null,
+            text_stroke_color: document.getElementById('text-stroke-color').value,
             
             icons: {
                 icon_main: document.getElementById('icon-main').value || '🐝',
@@ -496,6 +580,7 @@ function initializeSuperAdminPanel() {
             btn_portal_text_color: document.getElementById('btn-portal-text-color').value,
             btn_portal_border_radius: document.getElementById('btn-portal-border-radius').value.trim() || null,
             btn_portal_shadow_color: document.getElementById('btn-portal-shadow-color').value,
+            btn_portal_shadow_color_hover: document.getElementById('btn-portal-shadow-color-hover').value,
 
             // ⭐️ NUEVO: Personalización de Botones del Menú de Juegos
             btn_juegos_menu_bg: document.getElementById('btn-juegos-menu-bg').value.trim() || null,
@@ -559,7 +644,6 @@ function initializeSuperAdminPanel() {
             btn_host_text_color: document.getElementById('btn-host-text-color').value.trim() || null,
             btn_host_border_color: document.getElementById('btn-host-border-color').value.trim() || null,
 
-            background_image_url: currentBgUrl 
         };
 
         const textsConfig = {
@@ -607,6 +691,7 @@ function initializeSuperAdminPanel() {
         try {
             const imageFile = document.getElementById('bg-image').files[0];
             if (imageFile) {
+                // Si hay un archivo nuevo, lo subimos y actualizamos la URL en la configuración.
                 statusMsg.textContent = 'Subiendo nueva imagen de fondo...';
                 const imagePath = `events/${eventId}/theme/background.${imageFile.name.split('.').pop()}`;
                 const sRef = storageRef(storage, imagePath);
@@ -617,6 +702,13 @@ function initializeSuperAdminPanel() {
                 fullConfig.theme.background_image_url = downloadURL; 
                 statusMsg.textContent = 'Imagen subida. Guardando config...';
             } else {
+                // Si NO hay archivo nuevo, nos aseguramos de mantener la URL existente.
+                const previewImg = document.getElementById('bg-image-preview').querySelector('img');
+                if (previewImg && previewImg.src) {
+                    fullConfig.theme.background_image_url = previewImg.src;
+                } else {
+                    fullConfig.theme.background_image_url = null; // Si no hay ni preview, la eliminamos.
+                }
                 statusMsg.textContent = 'Guardando configuración...';
             }
             

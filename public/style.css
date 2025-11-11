@@ -1,21 +1,20 @@
-/* --- VARIABLES DE COLOR PRIMAVERAL --- */
+/* --- VARIABLES DE COLOR NEUTRAS (FALLBACK) --- */
 :root {
-    --bee-yellow: #FFC107;      /* Amarillo Brillante */
-    --bee-black: #212529;       /* Negro Suave */
-    --honey-gold: #FF9800;      /* Miel Naranja (Profundidad) */
-    --spring-green: #66BB6A;    /* Verde Hoja */
-    --spring-shadow: #388E3C;   /* Sombra Verde Profunda */
-    --spring-bg: #E8F5E9;       /* Fondo Blanco Verdoso Suave */
-    --bee-black-rgb: 33, 37, 41; /* Valor RGB para la sombra del texto */
+    /* Colores base si no se definen en el admin */
+    --color-primary: #212529;
+    --color-secondary: #6c757d;
+    --color-text: #212529;
+    --color-text-light: #ffffff;
+    --color-success: #198754;
+    --color-danger: #dc3545;
+    --font-family: 'Poppins', sans-serif;
 }
 
 /* --- ESTILOS GLOBALES Y CONTENEDOR --- */
 
 body {
-    font-family: 'Poppins', sans-serif;
-    /* Fondo primaveral suave */
-    background: linear-gradient(135deg, #FFFDE7 0%, var(--spring-bg) 100%); 
-    
+    font-family: var(--font-family, 'Poppins', sans-serif);
+    background-color: #f8f9fa; /* Un gris muy claro de fondo */
     min-height: 100vh;
     margin: 0;
     transition: background 0.5s ease;
@@ -26,21 +25,13 @@ body {
 }
 
 .portal-container, .quiz-container {
-    /* Mantenemos tu imagen de fondo para estos contenedores */
-    background-image: url('https://firebasestorage.googleapis.com/v0/b/juegos-cumple.firebasestorage.app/o/Imagen%20de%20fondo%2F_FDZ8403.jpg?alt=media&token=70872cb5-5033-48ae-9b1f-38ec124c40fe'); 
+    background-image: var(--background-image-url); /* Controlado desde JS */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    
-    
-    /* ❗️ CORRECCIÓN: Devolvemos el fondo semi-transparente */
-    background-color: rgba(255, 255, 255, 0.301); 
-    
-    /* ❗️ CORRECCIÓN: Devolvemos los bordes redondeados */
-    border-radius: 25px; 
-    box-shadow: 
-        0 15px 30px rgba(0, 0, 0, 0.2), 
-        0 0 0 5px rgba(255, 204, 0, 0.1); 
+    background-color: var(--portal-bg, #ffffff); /* Blanco por defecto */
+    border-radius: var(--portal-border-radius, 1rem); /* 16px */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
     text-align: center;
     border: none; 
@@ -50,30 +41,18 @@ body {
     box-sizing: border-box; /* Asegura que el padding no rompa el ancho */
 }
 
-/* 🚨 NUEVA REGLA DE VISIBILIDAD DE TEXTO (Solo para texto sobre la imagen de fondo) */
-h1, 
-.portal-container > header p { /* Solo los <p> que son hijos directos del header */
-    /* Aplica un contorno blanco y una sombra sutil para resaltar sobre cualquier fondo */
-    text-shadow: 
-        1px 1px 0 #FFF,    /* Sombra Blanca Derecha/Abajo */
-        -1px -1px 0 #FFF,   /* Sombra Blanca Arriba/Izquierda */
-        1px -1px 0 #FFF,    /* Sombra Blanca Derecha/Arriba */
-        -1px 1px 0 #FFF,    /* Sombra Blanca Izquierda/Abajo */
-        2px 2px 5px rgba(0, 0, 0, 0.2); /* Sombra suave para profundidad */
-}
-
 /* 🚨 REGLA ESPECÍFICA PARA H1 (más grande y negrita) */
 h1 {
-    color: var(--bee-black);
+    color: var(--portal-title-color, var(--color-text));
     font-size: 3rem; 
     font-weight: 700;
     margin-bottom: 20px;
+    text-shadow: none; /* Sin sombra por defecto */
 }
 
 
 /* 💡 MEJORA: Estilo para títulos dentro de la sección de recuerdos */
 .memory-section-bg {
-    /* ❗️ CORRECCIÓN: Se hace SÓLIDO (rgb) en lugar de transparente (rgba) */
     background-color: rgba(255, 255, 255, 0); 
     backdrop-filter: blur(3px);
     border-radius: 25px; /* Le damos los bordes redondeados a este contenedor */
@@ -87,42 +66,37 @@ h1 {
     width: 100%;
     padding: 1.25rem;
     margin-bottom: 1rem;
+    font-size: 1.1rem;
     font-weight: bold;
-    border-radius: 1.5rem;
+    border-radius: var(--btn-portal-border-radius, 1.5rem);
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     text-decoration: none;
-    box-shadow: 0 6px var(--honey-gold);
-    border: 2px solid var(--honey-gold);
+    box-shadow: var(--btn-shadow, 0 4px) var(--btn-portal-shadow-color, var(--color-secondary));
+    border: 2px solid var(--btn-portal-shadow-color, var(--color-secondary));
+    background-color: var(--btn-portal-bg, var(--color-primary));
+    color: var(--btn-portal-text-color, var(--color-text-light));
 }
 .btn-portal:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px #e65100; 
 }
 .btn-portal:active {
     transform: translateY(3px);
-    box-shadow: 0 2px #e65100;
 }
 
 /* Estilos de Botones Específicos */
 .btn-trivia {
-    background-color: var(--spring-green); 
-    color: white;
-    box-shadow: 0 4px var(--spring-shadow);
-    border-color: var(--spring-shadow);
-}
-.btn-trivia:hover {
-    box-shadow: 0 6px var(--spring-shadow);
-    background-color: #43A047;
+    background-color: var(--btn-juegos-menu-bg, var(--color-success));
+    color: var(--btn-juegos-menu-text-color, var(--color-text-light));
+    box-shadow: var(--btn-shadow, 0 4px) var(--btn-juegos-menu-shadow-color, #157347);
+    border-color: var(--btn-juegos-menu-border-color, #157347);
 }
 .btn-messages {
-    background-color: var(--bee-yellow); 
-    color: var(--bee-black);
-    box-shadow: 0 4px #FF9800;
-    /* ❗️ CORRECCIÓN: Los botones sí necesitan que su texto no tenga sombra */
-    text-shadow: none !important;
+    background-color: var(--btn-portal-bg, var(--color-primary));
+    color: var(--btn-portal-text-color, var(--color-text-light));
+    box-shadow: var(--btn-shadow, 0 4px) var(--btn-portal-shadow-color, var(--color-secondary));
 }
 .btn-messages:hover {
-    box-shadow: 0 6px #FF9800;
+    box-shadow: 0 6px var(--btn-portal-shadow-color-hover, var(--btn-portal-shadow-color, #FF9800));
 }
 
 

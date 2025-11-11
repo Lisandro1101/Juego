@@ -350,6 +350,19 @@
                     </div>
                 </div>
 
+                <!-- ⭐️ INICIO: BLOQUE AÑADIDO ⭐️ -->
+                <div class="mt-4 grid-cols-2-responsive">
+                    <div>
+                        <label for="text-stroke-width" class="input-label">Ancho del Contorno de Texto (Global)</label>
+                        <input type="text" id="text-stroke-width" class="input-field" placeholder="Ej: 1px">
+                        <p class="text-xs text-gray-500 mt-1">Aplica un borde a casi todo el texto. Usar con cuidado. Ej: 1px, 2px.</p>
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="text-stroke-color" value="#000000">
+                        <span class="text-sm">Color del Contorno<br>(--text-stroke-color)</span>
+                    </div>
+                </div>
+                <!-- ⭐️ FIN: BLOQUE AÑADIDO ⭐️ -->
                 <div class="mt-4">
                     <label for="font-family" class="input-label">Fuente Principal (Global):</label>
                     <select id="font-family" class="input-field">
@@ -513,6 +526,12 @@
                         <label for="btn-portal-shadow-color" class="text-sm font-bold">Color de Sombra</label>
                         <input type="color" id="btn-portal-shadow-color" value="#F59E0B">
                     </div>
+                    <!-- ⭐️ AÑADIR ESTE BLOQUE ⭐️ -->
+                    <div>
+                        <label for="btn-portal-shadow-color-hover" class="text-sm font-bold">Color Sombra (Hover)</label>
+                        <input type="color" id="btn-portal-shadow-color-hover" value="#dd6b20">
+                    </div>
+                    <!-- ⭐️ FIN DEL BLOQUE A AÑADIR ⭐️ -->
                     <div>
                         <label for="btn-shadow" class="text-sm font-bold">Sombra de Botones (Global)</label>
                         <input type="text" id="btn-shadow" class="input-field" placeholder="Ej: 0 5px">
@@ -865,6 +884,34 @@
                     <div class="color-picker-wrapper">
                         <input type="color" id="btn-host-border-color" value="#FACC15">
                         <span class="text-sm">Borde y Sombra</span>
+                    </div>
+                </div>
+            </details>
+
+            <details class="mt-6 border-t pt-4">
+                <summary>🎨 Plantillas de Temas</summary>
+                <p class="text-xs text-gray-500 mb-3">
+                    Selecciona una plantilla predefinida para cargar rápidamente una configuración de tema.
+                    Los cambios se aplicarán al formulario, pero no se guardarán hasta que pulses "Guardar Configuración".
+                </p>
+                <div class="flex items-center gap-2">
+                    <select id="theme-template-selector" class="input-field">
+                        <option value="">-- Seleccionar Plantilla --</option>
+                        <!-- Las opciones se cargarán dinámicamente desde Firebase -->
+                    </select>
+                    <button type="button" id="apply-template-btn" class="load-btn" style="padding: 0.75rem 1rem; height: fit-content;">
+                        Aplicar
+                    </button>
+                </div>
+                <!-- ⭐️ NUEVO: Contenedor de Previsualización ⭐️ -->
+                <div id="theme-preview-container" class="mt-4 p-4 border rounded-lg bg-gray-100" style="display: none;">
+                    <h4 class="text-sm font-bold mb-2 text-gray-800">Previsualización:</h4>
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div id="preview-color-primary" class="w-10 h-10 rounded-full border-2 border-white shadow-md" title="Color Primario"></div>
+                        <div id="preview-color-secondary" class="w-10 h-10 rounded-full border-2 border-white shadow-md" title="Color Secundario"></div>
+                        <div id="preview-color-text" class="w-10 h-10 rounded-full border-2 border-white shadow-md" title="Color de Texto"></div>
+                        <span id="preview-font" style="font-size: 1.2rem;">Texto de ejemplo</span>
+                        <button id="preview-button" class="py-2 px-4 rounded-lg font-bold">Botón</button>
                     </div>
                 </div>
             </details>

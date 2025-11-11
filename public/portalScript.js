@@ -131,6 +131,16 @@ function applyDynamicTheme(themeConfig, textsConfig) {
         `;
     }
 
+    // ⭐️ NUEVO: Manejar el contorno de texto
+    if (themeConfig.text_stroke_width && themeConfig.text_stroke_color) {
+        cssVariables += `
+            h1, h2, h3, p, span, button, a {
+                -webkit-text-stroke-width: ${themeConfig.text_stroke_width};
+                -webkit-text-stroke-color: ${themeConfig.text_stroke_color};
+            }
+        `;
+    }
+
     // 4. Inyectar en el <head>
     styleTag.innerHTML = cssVariables;
     document.head.appendChild(styleTag);
@@ -367,6 +377,9 @@ function renderMemories(memories) {
         }
         commentsHtml += '</div>';
 
+        // ⭐️ NUEVO: Contar el número de comentarios
+        const commentCount = memory.comments ? Object.keys(memory.comments).length : 0;
+
         // ⭐️ NUEVO: Lógica para mostrar reacciones
         const totalReactions = memory.totalReactions || 0;
         const mostPopularReactionType = memory.mostPopularReaction;
@@ -374,7 +387,7 @@ function renderMemories(memories) {
 
         let reactionDisplay = '';
         let userReactionEmoji = '';
-        let defaultLikeEmoji = '❤️'; // Fallback
+        let defaultLikeEmoji = ''; // Fallback eliminado
 
         if (window.eventConfig && window.eventConfig.theme && window.eventConfig.theme.icons && window.eventConfig.theme.icons.icon_like) {
             defaultLikeEmoji = window.eventConfig.theme.icons.icon_like;
@@ -410,6 +423,7 @@ function renderMemories(memories) {
                 </div>
                 <button data-memory-id="${memory.id}" class="comment-bubble-btn flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors">
                     <span class="text-xl">💬</span>
+                    <span class="font-semibold text-sm">${commentCount}</span>
                 </button>
             </div>
             <form class="comment-form mt-2 hidden">
