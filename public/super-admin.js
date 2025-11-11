@@ -183,7 +183,7 @@ function initializeSuperAdminPanel() {
      * ⭐️ NUEVO: Rellena los <select> de emojis
      */
     function populateEmojiSelectors() {
-        const emojiList = ['🐝', '🍯', '💖', '💬', '✍️', '🧠', '💀', '🏆', '🎉', '🕹️', '🎁', '📸', '🎥', '🤫', '🛠️', '✨', '😊', '🥳', '❤️', '👍', '⭐'];
+        const emojiList = ['🐝', '🍯', '💖', '💬', '✍️', '🧠', '💀', '🏆', '🎉', '🕹️', '🎁', '📸', '🎥', '🤫', '🛠️', '✨', '😊', '🥳', '❤️', '👍', '😂', '😮', '😢', '😡', '⭐'];
         const selectors = document.querySelectorAll('select[id^="icon-"]');
         
         selectors.forEach(selector => {
@@ -317,6 +317,7 @@ function initializeSuperAdminPanel() {
         document.getElementById('icon-ranking').value = icons.icon_ranking || '🏆'; // Valor por defecto si no existe
         document.getElementById('icon-win').value = icons.icon_win || '🎉'; // Valor por defecto si no existe
         document.getElementById('icon-games').value = icons.icon_games || '🕹️';
+        document.getElementById('icon-like').value = icons.icon_like || '❤️';
         document.getElementById('icon-memories').value = icons.icon_memories || '💖';
 
 
@@ -483,6 +484,7 @@ function initializeSuperAdminPanel() {
                 icon_win: document.getElementById('icon-win').value || '🎉',
                 icon_games: document.getElementById('icon-games').value || '🕹️',
                 icon_memories: document.getElementById('icon-memories').value || '💖',
+                icon_like: document.getElementById('icon-like').value || '❤️'
             },
             
             // Personalización del Portal

@@ -27,10 +27,20 @@ const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 // =======================================================================
 let EVENT_ID;
 // ⭐️ CORRECCIÓN: 'dataRef' ya no es necesaria, creamos 'memoriesRef' directamente
-let GUEST_NAME = ''; // ⭐️ NUEVO: Variable global para el nombre del invitado
+let GUEST_NAME = ''; // Global variable for the guest's name
+let GUEST_UNIQUE_ID = ''; // Global variable for a unique guest ID
 let memoriesRef;
 
-// =======================================================================
+// ⭐️ NUEVO: Emojis de reacción disponibles
+const REACTION_EMOJIS = {
+    'like': '👍',
+    'love': '❤️',
+    'haha': '😂',
+    'wow': '😮',
+    'sad': '😢',
+    'angry': '😡'
+};
+
 // FUNCIONES DE ARQUITECTURA (NUEVO)
 // =======================================================================
 
@@ -250,22 +260,68 @@ async function loadEventConfig(eventId) {
 // =======================================================================
 
 /**
- * ⭐️ NUEVO: Incrementa el contador de 'likes' para un recuerdo específico.
- * @param {string} memoryId - El ID del recuerdo al que se le da like.
+ * ⭐️ NUEVO: Maneja la reacción de un usuario a un recuerdo.
+ * Permite al usuario reaccionar, cambiar su reacción o quitarla.
+ * @param {string} memoryId - El ID del recuerdo.
+ * @param {string} reactionType - El tipo de reacción (ej. 'love', 'like', 'haha').
  */
-function handleLike(memoryId) {
-    const memoryLikeRef = dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/likeCount`);
-    
-    // Usamos una transacción para evitar problemas de concurrencia
-    runTransaction(memoryLikeRef, (currentLikes) => {
-        // Si currentLikes es null (nunca se ha dado like), lo inicializamos en 1.
-        // De lo contrario, lo incrementamos.
-        return (currentLikes || 0) + 1;
+function handleReaction(memoryId, reactionType) {
+    if (!GUEST_UNIQUE_ID) {
+        console.error("GUEST_UNIQUE_ID no está definido. No se puede registrar la reacción.");
+        return;
+    }
+
+    const userReactionPath = `events/${EVENT_ID}/data/memories/${memoryId}/userReactions/${GUEST_UNIQUE_ID}`;
+    const memoryRef = dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}`);
+
+    runTransaction(dbRef(database, userReactionPath), (currentReaction) => {
+        let oldReactionType = null;
+        if (currentReaction) {
+            oldReactionType = currentReaction.type;
+        }
+
+        if (oldReactionType === reactionType) {
+            // User is un-reacting (clicked the same reaction again)
+            return null; // Remove the reaction
+        } else {
+            // User is reacting or changing reaction
+            return { type: reactionType, timestamp: Date.now() };
+        }
+    }).then(() => {
+        // After user reaction is updated, re-calculate the summary
+        get(memoryRef).then(snapshot => {
+            if (snapshot.exists()) {
+                const memoryData = snapshot.val();
+                const allUserReactions = memoryData.userReactions || {};
+                const newSummary = {};
+                let totalReactions = 0;
+
+                for (const userId in allUserReactions) {
+                    const type = allUserReactions[userId].type;
+                    newSummary[type] = (newSummary[type] || 0) + 1;
+                    totalReactions++;
+                }
+                
+                // Find the most popular reaction
+                let mostPopularReaction = null;
+                let maxCount = 0;
+                for (const type in newSummary) {
+                    if (newSummary[type] > maxCount) {
+                        maxCount = newSummary[type];
+                        mostPopularReaction = type;
+                    }
+                }
+
+                // Update the memory with the new summary and total count
+                push(dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/reactionSummary`), newSummary);
+                push(dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/totalReactions`), totalReactions);
+                push(dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/mostPopularReaction`), mostPopularReaction);
+            }
+        });
     }).catch(error => {
-        console.error("Error en la transacción del like:", error);
+        console.error("Error al registrar la reacción:", error);
     });
 }
-
 
 function renderMemories(memories) {
     const memoriesList = document.getElementById('memories-list');
@@ -311,14 +367,47 @@ function renderMemories(memories) {
         }
         commentsHtml += '</div>';
 
-        // ⭐️ NUEVO: HTML para la sección de interacción (Likes y formulario de comentario)
-        const likeCount = memory.likeCount || 0;
+        // ⭐️ NUEVO: Lógica para mostrar reacciones
+        const totalReactions = memory.totalReactions || 0;
+        const mostPopularReactionType = memory.mostPopularReaction;
+        const userReaction = memory.userReactions && memory.userReactions[GUEST_UNIQUE_ID] ? memory.userReactions[GUEST_UNIQUE_ID].type : null;
+
+        let reactionDisplay = '';
+        let userReactionEmoji = '';
+        let defaultLikeEmoji = '❤️'; // Fallback
+
+        if (window.eventConfig && window.eventConfig.theme && window.eventConfig.theme.icons && window.eventConfig.theme.icons.icon_like) {
+            defaultLikeEmoji = window.eventConfig.theme.icons.icon_like;
+        }
+
+        if (userReaction && REACTION_EMOJIS[userReaction]) {
+            userReactionEmoji = REACTION_EMOJIS[userReaction];
+        }
+
+        if (totalReactions > 0) {
+            const displayEmoji = REACTION_EMOJIS[mostPopularReactionType] || defaultLikeEmoji;
+            reactionDisplay = `<span class="text-xl">${displayEmoji}</span> <span class="font-semibold text-sm">${totalReactions}</span>`;
+        } else {
+            reactionDisplay = `<span class="font-semibold text-sm">Reaccionar</span>`;
+        }
+
+        // Generate reaction picker HTML
+        let reactionPickerHtml = '<div class="reaction-picker hidden absolute bottom-full left-0 mb-2 bg-white p-2 rounded-full shadow-lg flex space-x-2">';
+        for (const type in REACTION_EMOJIS) {
+            reactionPickerHtml += `<span class="reaction-emoji text-2xl cursor-pointer hover:scale-125 transition-transform" data-reaction-type="${type}">${REACTION_EMOJIS[type]}</span>`;
+        }
+        reactionPickerHtml += '</div>';
+
+        // ⭐️ NUEVO: HTML para la sección de interacción (Reacciones y formulario de comentario)
         const interactionSection = `
             <div class="interaction-section mt-3 flex items-center justify-between">
-                <button data-memory-id="${memory.id}" class="like-btn flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors">
-                    <span class="text-xl">❤️</span>
-                    <span class="like-count font-semibold text-sm">${likeCount}</span>
-                </button>
+                <div class="flex items-center space-x-2">
+                    <button data-memory-id="${memory.id}" class="reaction-btn-container flex items-center space-x-1 text-gray-500 hover:text-red-500 transition-colors relative">
+                        ${userReactionEmoji ? `<span class="text-xl user-reaction-emoji">${userReactionEmoji}</span>` : ''}
+                        <span class="current-reaction-display">${reactionDisplay}</span>
+                        ${reactionPickerHtml}
+                    </button>
+                </div>
                 <button data-memory-id="${memory.id}" class="comment-bubble-btn flex items-center space-x-1 text-gray-500 hover:text-blue-500 transition-colors">
                     <span class="text-xl">💬</span>
                 </button>
@@ -326,8 +415,7 @@ function renderMemories(memories) {
             <form class="comment-form mt-2 hidden">
                 <input type="hidden" name="memoryId" value="${memory.id}">
                 <div class="flex gap-2">
-                    <input type="text" name="commenterName" required placeholder="Tu Nombre" class="comment-input flex-grow-0" value="${GUEST_NAME}" readonly>
-                    <input type="text" name="commentText" required placeholder="Escribe un comentario..." class="comment-input flex-grow">
+                    <input type="text" name="commentText" required placeholder="Deja un comentario como ${GUEST_NAME}..." class="comment-input flex-grow">
                     <button type="submit" class="comment-submit-btn">Enviar</button>
                 </div>
             </form>
@@ -369,14 +457,33 @@ function listenForMemories() {
 
 // ⭐️ NUEVO: Delegación de eventos para los nuevos elementos
 document.addEventListener('click', function(e) {
-    // Manejador para el botón de "Me Gusta"
-    if (e.target.closest('.like-btn')) {
+    // Manejador para el botón de Reacción
+    const reactionBtnContainer = e.target.closest('.reaction-btn-container');
+    if (reactionBtnContainer) {
         e.preventDefault();
-        const likeButton = e.target.closest('.like-btn');
-        const memoryId = likeButton.dataset.memoryId;
-        if (memoryId) {
-            handleLike(memoryId);
+        const memoryId = reactionBtnContainer.dataset.memoryId;
+        const reactionPicker = reactionBtnContainer.querySelector('.reaction-picker');
+
+        // Toggle visibility of the reaction picker
+        if (reactionPicker) {
+            reactionPicker.classList.toggle('hidden');
         }
+
+        // If a specific reaction emoji was clicked within the picker
+        const reactionEmoji = e.target.closest('.reaction-emoji');
+        if (reactionEmoji) {
+            const reactionType = reactionEmoji.dataset.reactionType;
+            if (memoryId && reactionType) {
+                handleReaction(memoryId, reactionType);
+            }
+            // Hide picker after selection
+            if (reactionPicker) reactionPicker.classList.add('hidden');
+        }
+    } else {
+        // Si se hace clic fuera de cualquier botón de reacción, oculta todos los selectores
+        document.querySelectorAll('.reaction-picker').forEach(picker => {
+            picker.classList.add('hidden');
+        });
     }
 
     // Manejador para el botón de "Comentar"
@@ -423,18 +530,29 @@ function handleGuestName() {
     const modal = document.getElementById('guest-name-modal');
     const form = document.getElementById('guest-name-form');
     const input = document.getElementById('modal-guest-name-input');
-    const memoryNameInput = document.getElementById('guest-name');
+    const messageTextarea = document.getElementById('guest-message');
 
-    if (!modal || !form || !input || !memoryNameInput) return;
+    if (!modal || !form || !input || !messageTextarea) return;
 
     // Usamos sessionStorage para que el nombre se guarde solo durante la sesión actual.
     const storageKey = `guestName_${EVENT_ID}`;
     const storedName = sessionStorage.getItem(storageKey);
+    const guestUniqueIdKey = `guestUniqueId_${EVENT_ID}`; // Key for unique ID
+    let storedUniqueId = sessionStorage.getItem(guestUniqueIdKey);
+
+    if (!storedUniqueId) {
+        storedUniqueId = crypto.randomUUID(); // Generate a UUID
+        sessionStorage.setItem(guestUniqueIdKey, storedUniqueId);
+    }
+    GUEST_UNIQUE_ID = storedUniqueId;
+
+    const updateUIWithName = (name) => {
+        GUEST_NAME = name;
+        messageTextarea.placeholder = `Deja un comentario como ${name} (opcional)`;
+    };
 
     if (storedName) {
-        GUEST_NAME = storedName;
-        memoryNameInput.value = GUEST_NAME;
-        memoryNameInput.readOnly = true; // Hacemos que el campo no se pueda editar.
+        updateUIWithName(storedName);
         modal.style.display = 'none';
     } else {
         modal.style.display = 'flex'; // Mostramos el modal si no hay nombre.
@@ -444,10 +562,8 @@ function handleGuestName() {
         e.preventDefault();
         const name = input.value.trim();
         if (name) {
-            GUEST_NAME = name;
-            sessionStorage.setItem(storageKey, GUEST_NAME);
-            memoryNameInput.value = GUEST_NAME;
-            memoryNameInput.readOnly = true;
+            sessionStorage.setItem(storageKey, name);
+            updateUIWithName(name);
             modal.style.display = 'none';
         }
     });

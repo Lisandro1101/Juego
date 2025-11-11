@@ -607,3 +607,37 @@ h1 {
 .hidden {
     display: none !important;
 }
+
+/* ⭐️ NUEVO: Estilos para el selector de reacciones ⭐️ */
+.reaction-picker {
+    /* Posicionamiento */
+    position: absolute;
+    bottom: 100%; /* Arriba del botón */    
+    margin-bottom: 8px; /* Espacio entre el botón y el picker */
+
+    /* Apariencia */
+    background-color: white;
+    padding: 8px 12px;
+    border-radius: 9999px; /* Forma de píldora */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex; /* Asegura que los emojis estén en línea */
+    gap: 8px; /* Espacio entre emojis */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+
+    /* ⭐️ CORRECCIÓN: Centrado robusto y prevención de desbordamiento ⭐️ */
+    left: 0; /* Inicia desde el borde izquierdo del padre */
+    right: 0; /* Se extiende hasta el borde derecho del padre */
+    margin-left: auto; /* Centra el elemento horizontalmente */
+    margin-right: auto; /* Centra el elemento horizontalmente */
+    width: fit-content; /* Toma solo el ancho necesario para su contenido */
+    max-width: calc(100vw - 20px); /* Limita el ancho máximo al viewport - un margen */
+    box-sizing: border-box; /* Incluye padding y borde en el cálculo del ancho */
+}
+
+.reaction-emoji {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+.reaction-emoji:hover {
+    transform: scale(1.2);
+}
