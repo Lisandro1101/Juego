@@ -136,8 +136,8 @@ function applyDynamicTheme(themeConfig) {
          cssVariables += `
             body {
                 background-image: url('${themeConfig.background_image_url}') !important;
-                background-size: cover;
-                background-position: center;
+                background-size: ${themeConfig.background_image_size || 'cover'};
+                background-position: ${themeConfig.background_image_position || 'center'};
             }
         `;
     }
@@ -227,7 +227,7 @@ async function loadEventConfig(eventId) {
     }
 
     // --- 2. APLICAR TEMA VISUAL ---
-    applyDynamicTheme(config.theme);
+    applyDynamicTheme(config.theme || {});
     
     // --- 3. APLICAR FUNCIONALIDADES (Juegos) ---
     if (config.features && config.features.games_enabled === false) {
@@ -1415,8 +1415,17 @@ function handleHostAuth() {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         loginError.textContent = '';
-        loginForm.querySelector('button[type="submit"]').disabled = true;
-        const email = document.getElementById('host-login-email').value;
+        const submitButton = loginForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        
+        // ⭐️ CORREGIDO: Construir el email dinámicamente
+        const username = window.eventConfig.auth.username;
+        if (!username) {
+            loginError.textContent = "Error: Evento no configurado para login de anfitrión.";
+            submitButton.disabled = false;
+            return;
+        }
+        const email = `${username}@tufiestadigital.com.ar`;
         const password = document.getElementById('host-login-password').value;
 
         try {
@@ -1430,7 +1439,7 @@ function handleHostAuth() {
             console.error("Error de login:", error.message);
             loginError.textContent = "Error: Email o contraseña incorrectos.";
         } finally {
-            loginForm.querySelector('button[type="submit"]').disabled = false;
+            submitButton.disabled = false;
         }
     });
 
@@ -1438,24 +1447,12 @@ function handleHostAuth() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             loginError.textContent = "Verificando permisos..."; // Feedback para el usuario
-            // --- Verificación de Permiso ---
-            // ¿Este usuario (user.uid) tiene permiso para ESTE evento (EVENT_ID)?
-            // ⭐️ CORRECCIÓN DEFINITIVA: Apuntar a la ruta correcta según tu JSON.
-            // Se busca el 'admin_uid' directamente dentro del evento.
-            const adminRef = ref(database, `events/${EVENT_ID}/admin_uid`);
-            let snapshot;
-            try {
-                snapshot = await get(adminRef);
-            } catch (dbError) {
-                console.error("Error al leer permisos de la DB:", dbError.message);
-                loginError.textContent = "Error de permisos. Contacta al administrador.";
-                signOut(auth);
-                loginContainer.style.display = 'block';
-                panelContainer.style.display = 'none';
-                return;
-            }
+            
+            // ⭐️ CORREGIDO: Verificar que el email del usuario logueado coincida con el configurado
+            const expectedUsername = window.eventConfig.auth.username;
+            const expectedEmail = `${expectedUsername}@tufiestadigital.com.ar`;
 
-            if (snapshot.exists() && snapshot.val() === user.uid) {
+            if (user.email.toLowerCase() === expectedEmail.toLowerCase()) {
                 // ¡PERMISO CONCEDIDO!
                 loginError.textContent = ""; // Limpiar mensaje
                 loginContainer.style.display = 'none';
@@ -1464,7 +1461,7 @@ function handleHostAuth() {
                 // Añadimos botón de "Salir"
                 const header = panelContainer.querySelector('header');
                 if (header && !document.getElementById('host-logout-btn')) {
-                    header.insertAdjacentHTML('afterbegin', '<button id="host-logout-btn" style="background: #ef4444; color: white; padding: 5px 10px; border-radius: 5px; float: right; cursor: pointer;">Salir</button>');
+                    header.insertAdjacentHTML('afterbegin', '<button id="host-logout-btn" class="delete-btn" style="float: right; box-shadow: none;">Salir</button>');
                     document.getElementById('host-logout-btn').addEventListener('click', () => {
                         if(confirm("¿Seguro que quieres salir del panel?")) {
                             signOut(auth);

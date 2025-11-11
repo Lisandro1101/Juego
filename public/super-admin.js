@@ -242,7 +242,31 @@ function initializeSuperAdminPanel() {
      * ⭐️ NUEVO: Rellena los <select> de emojis
      */
     function populateEmojiSelectors() {
-        const emojiList = ['🐝', '🍯', '💖', '💬', '✍️', '🧠', '💀', '🏆', '🎉', '🕹️', '🎁', '📸', '🎥', '🤫', '🛠️', '✨', '😊', '🥳', '❤️', '👍', '😂', '😮', '😢', '😡', '⭐'];
+        // ⭐️ LISTA DE EMOJIS AMPLIADA Y CATEGORIZADA ⭐️
+        const emojiList = [
+            // Caritas y Emociones
+            '😊', '🥳', '❤️', '👍', '😂', '😮', '😢', '😡', '🥰', '😍', '🤔', '😎', '🎉', '🤩', '🤯', '😉', '😘', '😜', '😇', '😂', '🤣', '🥺', '🙏',
+            // Personas y Fantasía
+            '🐝', '🧜‍♀️', '👑', '🦸', '🧑‍🚀', '👨‍👩‍👧‍👦', '👰', '🤵', '💍', '🤴', '👸', '👨‍🎤', '👩‍🎤', '💃', '🕺', '👶', '👧', '👦', '👨', '👩', '👻', '👽', '🤖', '🤠',
+            // Comida y Bebida
+            '🎂', '🍰', '🍾', '🥂', '🍕', '🍔', '🍿', '🍩', '🍭', '🍓', '🍉', '🍹', '🍺', '🍷', '🍇', '🍈', '🍊', '🍋', '🍌', '🍍', '🍎', '🍏', '🍐', '🍑', '🍒', '🥝', '🥑',
+            // Animales y Naturaleza
+            '🐙', '🐠', '🐚', '🌸', '🌻', '🌳', '⭐️', '⚡️', '🌈', '☀️', '🌙', '🔥', '🌊', '🐶', '🐱', '🦄', '🦋', '🐞', '🐢', '🐍', '🐳', '🐬', '🦖', '🦕', '🦁', '🐯', '🐻', '🐼', '🐵',
+            // Eventos y Celebración
+            '🎁', '🎈', '🎊', '🎀', '🎶', '🎵', '🎤', '📢', '✉️', '💌', '🎄', '🎃', '🎇', '🎆', '✨',
+            // Juegos y Actividades
+            '🎲', '🕹️', '✍️', '🧠', '💀', '🏆', '❓', '🎯', '🧩', '🎮', '🚀', '🚗', '⚡', '⚽', '🏀', '🏈', '⚾', '🎾', '🎳', '🎱',
+            // Objetos y Símbolos
+            '💎', '📸', '🎥', '💬', '💖', '🍯', '🛠️', '🤫', '🔑', '💰', '✔️', '❌', '➕', '➖', '💯', '💡', '💣', '📖', '✏️', '📎', '📌', '🔔', '📣',
+            // Viajes y Lugares
+            '✈️', '🏝️', '🗺️', '🌍', '🏔️', '🏠', '🏰', '🗼', '🗽', '🎡', '🎢',
+            // Banderas Populares
+            '🇦🇷', '🇪🇸', '🇲🇽', '🇺🇸', '🇧🇷', '🇮🇹', '🇨🇱', '🇨🇴', '🇵🇪', '🇺🇾'
+        ];
+
+        // Eliminar duplicados (si los hubiera) y ordenar
+        const uniqueSortedEmojis = [...new Set(emojiList)].sort((a, b) => a.codePointAt(0) - b.codePointAt(0));
+
         const selectors = document.querySelectorAll('select[id^="icon-"]');
         
         selectors.forEach(selector => {
@@ -254,7 +278,7 @@ function initializeSuperAdminPanel() {
             noEmojiOption.textContent = 'Vacío';
             selector.appendChild(noEmojiOption);
 
-            emojiList.forEach(emoji => {
+            uniqueSortedEmojis.forEach(emoji => {
                 const option = document.createElement('option');
                 option.value = emoji;
                 option.textContent = emoji;
@@ -351,6 +375,8 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         const status = config.status || {};
         const texts = config.texts || {};
         const icons = theme.icons || {};
+        // ⭐️ NUEVO: Extraer la configuración de autenticación
+        const authConfig = config.auth || {};
 
         // Rellenar Funcionalidades y Estado
         document.getElementById('games-enabled').checked = features.games_enabled !== false;
@@ -358,6 +384,10 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
 
 
         // Rellenar Tema Global
+        // ⭐️ NUEVO: Rellenar campos de autenticación
+        document.getElementById('auth-event-username').value = authConfig.username || '';
+        document.getElementById('auth-event-password').value = authConfig.password || '';
+
         document.getElementById('color-primary').value = theme.color_primary || '#FACC15';
         document.getElementById('color-secondary').value = theme.color_secondary || '#F59E0B';
         document.getElementById('color-text').value = theme.color_text || '#1F2937';
@@ -504,6 +534,10 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         } else {
             preview.innerHTML = '';
         }
+
+        // ⭐️ NUEVO: Rellenar ajuste y posición de fondo
+        document.getElementById('background-image-size').value = theme.background_image_size || 'cover';
+        document.getElementById('background-image-position').value = theme.background_image_position || 'center';
         
         document.getElementById('bg-image').value = '';
     }
@@ -557,6 +591,10 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
             // ⭐️ NUEVO: Guardar contorno de texto
             text_stroke_width: document.getElementById('text-stroke-width').value.trim() || null,
             text_stroke_color: document.getElementById('text-stroke-color').value,
+
+            // ⭐️ NUEVO: Guardar ajuste y posición de fondo
+            background_image_size: document.getElementById('background-image-size').value,
+            background_image_position: document.getElementById('background-image-position').value,
             
             icons: {
                 icon_main: document.getElementById('icon-main').value || '🐝',
@@ -684,8 +722,13 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         const fullConfig = {
             theme: themeConfig,
             texts: textsConfig,
-            features: { games_enabled: document.getElementById('games-enabled').checked },
-            status: { is_active: document.getElementById('event-active').checked }
+            features: { games_enabled: document.getElementById('games-enabled').checked, },
+            status: { is_active: document.getElementById('event-active').checked, },
+            // ⭐️ NUEVO: Guardar la configuración de autenticación
+            auth: {
+                username: document.getElementById('auth-event-username').value.trim() || null,
+                password: document.getElementById('auth-event-password').value.trim() || null,
+            }
         };
 
         try {

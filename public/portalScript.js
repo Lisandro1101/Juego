@@ -125,8 +125,8 @@ function applyDynamicTheme(themeConfig, textsConfig) {
          cssVariables += `
             body {
                 background-image: url('${themeConfig.background_image_url}') !important;
-                background-size: cover;
-                background-position: center;
+                background-size: ${themeConfig.background_image_size || 'cover'};
+                background-position: ${themeConfig.background_image_position || 'center'};
             }
         `;
     }
@@ -209,8 +209,7 @@ async function loadEventConfig(eventId) {
     }
 
     // --- 2. APLICAR TEMA VISUAL (REEMPLAZADO) ---
-    // ⭐️ CORREGIDO: Pasamos ambos objetos, theme y texts, a la función.
-    applyDynamicTheme(config.theme, config.texts);
+    applyDynamicTheme(config.theme || {}, config.texts || {});
     
     // --- NUEVO: Aplicar Textos Dinámicos ---
     if (config.texts) {

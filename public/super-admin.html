@@ -309,6 +309,10 @@
                         El anfitrión deberá usar el email <strong>host@tufiestadigital.com.ar</strong> y esta contraseña.
                     </p>
                     <div>
+                        <label for="auth-event-username" class="input-label !mt-0">Usuario del Anfitrión (antes del @):</label>
+                        <input type="text" id="auth-event-username" class="input-field" placeholder="Ej: anfitrion-boda-ana">
+                    </div>
+                    <div>
                         <label for="auth-event-password" class="input-label !mt-0">Contraseña del Evento:</label>
                         <input type="text" id="auth-event-password" class="input-field" placeholder="Ej: ClaveSecreta123">
                     </div>
@@ -384,6 +388,29 @@
                     
                     <div id="bg-image-preview" class="mt-2"></div>
                 </div>
+
+                <!-- ⭐️ INICIO: BLOQUE AÑADIDO ⭐️ -->
+                <div class="mt-4 grid-cols-2-responsive">
+                    <div>
+                        <label for="background-image-size" class="input-label">Ajuste de Fondo:</label>
+                        <select id="background-image-size" class="input-field">
+                            <option value="cover">Cubrir (Recorta para llenar)</option>
+                            <option value="contain">Contener (Muestra completa)</option>
+                            <option value="auto">Tamaño Original</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="background-image-position" class="input-label">Posición de Fondo:</label>
+                        <select id="background-image-position" class="input-field">
+                            <option value="center">Centro</option>
+                            <option value="top">Arriba</option>
+                            <option value="bottom">Abajo</option>
+                            <option value="left">Izquierda</option>
+                            <option value="right">Derecha</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- ⭐️ FIN: BLOQUE AÑADIDO ⭐️ -->
             </details>
             
             <details class="mt-6 border-t pt-4">
