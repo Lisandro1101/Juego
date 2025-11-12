@@ -241,24 +241,37 @@ async function loadEventConfig(eventId) {
     // --- NUEVO: Aplicar Textos Dinámicos ---
     if (config.texts) {
         const portalGreeting = document.getElementById('portal-greeting-text');
-        if (portalGreeting && config.texts.portal_greeting) {
-            portalGreeting.innerHTML = config.texts.portal_greeting;
+        if (portalGreeting) {
+            if (config.texts.portal_greeting) portalGreeting.innerHTML = config.texts.portal_greeting;
+            if (config.texts.portal_greeting_font_family) portalGreeting.style.fontFamily = config.texts.portal_greeting_font_family;
+            if (config.texts.portal_greeting_letter_spacing) portalGreeting.style.letterSpacing = config.texts.portal_greeting_letter_spacing;
         }
+
         const portalTitle = document.getElementById('portal-title-text');
-        if (portalTitle && config.texts.portal_title) {
-            portalTitle.innerHTML = config.texts.portal_title; // Usar innerHTML para que renderice emojis
+        if (portalTitle) {
+            if(config.texts.portal_title) portalTitle.innerHTML = config.texts.portal_title;
+            if(config.texts.portal_title_font_family) portalTitle.style.fontFamily = config.texts.portal_title_font_family;
+            if(config.texts.portal_title_letter_spacing) portalTitle.style.letterSpacing = config.texts.portal_title_letter_spacing;
         }
+
         const portalSubtitle = document.getElementById('portal-subtitle-text');
-        if (portalSubtitle && config.texts.portal_subtitle) {
-            portalSubtitle.innerHTML = config.texts.portal_subtitle;
+        if (portalSubtitle) {
+            if(config.texts.portal_subtitle) portalSubtitle.innerHTML = config.texts.portal_subtitle;
+            if(config.texts.portal_subtitle_font_family) portalSubtitle.style.fontFamily = config.texts.portal_subtitle_font_family;
+            if(config.texts.portal_subtitle_letter_spacing) portalSubtitle.style.letterSpacing = config.texts.portal_subtitle_letter_spacing;
         }
+
         const memoriesSectionTitleText = document.getElementById('memories-section-title-text');
-        if (memoriesSectionTitleText && config.texts.memories_section_title) {
-            memoriesSectionTitleText.textContent = config.texts.memories_section_title;
+        if (memoriesSectionTitleText) {
+            if(config.texts.memories_section_title) memoriesSectionTitleText.textContent = config.texts.memories_section_title;
+            if(config.texts.memories_section_title_font_family) memoriesSectionTitleText.style.fontFamily = config.texts.memories_section_title_font_family;
+            if(config.texts.memories_section_title_letter_spacing) memoriesSectionTitleText.style.letterSpacing = config.texts.memories_section_title_letter_spacing;
         }
+
         const memoriesListTitleText = document.getElementById('memories-list-title-text');
-        if (memoriesListTitleText && config.texts.memories_list_title) {
-            memoriesListTitleText.textContent = config.texts.memories_list_title;
+        if (memoriesListTitleText) {
+            if(config.texts.memories_list_title) memoriesListTitleText.textContent = config.texts.memories_list_title;
+            // No aplicamos personalización extra aquí para mantenerlo simple
         }
 
 

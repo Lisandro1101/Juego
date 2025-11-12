@@ -297,13 +297,19 @@ async function loadEventConfig(eventId) {
     // --- 4. ⭐️ NUEVO: APLICAR TEXTOS DINÁMICOS ---
     if (config.texts) {
         const triviaTitle = document.getElementById('trivia-title-text');
-        if (triviaTitle && config.texts.trivia_title) {
-            triviaTitle.innerHTML = config.texts.trivia_title;
+        if (triviaTitle) {
+            if(config.texts.trivia_title) triviaTitle.innerHTML = config.texts.trivia_title;
+            if(config.texts.trivia_title_font_family) triviaTitle.style.fontFamily = config.texts.trivia_title_font_family;
+            if(config.texts.trivia_title_letter_spacing) triviaTitle.style.letterSpacing = config.texts.trivia_title_letter_spacing;
         }
+
         const triviaWelcome = document.getElementById('trivia-welcome-text');
-        if (triviaWelcome && config.texts.trivia_welcome) {
-            triviaWelcome.innerHTML = config.texts.trivia_welcome;
+        if (triviaWelcome) {
+            if(config.texts.trivia_welcome) triviaWelcome.innerHTML = config.texts.trivia_welcome;
+            if(config.texts.trivia_welcome_font_family) triviaWelcome.style.fontFamily = config.texts.trivia_welcome_font_family;
+            if(config.texts.trivia_welcome_letter_spacing) triviaWelcome.style.letterSpacing = config.texts.trivia_welcome_letter_spacing;
         }
+
         const triviaSubtitle = document.getElementById('trivia-subtitle-text');
         if (triviaSubtitle && config.texts.trivia_subtitle) {
             triviaSubtitle.innerHTML = config.texts.trivia_subtitle;
@@ -311,24 +317,33 @@ async function loadEventConfig(eventId) {
 
         // Textos de Memoria
         const memoryTitle = document.getElementById('memory-title-text');
-        if (memoryTitle && config.texts.memory_title) {
-            memoryTitle.innerHTML = config.texts.memory_title;
+        if (memoryTitle) {
+            if(config.texts.memory_title) memoryTitle.innerHTML = config.texts.memory_title;
+            if(config.texts.memory_title_font_family) memoryTitle.style.fontFamily = config.texts.memory_title_font_family;
+            if(config.texts.memory_title_letter_spacing) memoryTitle.style.letterSpacing = config.texts.memory_title_letter_spacing;
         }
 
         // ⭐️ NUEVO: Textos de Ahorcado
         const hangmanTitle = document.getElementById('hangman-title-text');
-        if (hangmanTitle && config.texts.hangman_title) {
-            hangmanTitle.innerHTML = config.texts.hangman_title;
+        if (hangmanTitle) {
+            if(config.texts.hangman_title) hangmanTitle.innerHTML = config.texts.hangman_title;
+            if(config.texts.hangman_title_font_family) hangmanTitle.style.fontFamily = config.texts.hangman_title_font_family;
+            if(config.texts.hangman_title_letter_spacing) hangmanTitle.style.letterSpacing = config.texts.hangman_title_letter_spacing;
         }
+
         const hangmanSubtitle = document.getElementById('hangman-subtitle-text');
-        if (hangmanSubtitle && config.texts.hangman_subtitle) {
-            hangmanSubtitle.innerHTML = config.texts.hangman_subtitle;
+        if (hangmanSubtitle) {
+            if(config.texts.hangman_subtitle) hangmanSubtitle.innerHTML = config.texts.hangman_subtitle;
+            if(config.texts.hangman_subtitle_font_family) hangmanSubtitle.style.fontFamily = config.texts.hangman_subtitle_font_family;
+            if(config.texts.hangman_subtitle_letter_spacing) hangmanSubtitle.style.letterSpacing = config.texts.hangman_subtitle_letter_spacing;
         }
 
         // ⭐️ NUEVO: Textos de Ranking
         const rankingTitle = document.getElementById('ranking-title-text');
-        if (rankingTitle && config.texts.ranking_title) {
-            rankingTitle.innerHTML = config.texts.ranking_title;
+        if (rankingTitle) {
+            if(config.texts.ranking_title) rankingTitle.innerHTML = config.texts.ranking_title;
+            if(config.texts.ranking_title_font_family) rankingTitle.style.fontFamily = config.texts.ranking_title_font_family;
+            if(config.texts.ranking_title_letter_spacing) rankingTitle.style.letterSpacing = config.texts.ranking_title_letter_spacing;
         }
 
         // ⭐️ NUEVO: Textos de Anfitrión

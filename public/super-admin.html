@@ -508,6 +508,16 @@
                                 <label for="text-portal-greeting-font-size" class="text-sm font-bold">Tamaño Fuente</label>
                                 <input type="text" id="text-portal-greeting-font-size" class="input-field" placeholder="Ej: 1.125rem">
                             </div>
+                            <!-- ⭐️ INICIO: CAMPOS AÑADIDOS PARA BIENVENIDA ⭐️ -->
+                            <div>
+                                <label for="text-portal-greeting-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-portal-greeting-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-portal-greeting-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-portal-greeting-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
+                            </div>
+                            <!-- ⭐️ FIN: CAMPOS AÑADIDOS PARA BIENVENIDA ⭐️ -->
                         </div>
                     </div>
                     <div>
@@ -522,6 +532,16 @@
                                 <label for="portal-title-font-size" class="text-sm font-bold">Tamaño de Fuente</label>
                                 <input type="text" id="portal-title-font-size" class="input-field" placeholder="Ej: 2rem">
                             </div>
+                            <!-- ⭐️ INICIO: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
+                            <div>
+                                <label for="text-portal-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-portal-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-portal-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-portal-title-letter-spacing" class="input-field" placeholder="Ej: 1px o -0.05em">
+                            </div>
+                            <!-- ⭐️ FIN: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
                         </div>
                     </div>
                     <div>
@@ -536,6 +556,16 @@
                                 <label for="text-portal-subtitle-font-size" class="text-sm font-bold">Tamaño Fuente</label>
                                 <input type="text" id="text-portal-subtitle-font-size" class="input-field" placeholder="Ej: 1.25rem">
                             </div>
+                            <!-- ⭐️ INICIO: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
+                            <div>
+                                <label for="text-portal-subtitle-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-portal-subtitle-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-portal-subtitle-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-portal-subtitle-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
+                            </div>
+                            <!-- ⭐️ FIN: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
                         </div>
                     </div>
                     <div>
@@ -545,6 +575,15 @@
                             <div class="color-picker-wrapper">
                                 <input type="color" id="text-memories-section-title-color" value="#1F2937">
                                 <span class="text-sm">Color</span>
+                            </div>
+                            <!-- ⭐️ INICIO: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
+                            <div>
+                                <label for="text-memories-section-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-memories-section-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-memories-section-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-memories-section-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
                             </div>
                         </div>
                     </div>
@@ -723,14 +762,35 @@
                      <div>
                         <label for="text-trivia-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-trivia-title" class="input-field" placeholder="Trivia del Evento 🐝">
+                        <div class="grid-cols-2-responsive mt-2">
+                            <div>
+                                <label for="text-trivia-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-trivia-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-trivia-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-trivia-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label for="text-trivia-welcome" class="input-label">Texto de Bienvenida (H2):</label>
                         <input type="text" id="text-trivia-welcome" class="input-field" placeholder="¡Bienvenido a la Colmena!">
+                        <div class="grid-cols-2-responsive mt-2">
+                            <div>
+                                <label for="text-trivia-welcome-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-trivia-welcome-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-trivia-welcome-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-trivia-welcome-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label for="text-trivia-subtitle" class="input-label">Subtítulo (H3):</label>
                         <input type="text" id="text-trivia-subtitle" class="input-field" placeholder="¿Cuanto sabes de Amo?">
+                        <!-- No añadimos más personalización aquí para no sobrecargar, pero se podría. -->
                     </div>
                 </div>
 
@@ -804,6 +864,16 @@
                      <div>
                         <label for="text-memory-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-memory-title" class="input-field" placeholder="Juego de Memoria 🧠">
+                        <div class="grid-cols-2-responsive mt-2">
+                            <div>
+                                <label for="text-memory-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-memory-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-memory-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-memory-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <h3 class="text-lg font-bold mt-6">Carta del Juego (.card / .card-back)</h3>
@@ -853,10 +923,30 @@
                      <div>
                         <label for="text-hangman-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-hangman-title" class="input-field" placeholder="El Ahorcado 💀">
+                        <div class="grid-cols-2-responsive mt-2">
+                            <div>
+                                <label for="text-hangman-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-hangman-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-hangman-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-hangman-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                        </div>
                     </div>
                      <div>
                         <label for="text-hangman-subtitle" class="input-label !mt-0">Subtítulo (p):</label>
                         <input type="text" id="text-hangman-subtitle" class="input-field" placeholder="Adivina la palabra secreta...">
+                        <div class="grid-cols-2-responsive mt-2">
+                            <div>
+                                <label for="text-hangman-subtitle-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-hangman-subtitle-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-hangman-subtitle-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-hangman-subtitle-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -889,6 +979,16 @@
                      <div>
                         <label for="text-ranking-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-ranking-title" class="input-field" placeholder="Rankings de la Colmena 🏆">
+                        <div class="grid-cols-2-responsive mt-2">
+                            <div>
+                                <label for="text-ranking-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-ranking-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-ranking-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-ranking-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                        </div>
                     </div>
                     <div class="grid-cols-2-responsive">
                         <div>

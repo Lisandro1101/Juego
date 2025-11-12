@@ -57,6 +57,9 @@ h1 {
     font-size: 3rem; 
     font-weight: 700;
     margin-bottom: 20px;
+    /* ⭐️ NUEVO: Hereda la fuente y espaciado para consistencia */
+    font-family: inherit;
+    letter-spacing: inherit;
     text-shadow: none; /* Sin sombra por defecto */
 }
 
