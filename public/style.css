@@ -1,7 +1,7 @@
 /* ⭐️ NUEVO: Declaración de la fuente de Pokémon personalizada ⭐️ */
 @font-face {
   font-family: 'Pokemon Solid'; /* Le damos un nombre para usarla en el CSS */
-    src: url('/fonts/Pokemon-Solid.ttf') format('truetype'); /* Esta ruta es correcta cuando el servidor sirve la carpeta 'public' como raíz. */
+    src: url('fonts/Pokemon-Solid.ttf') format('truetype'); /* SOLUCIÓN FINAL: Ruta relativa desde style.css */
   font-weight: normal;
   font-style: normal;
   font-display: swap; /* Mejora el rendimiento de carga */
