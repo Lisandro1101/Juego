@@ -113,10 +113,15 @@ function applyDynamicTheme(themeConfig, textsConfig) {
 
     // 2. Manejar la fuente por separado
     if (themeConfig.font_family) { // Usando la variable global
+        // ⭐️ SOLUCIÓN DEFINITIVA: Registrar la fuente como una propiedad CSS personalizada.
+        // Esto fuerza al navegador (especialmente en móviles) a reconocer y aplicar la fuente de manera más robusta.
         cssVariables += `
-            body {
-                font-family: ${themeConfig.font_family};
+            @property --font-family {
+                syntax: '<custom-ident>';
+                inherits: true;
+                initial-value: ${themeConfig.font_family};
             }
+            body { font-family: var(--font-family); }
         `;
     }
 

@@ -300,6 +300,11 @@ function initializeSuperAdminPanel() {
             // Fuente estilo Pokémon / Retro
             "'Press Start 2P', cursive",
 
+            // Fuentes de Series Animadas / Caricaturas
+            "'Luckiest Guy', cursive",
+            "'Bangers', cursive",
+            "'Creepster', cursive", // Estilo terror
+
             // Fuentes Sans-Serif (Modernas, limpias)
             "'Inter', sans-serif",
             "'Roboto', sans-serif",
@@ -309,22 +314,23 @@ function initializeSuperAdminPanel() {
             "'Poppins', sans-serif",
             "'Nunito', sans-serif",
             "'Oswald', sans-serif",
+            "'Anton', sans-serif",
+            "'Righteous', cursive", // Art-deco style
 
             // Fuentes Serif (Clásicas, con remates)
             "'Merriweather', serif",
             "'Playfair Display', serif",
             "'Lora', serif",
             "'PT Serif', serif",
-            "'EB Garamond', serif",
+            "'EB Garamond', serif"
 
             // Fuentes Display (Decorativas, para títulos)
-            "'Lobster', cursive",
-            "'Pacifico', cursive",
-            "'Caveat', cursive",
-            "'Bangers', cursive",
+            // "'Lobster', cursive", // Ya está en la lista con 'cursive'
+            // "'Pacifico', cursive", // Ya está en la lista con 'cursive'
+            // "'Caveat', cursive", // Ya está en la lista con 'cursive'
 
             // Fuentes Monospace (Estilo código)
-            "'Roboto Mono', monospace"
+            // "'Roboto Mono', monospace" // Ya está en la lista con 'monospace'
         ];
 
         fontDatalist.innerHTML = ''; // Limpiar opciones previas
