@@ -84,7 +84,6 @@ function getEventId() {
     return eventId.trim().toLowerCase();
 }
 
-
 /**
  * ⭐️ Motor de Temas Dinámico
  * (Tu código original, sin cambios)
@@ -141,6 +140,31 @@ function applyDynamicTheme(themeConfig) {
             }
         `;
     }
+
+    // ⭐️ NUEVO: Manejar el sticker de los juegos
+    // ⭐️ CORRECCIÓN FINAL (DE NUEVO): La ruta correcta es directamente themeConfig.juegos_stickers
+    if (themeConfig.juegos_stickers && Array.isArray(themeConfig.juegos_stickers)) {
+        themeConfig.juegos_stickers.forEach(sticker => {
+            if (!sticker || !sticker.url) return;
+
+            const stickerImg = document.createElement('img');
+            stickerImg.src = sticker.url;
+            stickerImg.alt = "Sticker Decorativo de Juegos";
+            stickerImg.style.position = 'fixed';
+            stickerImg.style.zIndex = '1000';
+            stickerImg.style.pointerEvents = 'none';
+
+            if (sticker.width) stickerImg.style.width = sticker.width;
+            if (sticker.transform) stickerImg.style.transform = sticker.transform;
+            if (sticker.top) stickerImg.style.top = sticker.top;
+            if (sticker.bottom) stickerImg.style.bottom = sticker.bottom;
+            if (sticker.left) stickerImg.style.left = sticker.left;
+            if (sticker.right) stickerImg.style.right = sticker.right;
+
+            document.body.appendChild(stickerImg);
+        });
+    }
+
 
     // ⭐️ NUEVO: Manejar el contorno de texto
     if (themeConfig.text_stroke_width && themeConfig.text_stroke_color) {

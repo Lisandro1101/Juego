@@ -287,6 +287,50 @@ function initializeSuperAdminPanel() {
         });
     }
 
+    /**
+     * ⭐️ NUEVO: Rellena el <datalist> para el input de fuentes.
+     * Esto proporciona sugerencias de fuentes al hacer clic en el campo.
+     */
+    function populateFontDatalist() {
+        const fontDatalist = document.getElementById('font-family-list');
+        if (!fontDatalist) return;
+
+        // Lista de fuentes populares de Google Fonts
+        const fontList = [
+            // Fuente estilo Pokémon / Retro
+            "'Press Start 2P', cursive",
+
+            // Fuentes Sans-Serif (Modernas, limpias)
+            "'Inter', sans-serif",
+            "'Roboto', sans-serif",
+            "'Lato', sans-serif",
+            "'Montserrat', sans-serif",
+            "'Open Sans', sans-serif",
+            "'Poppins', sans-serif",
+            "'Nunito', sans-serif",
+            "'Oswald', sans-serif",
+
+            // Fuentes Serif (Clásicas, con remates)
+            "'Merriweather', serif",
+            "'Playfair Display', serif",
+            "'Lora', serif",
+            "'PT Serif', serif",
+            "'EB Garamond', serif",
+
+            // Fuentes Display (Decorativas, para títulos)
+            "'Lobster', cursive",
+            "'Pacifico', cursive",
+            "'Caveat', cursive",
+            "'Bangers', cursive",
+
+            // Fuentes Monospace (Estilo código)
+            "'Roboto Mono', monospace"
+        ];
+
+        fontDatalist.innerHTML = ''; // Limpiar opciones previas
+        fontList.forEach(font => fontDatalist.innerHTML += `<option value="${font}"></option>`);
+    }
+
     // =======================================================================
     // LÓGICA PRINCIPAL DEL SUPER-ADMIN (Tu código original)
     // ⭐️ MODIFICACIÓN: Quité el 'DOMContentLoaded' que envolvía esto.
@@ -312,6 +356,7 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
     onValue(ref(database, 'events'), renderEventsList); // ⭐️ CORREGIDO: Usar la referencia directamente
     eventsListElement.addEventListener('click', handleListClick); 
     populateEmojiSelectors(); // ⭐️ NUEVO: Llenar los selectores de emojis al iniciar
+    populateFontDatalist(); // ⭐️ NUEVO: Llenar el datalist de fuentes
     themeTemplateSelector.addEventListener('change', showThemePreview); // ⭐️ NUEVO: Evento para previsualizar
     loadThemeTemplates(); // Cargar plantillas al iniciar el panel
     applyTemplateBtn.addEventListener('click', applyThemeTemplate);
@@ -538,7 +583,31 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         // ⭐️ NUEVO: Rellenar ajuste y posición de fondo
         document.getElementById('background-image-size').value = theme.background_image_size || 'cover';
         document.getElementById('background-image-position').value = theme.background_image_position || 'center';
-        
+
+        // ⭐️ NUEVO: Rellenar campos de stickers (lógica mejorada)
+        const populateStickerFields = (type, index, stickerData) => {
+            const s = stickerData || {};
+            document.getElementById(`sticker_${type}_${index}_file`).value = '';
+            document.getElementById(`sticker_${type}_${index}_width`).value = s.width || '';
+            document.getElementById(`sticker_${type}_${index}_transform`).value = s.transform || '';
+            document.getElementById(`sticker_${type}_${index}_top`).value = s.top || '';
+            document.getElementById(`sticker_${type}_${index}_bottom`).value = s.bottom || '';
+            document.getElementById(`sticker_${type}_${index}_left`).value = s.left || '';
+            document.getElementById(`sticker_${type}_${index}_right`).value = s.right || '';
+
+            const preview = document.getElementById(`sticker_${type}_${index}_preview`);
+            if (s.url) {
+                preview.innerHTML = `<p class="text-xs text-gray-600">Sticker Actual:</p><img src="${s.url}" class="h-20 object-contain rounded-lg border border-gray-300 p-1">`;
+            } else {
+                preview.innerHTML = '';
+            }
+        };
+
+        populateStickerFields('portal', 1, theme.portal_stickers?.[0]);
+        populateStickerFields('portal', 2, theme.portal_stickers?.[1]);
+        populateStickerFields('juegos', 1, theme.juegos_stickers?.[0]);
+        populateStickerFields('juegos', 2, theme.juegos_stickers?.[1]);
+
         document.getElementById('bg-image').value = '';
     }
 
@@ -551,6 +620,11 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         document.getElementById('event-active').checked = true;
         const preview = document.getElementById('bg-image-preview');
         if (preview) preview.innerHTML = '';
+        // ⭐️ NUEVO: Limpiar todas las previsualizaciones de stickers
+        ['portal_1', 'portal_2', 'juegos_1', 'juegos_2'].forEach(id => {
+            const stickerPreview = document.getElementById(`sticker_${id}_preview`);
+            if (stickerPreview) stickerPreview.innerHTML = '';
+        });
         // ⭐️ Resetear el slider de opacidad
         document.getElementById('portal-bg-opacity').value = '1.0';
     }
@@ -595,7 +669,7 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
             // ⭐️ NUEVO: Guardar ajuste y posición de fondo
             background_image_size: document.getElementById('background-image-size').value,
             background_image_position: document.getElementById('background-image-position').value,
-            
+
             icons: {
                 icon_main: document.getElementById('icon-main').value || '🐝',
                 icon_portal: document.getElementById('icon-portal').value || '🎁',
@@ -755,6 +829,48 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
                 statusMsg.textContent = 'Guardando configuración...';
             }
             
+            // ⭐️ NUEVO: Función auxiliar para procesar y subir cada sticker
+            const processStickerData = async (type, index) => {
+                const file = document.getElementById(`sticker_${type}_${index}_file`).files[0];
+                const stickerData = {
+                    width: document.getElementById(`sticker_${type}_${index}_width`).value.trim() || null,
+                    transform: document.getElementById(`sticker_${type}_${index}_transform`).value.trim() || null,
+                    top: document.getElementById(`sticker_${type}_${index}_top`).value.trim() || null,
+                    bottom: document.getElementById(`sticker_${type}_${index}_bottom`).value.trim() || null,
+                    left: document.getElementById(`sticker_${type}_${index}_left`).value.trim() || null,
+                    right: document.getElementById(`sticker_${type}_${index}_right`).value.trim() || null,
+                    url: null
+                };
+
+                if (file) {
+                    statusMsg.textContent = `Subiendo sticker ${type} ${index}...`;
+                    const stickerPath = `events/${eventId}/theme/sticker_${type}_${index}.${file.name.split('.').pop()}`;
+                    const sRef = storageRef(storage, stickerPath);
+                    const uploadTask = await uploadBytesResumable(sRef, file);
+                    stickerData.url = await getDownloadURL(uploadTask.ref);
+                } else {
+                    const previewImg = document.getElementById(`sticker_${type}_${index}_preview`).querySelector('img');
+                    stickerData.url = previewImg ? previewImg.src : null;
+                }
+
+                // Solo devolvemos el objeto si tiene una URL
+                return stickerData.url ? stickerData : null;
+            };
+
+            // Procesar todos los stickers y filtrar los que no tienen URL
+            const portalStickers = (await Promise.all([
+                processStickerData('portal', 1),
+                processStickerData('portal', 2)
+            ])).filter(Boolean); // filter(Boolean) elimina los nulos
+
+            const juegosStickers = (await Promise.all([
+                processStickerData('juegos', 1),
+                processStickerData('juegos', 2)
+            ])).filter(Boolean);
+
+            fullConfig.theme.portal_stickers = portalStickers.length > 0 ? portalStickers : null;
+            fullConfig.theme.juegos_stickers = juegosStickers.length > 0 ? juegosStickers : null;
+
             const dbConfigRef = ref(database, `events/${eventId}/config`);
             await set(dbConfigRef, fullConfig);
 

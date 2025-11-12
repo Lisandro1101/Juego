@@ -141,6 +141,33 @@ function applyDynamicTheme(themeConfig, textsConfig) {
         `;
     }
 
+    // ⭐️ NUEVO: Manejar el sticker del portal
+    // ⭐️ CORRECCIÓN: La ruta correcta es themeConfig.stickers.portal
+    // ⭐️ CORRECCIÓN FINAL: La ruta correcta es directamente themeConfig.portal_stickers
+    // ⭐️ CORRECCIÓN FINAL (DE NUEVO): La ruta correcta es directamente themeConfig.portal_stickers
+    if (themeConfig.portal_stickers && Array.isArray(themeConfig.portal_stickers)) {
+        themeConfig.portal_stickers.forEach(sticker => {
+            if (!sticker || !sticker.url) return;
+
+            const stickerImg = document.createElement('img');
+            stickerImg.src = sticker.url;
+            stickerImg.alt = "Sticker Decorativo";
+            stickerImg.style.position = 'fixed';
+            stickerImg.style.zIndex = '1000';
+            stickerImg.style.pointerEvents = 'none';
+
+            // Aplicar estilos dinámicos
+            if (sticker.width) stickerImg.style.width = sticker.width;
+            if (sticker.transform) stickerImg.style.transform = sticker.transform;
+            if (sticker.top) stickerImg.style.top = sticker.top;
+            if (sticker.bottom) stickerImg.style.bottom = sticker.bottom;
+            if (sticker.left) stickerImg.style.left = sticker.left;
+            if (sticker.right) stickerImg.style.right = sticker.right;
+
+            document.body.appendChild(stickerImg);
+        });
+    }
+
     // 4. Inyectar en el <head>
     styleTag.innerHTML = cssVariables;
     document.head.appendChild(styleTag);

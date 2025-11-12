@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>👑 Panel de Super-Administrador</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ⭐️ NUEVO: Importación de Google Fonts ⭐️ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Caveat&family=EB+Garamond&family=Inter&family=Lato&family=Lobster&family=Lora&family=Merriweather&family=Montserrat&family=Nunito&family=Open+Sans&family=Oswald&family=PT+Serif&family=Pacifico&family=Playfair+Display&family=Poppins&family=Press+Start+2P&family=Roboto&family=Roboto+Mono&display=swap" rel="stylesheet">
+
     <style>
         /* (Estilos sin cambios) */
         :root {
@@ -369,16 +374,10 @@
                 <!-- ⭐️ FIN: BLOQUE AÑADIDO ⭐️ -->
                 <div class="mt-4">
                     <label for="font-family" class="input-label">Fuente Principal (Global):</label>
-                    <select id="font-family" class="input-field">
-                        <option value="'Nunito', sans-serif">Nunito (Redondeada y Amigable)</option>
-                        <option value="'Montserrat', sans-serif">Montserrat (Moderna y Limpia)</option>
-                        <option value="'Inter', sans-serif">Inter (Moderna)</option>
-                        <option value="'Poppins', sans-serif">Poppins (Elegante)</option>
-                        <option value="'Playfair Display', serif">Playfair Display (Elegante con Serif)</option>
-                        <option value="'Times New Roman', serif">Times New Roman (Clásica)</option>
-                        <option value="'Arial', sans-serif">Arial (Simple)</option>
-                        <option value="'Verdana', sans-serif">Verdana</option>
-                    </select>
+                    <!-- ⭐️ CORRECCIÓN: Reemplazar <select> por <input> con <datalist> ⭐️ -->
+                    <input type="text" id="font-family" list="font-family-list" class="input-field" placeholder="Ej: 'Press Start 2P', cursive">
+                    <datalist id="font-family-list"></datalist>
+                    <p class="text-xs text-gray-500 mt-1">Escribe o selecciona una fuente de la lista. Incluye la fuente Pokémon.</p>
                 </div>
 
                 <div class="mt-4">
@@ -412,6 +411,82 @@
                 </div>
                 <!-- ⭐️ FIN: BLOQUE AÑADIDO ⭐️ -->
             </details>
+
+            <!-- ⭐️ INICIO: NUEVA SECCIÓN DE STICKERS ⭐️ -->
+            <details class="mt-6 border-t pt-4" open>
+                <summary>✨ Stickers Decorativos</summary>
+                <p class="text-xs text-gray-500 mb-3">
+                    Configura hasta 2 stickers para el portal y 2 para los juegos. Define su imagen, tamaño y posición.
+                    <br><strong>Consejo:</strong> Para posicionar, usa solo una propiedad vertical (top/bottom) y una horizontal (left/right). Ej: `top: 10px`, `right: 10px`.
+                </p>
+
+                <!-- Stickers del Portal -->
+                <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-2 space-y-6">
+                    <h4 class="font-bold text-lg border-b pb-2">Portal (index.html)</h4>
+                    <!-- Sticker 1 Portal -->
+                    <div class="p-3 border rounded-md bg-white">
+                        <label class="input-label !mt-0 font-semibold">Sticker 1 (Portal)</label>
+                        <input type="file" id="sticker_portal_1_file" class="input-field" accept="image/png, image/webp, image/gif">
+                        <div id="sticker_portal_1_preview" class="mt-2"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                            <input type="text" id="sticker_portal_1_width" class="input-field" placeholder="Ancho (ej: 120px)">
+                            <input type="text" id="sticker_portal_1_transform" class="input-field" placeholder="Rotación (ej: rotate(10deg))">
+                            <input type="text" id="sticker_portal_1_top" class="input-field" placeholder="Top (ej: 10px)">
+                            <input type="text" id="sticker_portal_1_bottom" class="input-field" placeholder="Bottom (ej: 10px)">
+                            <input type="text" id="sticker_portal_1_left" class="input-field" placeholder="Left (ej: 10px)">
+                            <input type="text" id="sticker_portal_1_right" class="input-field" placeholder="Right (ej: 10px)">
+                        </div>
+                    </div>
+                    <!-- Sticker 2 Portal -->
+                    <div class="p-3 border rounded-md bg-white">
+                        <label class="input-label !mt-0 font-semibold">Sticker 2 (Portal)</label>
+                        <input type="file" id="sticker_portal_2_file" class="input-field" accept="image/png, image/webp, image/gif">
+                        <div id="sticker_portal_2_preview" class="mt-2"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                            <input type="text" id="sticker_portal_2_width" class="input-field" placeholder="Ancho (ej: 100px)">
+                            <input type="text" id="sticker_portal_2_transform" class="input-field" placeholder="Rotación (ej: rotate(-15deg))">
+                            <input type="text" id="sticker_portal_2_top" class="input-field" placeholder="Top">
+                            <input type="text" id="sticker_portal_2_bottom" class="input-field" placeholder="Bottom">
+                            <input type="text" id="sticker_portal_2_left" class="input-field" placeholder="Left">
+                            <input type="text" id="sticker_portal_2_right" class="input-field" placeholder="Right">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stickers de Juegos -->
+                <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-4 space-y-6">
+                    <h4 class="font-bold text-lg border-b pb-2">Páginas de Juegos</h4>
+                    <!-- Sticker 1 Juegos -->
+                    <div class="p-3 border rounded-md bg-white">
+                        <label class="input-label !mt-0 font-semibold">Sticker 1 (Juegos)</label>
+                        <input type="file" id="sticker_juegos_1_file" class="input-field" accept="image/png, image/webp, image/gif">
+                        <div id="sticker_juegos_1_preview" class="mt-2"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                            <input type="text" id="sticker_juegos_1_width" class="input-field" placeholder="Ancho (ej: 120px)">
+                            <input type="text" id="sticker_juegos_1_transform" class="input-field" placeholder="Rotación (ej: rotate(10deg))">
+                            <input type="text" id="sticker_juegos_1_top" class="input-field" placeholder="Top">
+                            <input type="text" id="sticker_juegos_1_bottom" class="input-field" placeholder="Bottom">
+                            <input type="text" id="sticker_juegos_1_left" class="input-field" placeholder="Left">
+                            <input type="text" id="sticker_juegos_1_right" class="input-field" placeholder="Right">
+                        </div>
+                    </div>
+                    <!-- Sticker 2 Juegos -->
+                    <div class="p-3 border rounded-md bg-white">
+                        <label class="input-label !mt-0 font-semibold">Sticker 2 (Juegos)</label>
+                        <input type="file" id="sticker_juegos_2_file" class="input-field" accept="image/png, image/webp, image/gif">
+                        <div id="sticker_juegos_2_preview" class="mt-2"></div>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2">
+                            <input type="text" id="sticker_juegos_2_width" class="input-field" placeholder="Ancho (ej: 100px)">
+                            <input type="text" id="sticker_juegos_2_transform" class="input-field" placeholder="Rotación (ej: rotate(-15deg))">
+                            <input type="text" id="sticker_juegos_2_top" class="input-field" placeholder="Top">
+                            <input type="text" id="sticker_juegos_2_bottom" class="input-field" placeholder="Bottom">
+                            <input type="text" id="sticker_juegos_2_left" class="input-field" placeholder="Left">
+                            <input type="text" id="sticker_juegos_2_right" class="input-field" placeholder="Right">
+                        </div>
+                    </div>
+                </div>
+            </details>
+            <!-- ⭐️ FIN: NUEVA SECCIÓN DE STICKERS ⭐️ -->
             
             <details class="mt-6 border-t pt-4">
                 <summary>🖼️ Personalización del Portal (index.html)</summary>
