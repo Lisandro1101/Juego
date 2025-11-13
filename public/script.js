@@ -123,10 +123,10 @@ function applyDynamicTheme(themeConfig) {
 
     // 2. Manejar la fuente
     if (themeConfig.font_family) { 
-        // ⭐️ SOLUCIÓN FINAL: Usar una regla global con !important para máxima compatibilidad.
-        // La regla @property no es totalmente compatible con todos los navegadores móviles.
+        // ⭐️ CORRECCIÓN: Se aplica la fuente al body para que se herede,
+        // pero sin !important, para permitir que estilos más específicos (como en un h1) la anulen.
         cssVariables += `
-            * { font-family: ${themeConfig.font_family} !important; }
+            body { font-family: ${themeConfig.font_family}; }
         `;
     }
 
@@ -298,27 +298,27 @@ async function loadEventConfig(eventId) {
     if (config.texts) {
         const triviaTitle = document.getElementById('trivia-title-text');
         if (triviaTitle) {
-            if(config.texts.trivia_title) triviaTitle.innerHTML = config.texts.trivia_title;
+            triviaTitle.innerHTML = config.texts.trivia_title || '';
             if(config.texts.trivia_title_font_family) triviaTitle.style.fontFamily = config.texts.trivia_title_font_family;
             if(config.texts.trivia_title_letter_spacing) triviaTitle.style.letterSpacing = config.texts.trivia_title_letter_spacing;
         }
 
         const triviaWelcome = document.getElementById('trivia-welcome-text');
         if (triviaWelcome) {
-            if(config.texts.trivia_welcome) triviaWelcome.innerHTML = config.texts.trivia_welcome;
+            triviaWelcome.innerHTML = config.texts.trivia_welcome || '';
             if(config.texts.trivia_welcome_font_family) triviaWelcome.style.fontFamily = config.texts.trivia_welcome_font_family;
             if(config.texts.trivia_welcome_letter_spacing) triviaWelcome.style.letterSpacing = config.texts.trivia_welcome_letter_spacing;
         }
 
         const triviaSubtitle = document.getElementById('trivia-subtitle-text');
         if (triviaSubtitle && config.texts.trivia_subtitle) {
-            triviaSubtitle.innerHTML = config.texts.trivia_subtitle;
+            triviaSubtitle.innerHTML = config.texts.trivia_subtitle || '';
         }
 
         // Textos de Memoria
         const memoryTitle = document.getElementById('memory-title-text');
         if (memoryTitle) {
-            if(config.texts.memory_title) memoryTitle.innerHTML = config.texts.memory_title;
+            memoryTitle.innerHTML = config.texts.memory_title || '';
             if(config.texts.memory_title_font_family) memoryTitle.style.fontFamily = config.texts.memory_title_font_family;
             if(config.texts.memory_title_letter_spacing) memoryTitle.style.letterSpacing = config.texts.memory_title_letter_spacing;
         }
@@ -326,14 +326,14 @@ async function loadEventConfig(eventId) {
         // ⭐️ NUEVO: Textos de Ahorcado
         const hangmanTitle = document.getElementById('hangman-title-text');
         if (hangmanTitle) {
-            if(config.texts.hangman_title) hangmanTitle.innerHTML = config.texts.hangman_title;
+            hangmanTitle.innerHTML = config.texts.hangman_title || '';
             if(config.texts.hangman_title_font_family) hangmanTitle.style.fontFamily = config.texts.hangman_title_font_family;
             if(config.texts.hangman_title_letter_spacing) hangmanTitle.style.letterSpacing = config.texts.hangman_title_letter_spacing;
         }
 
         const hangmanSubtitle = document.getElementById('hangman-subtitle-text');
         if (hangmanSubtitle) {
-            if(config.texts.hangman_subtitle) hangmanSubtitle.innerHTML = config.texts.hangman_subtitle;
+            hangmanSubtitle.innerHTML = config.texts.hangman_subtitle || '';
             if(config.texts.hangman_subtitle_font_family) hangmanSubtitle.style.fontFamily = config.texts.hangman_subtitle_font_family;
             if(config.texts.hangman_subtitle_letter_spacing) hangmanSubtitle.style.letterSpacing = config.texts.hangman_subtitle_letter_spacing;
         }
@@ -341,7 +341,7 @@ async function loadEventConfig(eventId) {
         // ⭐️ NUEVO: Textos de Ranking
         const rankingTitle = document.getElementById('ranking-title-text');
         if (rankingTitle) {
-            if(config.texts.ranking_title) rankingTitle.innerHTML = config.texts.ranking_title;
+            rankingTitle.innerHTML = config.texts.ranking_title || '';
             if(config.texts.ranking_title_font_family) rankingTitle.style.fontFamily = config.texts.ranking_title_font_family;
             if(config.texts.ranking_title_letter_spacing) rankingTitle.style.letterSpacing = config.texts.ranking_title_letter_spacing;
         }
@@ -1457,14 +1457,14 @@ function handleHostAuth() {
         const submitButton = loginForm.querySelector('button[type="submit"]');
         submitButton.disabled = true;
         
-        // ⭐️ CORREGIDO: Construir el email dinámicamente
-        const username = window.eventConfig.auth.username;
+        // ⭐️ CORRECCIÓN: Usar el nombre de usuario correcto desde la configuración de autenticación.
+        // El error estaba en que se usaba EVENT_ID en lugar del usuario guardado.
+        const username = window.eventConfig.auth.username; 
         if (!username) {
             loginError.textContent = "Error: Evento no configurado para login de anfitrión.";
             submitButton.disabled = false;
             return;
         }
-        const email = `${username}@tufiestadigital.com.ar`;
         const password = document.getElementById('host-login-password').value;
 
         try {

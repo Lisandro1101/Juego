@@ -113,10 +113,10 @@ function applyDynamicTheme(themeConfig, textsConfig) {
 
     // 2. Manejar la fuente por separado
     if (themeConfig.font_family) { // Usando la variable global
-        // ⭐️ SOLUCIÓN FINAL: Usar una regla global con !important para máxima compatibilidad.
-        // La regla @property no es totalmente compatible con todos los navegadores móviles.
+        // ⭐️ CORRECCIÓN: Se aplica la fuente al body para que se herede,
+        // pero sin !important, para permitir que estilos más específicos (como en un h1) la anulen.
         cssVariables += `
-            * { font-family: ${themeConfig.font_family} !important; }
+            body { font-family: ${themeConfig.font_family}; }
         `;
     }
 
@@ -242,35 +242,35 @@ async function loadEventConfig(eventId) {
     if (config.texts) {
         const portalGreeting = document.getElementById('portal-greeting-text');
         if (portalGreeting) {
-            if (config.texts.portal_greeting) portalGreeting.innerHTML = config.texts.portal_greeting;
+            portalGreeting.innerHTML = config.texts.portal_greeting || '';
             if (config.texts.portal_greeting_font_family) portalGreeting.style.fontFamily = config.texts.portal_greeting_font_family;
             if (config.texts.portal_greeting_letter_spacing) portalGreeting.style.letterSpacing = config.texts.portal_greeting_letter_spacing;
         }
 
         const portalTitle = document.getElementById('portal-title-text');
         if (portalTitle) {
-            if(config.texts.portal_title) portalTitle.innerHTML = config.texts.portal_title;
+            portalTitle.innerHTML = config.texts.portal_title || '';
             if(config.texts.portal_title_font_family) portalTitle.style.fontFamily = config.texts.portal_title_font_family;
             if(config.texts.portal_title_letter_spacing) portalTitle.style.letterSpacing = config.texts.portal_title_letter_spacing;
         }
 
         const portalSubtitle = document.getElementById('portal-subtitle-text');
         if (portalSubtitle) {
-            if(config.texts.portal_subtitle) portalSubtitle.innerHTML = config.texts.portal_subtitle;
+            portalSubtitle.innerHTML = config.texts.portal_subtitle || '';
             if(config.texts.portal_subtitle_font_family) portalSubtitle.style.fontFamily = config.texts.portal_subtitle_font_family;
             if(config.texts.portal_subtitle_letter_spacing) portalSubtitle.style.letterSpacing = config.texts.portal_subtitle_letter_spacing;
         }
 
         const memoriesSectionTitleText = document.getElementById('memories-section-title-text');
         if (memoriesSectionTitleText) {
-            if(config.texts.memories_section_title) memoriesSectionTitleText.textContent = config.texts.memories_section_title;
+            memoriesSectionTitleText.textContent = config.texts.memories_section_title || '';
             if(config.texts.memories_section_title_font_family) memoriesSectionTitleText.style.fontFamily = config.texts.memories_section_title_font_family;
             if(config.texts.memories_section_title_letter_spacing) memoriesSectionTitleText.style.letterSpacing = config.texts.memories_section_title_letter_spacing;
         }
 
         const memoriesListTitleText = document.getElementById('memories-list-title-text');
         if (memoriesListTitleText) {
-            if(config.texts.memories_list_title) memoriesListTitleText.textContent = config.texts.memories_list_title;
+            memoriesListTitleText.textContent = config.texts.memories_list_title || '';
             // No aplicamos personalización extra aquí para mantenerlo simple
         }
 
@@ -278,16 +278,18 @@ async function loadEventConfig(eventId) {
 
         // ⭐️ NUEVO: Aplicar textos de botones de juegos
         const triviaBtnText = document.getElementById('juegos-menu-trivia-text');
-        if (triviaBtnText && config.texts.juegos_menu_trivia) {
-            triviaBtnText.textContent = config.texts.juegos_menu_trivia;
+        if (triviaBtnText) {
+            triviaBtnText.textContent = config.texts.juegos_menu_trivia || '¿Cuanto conoces a Amo?';
         }
+
         const memoryBtnText = document.getElementById('juegos-menu-memory-text');
-        if (memoryBtnText && config.texts.juegos_menu_memory) {
-            memoryBtnText.textContent = config.texts.juegos_menu_memory;
+        if (memoryBtnText) {
+            memoryBtnText.textContent = config.texts.juegos_menu_memory || 'Memoria con Amo';
         }
+
         const hangmanBtnText = document.getElementById('juegos-menu-hangman-text');
-        if (hangmanBtnText && config.texts.juegos_menu_hangman) {
-            hangmanBtnText.textContent = config.texts.juegos_menu_hangman;
+        if (hangmanBtnText) {
+            hangmanBtnText.textContent = config.texts.juegos_menu_hangman || 'Ahorcado';
         }
     }
 

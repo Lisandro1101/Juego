@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebas
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 // ⭐️⭐️⭐️ FIN NUEVAS IMPORTACIONES ⭐️⭐️⭐️
 import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-functions.js";
 import { getDatabase, ref, set, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
 
@@ -23,6 +24,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app);
+const functions = getFunctions(app); // ⭐️ NUEVO: Inicializar Firebase Functions
 
 // ⭐️⭐️⭐️ INICIO: NUEVA LÓGICA DE AUTENTICACIÓN ⭐️⭐️⭐️
 const auth = getAuth(app);
@@ -873,6 +875,27 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
                 password: document.getElementById('auth-event-password').value.trim() || null,
             }
         };
+
+        // ⭐️ INICIO: NUEVA LÓGICA PARA CREAR/ACTUALIZAR USUARIO ANFITRIÓN ⭐️
+        const hostUsername = document.getElementById('auth-event-username').value.trim();
+        const hostPassword = document.getElementById('auth-event-password').value.trim();
+
+        if (hostUsername && hostPassword) {
+            try {
+                statusMsg.textContent = 'Creando/actualizando usuario anfitrión...';
+                const createOrUpdateHostUser = httpsCallable(functions, 'createOrUpdateHostUser');
+                const result = await createOrUpdateHostUser({
+                    username: hostUsername,
+                    password: hostPassword
+                });
+                console.log(result.data.message); // Log del éxito desde la función
+            } catch (error) {
+                console.error("Error al crear/actualizar el usuario anfitrión:", error);
+                statusMsg.textContent = `Error con el usuario anfitrión: ${error.message}`;
+                // No detenemos el guardado, pero mostramos el error.
+            }
+        }
+        // ⭐️ FIN: NUEVA LÓGICA ⭐️
 
         try {
             const imageFile = document.getElementById('bg-image').files[0];
