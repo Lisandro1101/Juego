@@ -22,9 +22,6 @@
         .hangman-container.hangman-mode {
             /* Usar el estilo base de quiz-container */
             background-color: var(--hangman-container-bg, rgba(255, 255, 255, 0.9));
-            border-radius: var(--hangman-container-border-radius, 15px);
-            padding: 20px; /* Mantener padding interno */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         #hangman-art {
@@ -70,6 +67,9 @@
             cursor: pointer;
             transition: all 0.1s; 
             box-shadow: 0 3px var(--btn-hangman-shadow-color);
+            font-family: var(--btn-hangman-font-family);
+            -webkit-text-stroke-width: var(--btn-hangman-text-stroke-width);
+            -webkit-text-stroke-color: var(--btn-hangman-text-stroke-color);
             min-width: 35px;
             flex-grow: 1;
         }
@@ -110,21 +110,21 @@
 </head>
 <body>
 
-    <div class="quiz-container hangman-container hangman-mode">
+    <div class="themed-container quiz-container hangman-container hangman-mode" data-theme-page="hangman">
         
         <div id="start-screen-hangman">
-            <h1 id="hangman-title-text" class="title">El Ahorcado <span class="icon-hangman">💀</span></h1>
-            <p id="hangman-subtitle-text" class="mb-4">Ingresa tu nombre para comenzar a adivinar la palabra secreta:</p>
+            <h1 id="hangman-title-text" class="themed-text title" data-theme-key="hangman-title">El Ahorcado <span class="icon-hangman">💀</span></h1>
+            <p id="hangman-subtitle-text" class="themed-text mb-4" data-theme-key="hangman-subtitle">Ingresa tu nombre para comenzar a adivinar la palabra secreta:</p>
             
-            <label for="player-name-input-hangman" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
+            <label for="player-name-input-hangman" class="themed-text" data-theme-key="hangman-input-label" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
 
-            <input type="text" id="player-name-input-hangman" class="text-input" placeholder="Tu Nombre" maxlength="20"
+            <input type="text" id="player-name-input-hangman" class="themed-input text-input" data-theme-key="hangman-player-name" placeholder="Tu Nombre" maxlength="20"
                    style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 15px; border: 2px solid var(--bee-yellow); border-radius: 5px;">
             
-            <button id="start-btn-hangman" class="btn-portal btn-trivia mt-4">¡Comenzar!</button>
+            <button id="start-btn-hangman" class="themed-button btn-portal btn-trivia mt-4" data-theme-key="hangman-start-button">¡Comenzar!</button>
 
             <div style="text-align: center; margin-top: 20px;">
-                <button onclick="window.location.href='index.html'" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
+                <button onclick="window.location.href='index.html'" class="themed-button" data-theme-key="hangman-back-button" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
                     Volver al Portal
                 </button>
             </div>
@@ -132,39 +132,27 @@
         
         <div id="game-mode-hangman" class="hidden">
             
-            <div class="hangman-header">
-                <div id="player-name-display-hangman" style="font-weight: bold;">Jugador: -</div> 
+            <div class="themed-container hangman-header" data-theme-key="hangman-game-header">
+                <div id="player-name-display-hangman" class="themed-text" data-theme-key="hangman-player-display" style="font-weight: bold;">Jugador: -</div> 
                 <div id="lives-display">Vidas restantes: 7</div>
             </div>
             
-            <div id="hangman-graphic-container" class="hangman-graphic">
-    <div class="gallows-base"></div>
-    <div class="gallows-pole"></div>
-    <div class="gallows-beam"></div>
-    <div class="gallows-rope"></div>
-
-    <div id="hg-head" class="hangman-part hidden"></div> 
-    <div id="hg-body" class="hangman-part hidden"></div>
-    <div id="hg-arm-l" class="hangman-part hidden"></div>
-    <div id="hg-arm-r" class="hangman-part hidden"></div>
-    <div id="hg-leg-l" class="hangman-part hidden"></div>
-    <div id="hg-leg-r" class="hangman-part hidden"></div>
-    <div id="hg-face" class="hangman-part hidden"></div> </div>
+            <div id="hangman-graphic-container" class="hangman-graphic"></div>
             
-            <p id="word-display">_ _ _ _ _</p>
+            <p id="word-display" class="themed-text" data-theme-key="hangman-word-display">_ _ _ _ _</p>
             
-            <p id="game-status" style="font-weight: bold; margin: 15px 0;">Adivina la palabra. Tienes 7 intentos.</p>
+            <p id="game-status" class="themed-text" data-theme-key="hangman-game-status" style="font-weight: bold; margin: 15px 0;">Adivina la palabra. Tienes 7 intentos.</p>
             
-            <p id="guessed-letters" style="color: #666; font-size: 0.9em;">Letras usadas: </p>
+            <p id="guessed-letters" class="themed-text" data-theme-key="hangman-guessed-letters" style="color: #666; font-size: 0.9em;">Letras usadas: </p>
             
             <div id="keyboard-container">
                 </div>
             
-            <button id="play-again-hangman-btn" class="btn-portal btn-messages mt-6 hidden">
+            <button id="play-again-hangman-btn" class="themed-button btn-portal btn-messages mt-6 hidden" data-theme-key="hangman-play-again-button">
                 Jugar de Nuevo
             </button>
             
-            <button onclick="window.location.href='index.html'" class="btn-portal btn-trivia mt-4" style="background: #ccc; box-shadow: 0 4px #999;">
+            <button onclick="window.location.href='index.html'" class="themed-button btn-portal btn-trivia mt-4" data-theme-key="hangman-back-button" style="background: #ccc; box-shadow: 0 4px #999;">
                 Volver al Portal
             </button>
             

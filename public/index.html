@@ -43,67 +43,51 @@
         /* --- ⭐️ NUEVO: MOTOR DE TEMAS ⭐️ --- */
         /* Estas reglas leen las variables que super-admin.html guarda */
         
-        /* * Aplica los estilos al contenedor principal del portal
-         * (Usa las variables de "Personalización del Portal")
-        */
-        .portal-container {
+        /* 1. Estilos para contenedores principales */
+        .themed-container {
             background-color: var(--portal-bg);
             border-radius: var(--portal-border-radius);
         }
 
-        /* Aplica los estilos al H1 principal */
-        .portal-container h1 {
-            color: var(--portal-title-color);
-            font-size: var(--portal-title-font-size);
-        }
-
-        /* Aplica estilos al texto de bienvenida */
-        #portal-greeting-text {
-            color: var(--portal-greeting-color);
-            font-size: var(--portal-greeting-font-size);
-        }
-        /* Aplica estilos al subtítulo */
-        #portal-subtitle-text {
-            color: var(--portal-subtitle-color);
-            font-size: var(--portal-subtitle-font-size);
-        }
-        /* ⭐️ NUEVO: Aplica estilos al título de la sección de recuerdos */
-        #memories-section-title-text {
-            color: var(--memories-section-title-color);
-        }
-
-        /* ⭐️ NUEVO: Aplica estilos al título de la lista de recuerdos */
-        #memories-list-title-text {
-            color: var(--memories-list-title-color);
-            font-size: var(--memories-list-title-font-size);
-        }
-
-        
-        /* * Aplica los estilos a los botones del portal.
-         * Asumimos que .btn-portal está definido en tu 'style.css'.
-         * Estas reglas SOBRESCRIBIRÁN los valores de ese archivo
-         * con los valores de la base de datos.
-        */
-        .btn-portal {
+        /* 2. Estilos para botones */
+        .themed-button {
             background-color: var(--btn-portal-bg);
             color: var(--btn-portal-text-color);
             border-radius: var(--btn-portal-border-radius);
-            
-            /* * Asumimos que tu .btn-portal usa un box-shadow de 4px.
-             * Si tu 'style.css' lo define diferente,
-             * deberás ajustar esto o añadir más variables.
-            */
             box-shadow: 0 4px var(--btn-portal-shadow-color);
-            border: 2px solid var(--btn-portal-shadow-color)
+            border: 2px solid var(--btn-portal-shadow-color);
+            font-family: var(--btn-portal-font-family);
+            -webkit-text-stroke-width: var(--btn-portal-text-stroke-width);
+            -webkit-text-stroke-color: var(--btn-portal-text-stroke-color);
         }
 
-        /* ⭐️ NUEVO: Estilos para los botones del menú de juegos */
-        .juegos-dropdown-item {
+        .themed-button[data-theme-key="juegos-menu"] {
             background-color: var(--btn-juegos-menu-bg, var(--spring-green));
             color: var(--btn-juegos-menu-text-color, white);
             border-color: var(--btn-juegos-menu-border-color, var(--spring-shadow));
             box-shadow: 0 4px var(--btn-juegos-menu-shadow-color, var(--spring-shadow));
             border-radius: var(--btn-juegos-menu-border-radius, 1.5rem);
+            font-family: var(--btn-juegos-menu-font-family);
+            -webkit-text-stroke-width: var(--btn-juegos-menu-text-stroke-width);
+            -webkit-text-stroke-color: var(--btn-juegos-menu-text-stroke-color);
+        }
+
+        /* 3. Estilos para campos de formulario */
+        .themed-input {
+            background-color: var(--input-bg-color);
+            color: var(--input-text-color);
+            border-color: var(--input-border-color);
+            border-radius: var(--input-border-radius);
+        }
+
+        /* 4. Motor de Texto Genérico (¡La clave de la personalización!) */
+        .themed-text {
+            color: var(--text-color);
+            font-size: var(--text-font-size);
+            font-family: var(--text-font-family);
+            letter-spacing: var(--text-letter-spacing);
+            -webkit-text-stroke-width: var(--text-stroke-width);
+            -webkit-text-stroke-color: var(--text-stroke-color);
         }
 
         /* --- ⭐️ FIN DEL MOTOR DE TEMAS ⭐️ --- */
@@ -114,18 +98,18 @@
 
     <a href="ranking.html" target="_blank" id="ranking-trophy-btn" title="Ver Rankings"><span class="icon-ranking">🏆</span></a>
 
-    <div class="portal-container py-6 sm:py-8" style="position: relative; z-index: 1;"> 
+    <div class="themed-container portal-container py-6 sm:py-8" style="position: relative; z-index: 1;"> 
         <header class="mb-6">
-            <p id="portal-greeting-text" class="text-lg text-gray-500 uppercase font-semibold">¡Bienvenido a la Colmena!</p>
+            <p id="portal-greeting-text" class="themed-text text-lg text-gray-500 uppercase font-semibold" data-theme-key="portal-greeting">¡Bienvenido a la Colmena!</p>
             
-            <h1 id="portal-title-text">Portal de Recuerdos <span class="icon-main">🐝</span></h1>
+            <h1 id="portal-title-text" class="themed-text" data-theme-key="portal-title">Portal de Recuerdos <span class="icon-main">🐝</span></h1>
             
-            <p id="portal-subtitle-text" class="text-gray-600 mt-2 text-xl">Deja un mensaje, una foto o video capturado.</p>
+            <p id="portal-subtitle-text" class="themed-text text-gray-600 mt-2 text-xl" data-theme-key="portal-subtitle">Deja un mensaje, una foto o video capturado.</p>
         </header>
 
         <div style="position: relative;">
             
-            <button id="menu-juegos-toggle" class="btn-portal btn-messages">
+            <button id="menu-juegos-toggle" class="themed-button btn-portal btn-messages" data-theme-key="portal-main-button">
                 <span class="mr-3 text-2xl icon-games">🕹️</span>
                 MENÚ DE JUEGOS
                 <span class="ml-3 text-xl">▼</span>
@@ -135,15 +119,15 @@
                 <h3 class="text-xl font-black text-gray-800 mb-4 text-center">¡A Jugar!</h3>
                 
                 <div class="space-y-3">
-                    <a href="player.html" target="_blank" class="btn-portal btn-trivia juegos-dropdown-item">
+                    <a href="player.html" target="_blank" class="themed-button btn-portal btn-trivia" data-theme-key="juegos-menu">
                         <span class="mr-3 text-2xl icon-trivia">✍️</span>
                         <span id="juegos-menu-trivia-text">¿Cuanto conoces a Amo?</span>
                     </a>
-                <a href="memory.html" target="_blank" class="btn-portal btn-trivia juegos-dropdown-item">
+                <a href="memory.html" target="_blank" class="themed-button btn-portal btn-trivia" data-theme-key="juegos-menu">
                         <span class="mr-3 text-2xl icon-memory">🧠</span>
                         <span id="juegos-menu-memory-text">Memoria con Amo</span>
                     </a>
-                    <a href="hangman.html" target="_blank" class="btn-portal btn-trivia juegos-dropdown-item">
+                    <a href="hangman.html" target="_blank" class="themed-button btn-portal btn-trivia" data-theme-key="juegos-menu">
                         <span class="mr-3 text-2xl icon-hangman">💀</span>
                         <span id="juegos-menu-hangman-text">Ahorcado</span>
                     </a>
@@ -158,18 +142,18 @@
         <section class="py-4 rounded-xl border border-gray-200 memory-section-bg">
             <h2 class="text-xl font-bold mb-4 text-gray-800 flex items-center justify-center space-x-2">
                 <span class="text-2xl icon-memories">💖</span>
-                <span id="memories-section-title-text">Deja tu Recuerdo</span>
+                <span id="memories-section-title-text" class="themed-text" data-theme-key="memories-section-title">Deja tu Recuerdo</span>
             </h2>
 
             <form id="memory-form" class="transparent-form py-6 rounded-lg shadow-md mb-4 space-y-4">
                 <textarea id="guest-message" placeholder="Deja un comentario (opcional)"
-                          class="textarea-bee w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 h-24 resize-none"></textarea>
+                          class="themed-input textarea-bee w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 h-24 resize-none"></textarea>
 
                 
                 <div class="flex flex-col space-y-2 w-full"> 
                     
                     <div class="file-input-wrapper w-full">
-                        <label for="guest-file-photo" class="btn-portal btn-messages">
+                        <label for="guest-file-photo" class="themed-button btn-portal btn-messages" data-theme-key="portal-secondary-button">
                             <span class="mr-1">📸</span> Capturar Foto
                         </label>
                         <input type="file" id="guest-file-photo" 
@@ -178,7 +162,7 @@
                     </div>
                     
                     <div class="file-input-wrapper w-full">
-                        <label for="guest-file-video" class="btn-portal btn-messages">
+                        <label for="guest-file-video" class="themed-button btn-portal btn-messages" data-theme-key="portal-secondary-button">
                             <span class="mr-1">🎥</span> Grabar Video
                         </label>
                         <input type="file" id="guest-file-video" 
@@ -194,12 +178,12 @@
                     <div id="upload-progress-bar"><div id="upload-progress"></div></div>
                 </div>
 
-                <button type="submit" id="submit-memory-btn" class="btn-portal btn-messages h-12 mt-4">
+                <button type="submit" id="submit-memory-btn" class="themed-button btn-portal btn-messages h-12 mt-4" data-theme-key="portal-main-button">
                     Enviar Recuerdo <span class="icon-portal">🎁</span>
                 </button>
             </form>
 
-            <h3 id="memories-list-title-text" class="text-lg font-bold mb-2 text-gray-700">Recuerdos de la Colmena</h3>
+            <h3 id="memories-list-title-text" class="themed-text text-lg font-bold mb-2 text-gray-700" data-theme-key="memories-list-title">Recuerdos de la Colmena</h3>
             <div id="memories-list" class="space-y-4 max-h-[40rem] overflow-y-auto p-2 border border-dashed border-gray-300 rounded-lg bg-white">
                 <p class="text-sm text-gray-500 italic">Cargando mensajes...</p>
             </div>
@@ -216,8 +200,8 @@
             <h2 class="text-2xl font-bold text-gray-800 mb-4">¡Bienvenido/a!</h2>
             <p class="text-gray-600 mb-6">Para continuar, por favor ingresa tu nombre.</p>
             <form id="guest-name-form">
-                <input type="text" id="modal-guest-name-input" required placeholder="Tu Nombre" class="input-bee w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 mb-4" maxlength="30">
-                <button type="submit" class="btn-portal btn-messages w-full">Continuar</button>
+                <input type="text" id="modal-guest-name-input" required placeholder="Tu Nombre" class="themed-input input-bee w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500 mb-4" maxlength="30">
+                <button type="submit" class="themed-button btn-portal btn-messages w-full" data-theme-key="portal-main-button">Continuar</button>
             </form>
         </div>
     </div>

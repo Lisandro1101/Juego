@@ -499,7 +499,7 @@
                     <div>
                         <label for="text-portal-greeting" class="input-label !mt-0">Texto de Bienvenida:</label>
                         <input type="text" id="text-portal-greeting" class="input-field" placeholder="¡Bienvenido a la Colmena!">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div class="color-picker-wrapper">
                                 <input type="color" id="text-portal-greeting-color" value="#6B7280">
                                 <span class="text-sm">Color</span>
@@ -508,7 +508,6 @@
                                 <label for="text-portal-greeting-font-size" class="text-sm font-bold">Tamaño Fuente</label>
                                 <input type="text" id="text-portal-greeting-font-size" class="input-field" placeholder="Ej: 1.125rem">
                             </div>
-                            <!-- ⭐️ INICIO: CAMPOS AÑADIDOS PARA BIENVENIDA ⭐️ -->
                             <div>
                                 <label for="text-portal-greeting-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-portal-greeting-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -517,37 +516,50 @@
                                 <label for="text-portal-greeting-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-portal-greeting-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
                             </div>
-                            <!-- ⭐️ FIN: CAMPOS AÑADIDOS PARA BIENVENIDA ⭐️ -->
+                            <div>
+                                <label for="text-portal-greeting-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-portal-greeting-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-portal-greeting-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label for="text-portal-title" class="input-label">Título Principal:</label>
-                        <input type="text" id="text-portal-title" class="input-field" placeholder="Portal de Recuerdos 🍯">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <input type="text" id="text-portal-title" class="input-field" placeholder="Portal de Recuerdos 🐝">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div class="color-picker-wrapper">
                                 <input type="color" id="portal-title-color" value="#1F2937">
-                                <span class="text-sm">Color del Título</span>
+                                <span class="text-sm">Color</span>
                             </div>
                             <div>
                                 <label for="portal-title-font-size" class="text-sm font-bold">Tamaño de Fuente</label>
                                 <input type="text" id="portal-title-font-size" class="input-field" placeholder="Ej: 2rem">
                             </div>
-                            <!-- ⭐️ INICIO: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
                             <div>
                                 <label for="text-portal-title-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-portal-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
                             </div>
                             <div>
                                 <label for="text-portal-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
-                                <input type="text" id="text-portal-title-letter-spacing" class="input-field" placeholder="Ej: 1px o -0.05em">
+                                <input type="text" id="text-portal-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
                             </div>
-                            <!-- ⭐️ FIN: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
+                            <div>
+                                <label for="text-portal-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-portal-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-portal-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label for="text-portal-subtitle" class="input-label">Subtítulo:</label>
                         <input type="text" id="text-portal-subtitle" class="input-field" placeholder="Deja un mensaje, una foto o video capturado.">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div class="color-picker-wrapper">
                                 <input type="color" id="text-portal-subtitle-color" value="#4B5563">
                                 <span class="text-sm">Color</span>
@@ -556,7 +568,6 @@
                                 <label for="text-portal-subtitle-font-size" class="text-sm font-bold">Tamaño Fuente</label>
                                 <input type="text" id="text-portal-subtitle-font-size" class="input-field" placeholder="Ej: 1.25rem">
                             </div>
-                            <!-- ⭐️ INICIO: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
                             <div>
                                 <label for="text-portal-subtitle-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-portal-subtitle-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -565,18 +576,24 @@
                                 <label for="text-portal-subtitle-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-portal-subtitle-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
                             </div>
-                            <!-- ⭐️ FIN: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
+                            <div>
+                                <label for="text-portal-subtitle-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-portal-subtitle-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-portal-subtitle-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label for="text-memories-section-title" class="input-label">Título Sección de Recuerdos:</label>
                         <input type="text" id="text-memories-section-title" class="input-field" placeholder="Deja tu Recuerdo">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div class="color-picker-wrapper">
                                 <input type="color" id="text-memories-section-title-color" value="#1F2937">
                                 <span class="text-sm">Color</span>
                             </div>
-                            <!-- ⭐️ INICIO: NUEVOS CAMPOS DE FUENTE Y ESPACIADO ⭐️ -->
                             <div>
                                 <label for="text-memories-section-title-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-memories-section-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -585,15 +602,43 @@
                                 <label for="text-memories-section-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-memories-section-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
                             </div>
+                            <div>
+                                <label for="text-memories-section-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-memories-section-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-memories-section-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
+                            </div>
                         </div>
                     </div>
                     <div>
                         <label for="text-memories-list-title" class="input-label">Título Lista de Recuerdos:</label>
                         <input type="text" id="text-memories-list-title" class="input-field" placeholder="Recuerdos de la Colmena">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div class="color-picker-wrapper">
                                 <input type="color" id="text-memories-list-title-color" value="#4B5563">
                                 <span class="text-sm">Color</span>
+                            </div>
+                            <div>
+                                <label for="text-memories-list-title-font-size" class="text-sm font-bold">Tamaño Fuente</label>
+                                <input type="text" id="text-memories-list-title-font-size" class="input-field" placeholder="Ej: 1.1rem">
+                            </div>
+                            <div>
+                                <label for="text-memories-list-title-font-family" class="text-sm font-bold">Fuente Específica</label>
+                                <input type="text" id="text-memories-list-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                            </div>
+                            <div>
+                                <label for="text-memories-list-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
+                                <input type="text" id="text-memories-list-title-letter-spacing" class="input-field" placeholder="Ej: 0.5px">
+                            </div>
+                            <div>
+                                <label for="text-memories-list-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-memories-list-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-memories-list-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
                             </div>
                         </div>
                     </div>
@@ -627,10 +672,20 @@
                             <span class="text-sm">Icono "Me Gusta"</span>
                             <select id="icon-like" class="input-field icon-input"></select>
                         </div>
+                        <!-- ⭐️ INICIO: BLOQUE AÑADIDO PARA CORREGIR ERROR ⭐️ -->
                         <div>
-                            <span class="text-sm">Icono "Me Gusta"</span>
-                            <select id="icon-like" class="input-field icon-input"></select>
+                            <span class="text-sm">Icono Trivia</span>
+                            <select id="icon-trivia" class="input-field icon-input"></select>
                         </div>
+                        <div>
+                            <span class="text-sm">Icono Memoria</span>
+                            <select id="icon-memory" class="input-field icon-input"></select>
+                        </div>
+                        <div>
+                            <span class="text-sm">Icono Ahorcado</span>
+                            <select id="icon-hangman" class="input-field icon-input"></select>
+                        </div>
+                        <!-- ⭐️ FIN: BLOQUE AÑADIDO ⭐️ -->
                     </div>
                 </div>
 
@@ -653,7 +708,7 @@
                 </div>
                 
                 <h3 class="text-lg font-bold mt-6">Botones del Portal (.btn-portal)</h3>
-                <div class="grid-cols-2-responsive mt-2">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2 p-4 border rounded-lg bg-gray-50">
                     <div class="color-picker-wrapper">
                         <input type="color" id="btn-portal-bg" value="#FACC15">
                         <span class="text-sm">Color de Fondo</span>
@@ -680,12 +735,23 @@
                         <label for="btn-shadow" class="text-sm font-bold">Sombra de Botones (Global)</label>
                         <input type="text" id="btn-shadow" class="input-field" placeholder="Ej: 0 5px">
                     </div>
+                    <div>
+                        <label for="btn-portal-font-family" class="text-sm font-bold">Fuente del Botón</label>
+                        <input type="text" id="btn-portal-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                    </div>
+                    <div>
+                        <label for="btn-portal-text-stroke-width" class="text-sm font-bold">Ancho Contorno Texto</label>
+                        <input type="text" id="btn-portal-text-stroke-width" class="input-field" placeholder="Ej: 1px">
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-portal-text-stroke-color" value="#000000">
+                        <span class="text-sm">Color Contorno Texto</span>
+                    </div>
                 </div>
 
                 <h3 class="text-lg font-bold mt-6">Botones del Menú de Juegos (.juegos-dropdown-item)</h3>
-                <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-2">
+                <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-2 grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2">
                     <p class="text-xs text-gray-500 mb-3">Estilos generales para todos los botones del menú.</p>
-                    <div class="grid-cols-2-responsive mt-2">
                         <div class="color-picker-wrapper">
                             <input type="color" id="btn-juegos-menu-bg" value="#66BB6A">
                             <span class="text-sm">Color de Fondo</span>
@@ -706,32 +772,34 @@
                             <label for="btn-juegos-menu-border-radius" class="text-sm font-bold">Radio de Borde</label>
                             <input type="text" id="btn-juegos-menu-border-radius" class="input-field" placeholder="Ej: 1.5rem">
                         </div>
+                        <div>
+                            <label for="btn-juegos-menu-font-family" class="text-sm font-bold">Fuente del Botón</label>
+                            <input type="text" id="btn-juegos-menu-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                        </div>
+                        <div>
+                            <label for="btn-juegos-menu-text-stroke-width" class="text-sm font-bold">Ancho Contorno Texto</label>
+                            <input type="text" id="btn-juegos-menu-text-stroke-width" class="input-field" placeholder="Ej: 1px">
+                        </div>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="btn-juegos-menu-text-stroke-color" value="#000000">
+                            <span class="text-sm">Color Contorno Texto</span>
+                        </div>
                     </div>
-                </div>
 
                 <div class="p-4 border rounded-lg bg-gray-50 text-gray-800 mt-4 space-y-4">
                     <p class="text-xs text-gray-500 mb-3">Contenido específico para cada botón del menú.</p>
                     
                     <div>
                         <label for="text-juegos-menu-trivia" class="input-label !mt-0">Texto Botón Trivia:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="text-juegos-menu-trivia" class="input-field" placeholder="¿Cuanto conoces a Amo?">
-                            <select id="icon-trivia" class="input-field icon-input"></select>
-                        </div>
+                        <input type="text" id="text-juegos-menu-trivia" class="input-field" placeholder="¿Cuanto conoces a Amo?">
                     </div>
                     <div>
                         <label for="text-juegos-menu-memory" class="input-label">Texto Botón Memoria:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="text-juegos-menu-memory" class="input-field" placeholder="Memoria con Amo">
-                            <select id="icon-memory" class="input-field icon-input"></select>
-                        </div>
+                        <input type="text" id="text-juegos-menu-memory" class="input-field" placeholder="Memoria con Amo">
                     </div>
                     <div>
                         <label for="text-juegos-menu-hangman" class="input-label">Texto Botón Ahorcado:</label>
-                        <div class="flex items-center gap-2">
-                            <input type="text" id="text-juegos-menu-hangman" class="input-field" placeholder="Ahorcado">
-                            <select id="icon-hangman" class="input-field icon-input"></select>
-                        </div>
+                        <input type="text" id="text-juegos-menu-hangman" class="input-field" placeholder="Ahorcado">
                     </div>
                 </div>
             </details>
@@ -762,7 +830,7 @@
                      <div>
                         <label for="text-trivia-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-trivia-title" class="input-field" placeholder="Trivia del Evento 🐝">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div>
                                 <label for="text-trivia-title-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-trivia-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -770,6 +838,14 @@
                             <div>
                                 <label for="text-trivia-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-trivia-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div>
+                                <label for="text-trivia-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-trivia-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-trivia-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
                             </div>
                         </div>
                     </div>
@@ -790,6 +866,14 @@
                     <div>
                         <label for="text-trivia-subtitle" class="input-label">Subtítulo (H3):</label>
                         <input type="text" id="text-trivia-subtitle" class="input-field" placeholder="¿Cuanto sabes de Amo?">
+                    </div>
+                    <div>
+                        <label for="text-trivia-start-button" class="input-label">Texto Botón "Iniciar":</label>
+                        <input type="text" id="text-trivia-start-button" class="input-field" placeholder="INICIAR JUEGO">
+                    </div>
+                    <div>
+                        <label for="text-trivia-next-button" class="input-label">Texto Botón "Siguiente":</label>
+                        <input type="text" id="text-trivia-next-button" class="input-field" placeholder="Siguiente Pregunta">
                         <!-- No añadimos más personalización aquí para no sobrecargar, pero se podría. -->
                     </div>
                 </div>
@@ -797,7 +881,7 @@
                 <h3 class="text-lg font-bold mt-6">Botón de Opción (.option-btn)</h3>
                 <p class="text-xs text-gray-500 mb-3">Controla la apariencia de los botones de respuesta.</p>
                 
-                <div class="grid-cols-2-responsive mt-2">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2 p-4 border rounded-lg bg-gray-50">
                     <div>
                         <label for="btn-trivia-padding" class="text-sm font-bold">Padding (Relleno)</label>
                         <input type="text" id="btn-trivia-padding" class="input-field" placeholder="Ej: 15px 20px">
@@ -829,6 +913,18 @@
                      <div>
                         <label for="btn-trivia-font-size" class="text-sm font-bold">Tamaño de Fuente</label>
                         <input type="text" id="btn-trivia-font-size" class="input-field" placeholder="Ej: 1.1em">
+                    </div>
+                    <div>
+                        <label for="btn-trivia-font-family" class="text-sm font-bold">Fuente del Botón</label>
+                        <input type="text" id="btn-trivia-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                    </div>
+                    <div>
+                        <label for="btn-trivia-text-stroke-width" class="text-sm font-bold">Ancho Contorno Texto</label>
+                        <input type="text" id="btn-trivia-text-stroke-width" class="input-field" placeholder="Ej: 1px">
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-trivia-text-stroke-color" value="#000000">
+                        <span class="text-sm">Color Contorno Texto</span>
                     </div>
                 </div>
 
@@ -864,7 +960,7 @@
                      <div>
                         <label for="text-memory-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-memory-title" class="input-field" placeholder="Juego de Memoria 🧠">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div>
                                 <label for="text-memory-title-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-memory-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -873,7 +969,19 @@
                                 <label for="text-memory-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-memory-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
                             </div>
+                            <div>
+                                <label for="text-memory-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-memory-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-memory-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
+                            </div>
                         </div>
+                    </div>
+                    <div>
+                        <label for="text-memory-start-button" class="input-label">Texto Botón "Comenzar":</label>
+                        <input type="text" id="text-memory-start-button" class="input-field" placeholder="¡Comenzar!">
                     </div>
                 </div>
                 <h3 class="text-lg font-bold mt-6">Carta del Juego (.card / .card-back)</h3>
@@ -923,7 +1031,7 @@
                      <div>
                         <label for="text-hangman-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-hangman-title" class="input-field" placeholder="El Ahorcado 💀">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div>
                                 <label for="text-hangman-title-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-hangman-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -931,6 +1039,14 @@
                             <div>
                                 <label for="text-hangman-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-hangman-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div>
+                                <label for="text-hangman-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-hangman-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-hangman-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
                             </div>
                         </div>
                     </div>
@@ -948,10 +1064,14 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <label for="text-hangman-start-button" class="input-label">Texto Botón "Comenzar":</label>
+                        <input type="text" id="text-hangman-start-button" class="input-field" placeholder="¡Comenzar!">
+                    </div>
                 </div>
 
                 <h3 class="text-lg font-bold mt-6">Teclado (.key-btn)</h3>
-                <div class="grid-cols-2-responsive mt-2">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2 p-4 border rounded-lg bg-gray-50">
                     <div class="color-picker-wrapper">
                         <input type="color" id="btn-hangman-bg" value="#FACC15">
                         <span class="text-sm">Fondo</span>
@@ -968,6 +1088,18 @@
                         <input type="color" id="btn-hangman-shadow-color" value="#F59E0B">
                         <span class="text-sm">Sombra</span>
                     </div>
+                    <div>
+                        <label for="btn-hangman-font-family" class="text-sm font-bold">Fuente del Botón</label>
+                        <input type="text" id="btn-hangman-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
+                    </div>
+                    <div>
+                        <label for="btn-hangman-text-stroke-width" class="text-sm font-bold">Ancho Contorno Texto</label>
+                        <input type="text" id="btn-hangman-text-stroke-width" class="input-field" placeholder="Ej: 1px">
+                    </div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="btn-hangman-text-stroke-color" value="#000000">
+                        <span class="text-sm">Color Contorno Texto</span>
+                    </div>
                 </div>
             </details>
 
@@ -979,7 +1111,7 @@
                      <div>
                         <label for="text-ranking-title" class="input-label !mt-0">Título Principal (H1):</label>
                         <input type="text" id="text-ranking-title" class="input-field" placeholder="Rankings de la Colmena 🏆">
-                        <div class="grid-cols-2-responsive mt-2">
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-2 mt-2">
                             <div>
                                 <label for="text-ranking-title-font-family" class="text-sm font-bold">Fuente Específica</label>
                                 <input type="text" id="text-ranking-title-font-family" list="font-family-list" class="input-field" placeholder="Heredar global o elegir">
@@ -987,6 +1119,14 @@
                             <div>
                                 <label for="text-ranking-title-letter-spacing" class="text-sm font-bold">Espaciado Letras</label>
                                 <input type="text" id="text-ranking-title-letter-spacing" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div>
+                                <label for="text-ranking-title-stroke-width" class="text-sm font-bold">Ancho Contorno</label>
+                                <input type="text" id="text-ranking-title-stroke-width" class="input-field" placeholder="Ej: 1px">
+                            </div>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="text-ranking-title-stroke-color" value="#000000">
+                                <span class="text-sm">Color Contorno</span>
                             </div>
                         </div>
                     </div>
@@ -1064,6 +1204,10 @@
                      <div>
                         <label for="text-host-login-title" class="input-label !mt-0">Título Pantalla de Login:</label>
                         <input type="text" id="text-host-login-title" class="input-field" placeholder="Acceso de Anfitrión">
+                    </div>
+                    <div>
+                        <label for="text-host-login-subtitle" class="input-label !mt-0">Subtítulo Pantalla de Login:</label>
+                        <input type="text" id="text-host-login-subtitle" class="input-field" placeholder="Ingresa para administrar tu evento.">
                     </div>
                      <div>
                         <label for="text-host-panel-title" class="input-label !mt-0">Título Panel de Control:</label>

@@ -19,12 +19,11 @@
             --mem-card-back-border-color: var(--bee-black, #1F2937);
         }
 
-        /* ⭐️ NUEVO: Estilos para el contenedor de Memoria */
-        .quiz-container.memory-mode {
-            background-color: var(--memory-container-bg, rgba(255, 255, 255, 0.9));
-            border-radius: var(--memory-container-border-radius, 15px);
+        /* ⭐️ REFACTORIZADO: Usamos la clase genérica del motor de temas ⭐️ */
+        .themed-container[data-theme-page="memory"] {
+            background-color: var(--memory-container-bg);
+            border-radius: var(--memory-container-border-radius);
         }
-
     
         /* Estilos específicos para la cuadrícula del juego de memoria */
         .grid-container {
@@ -172,20 +171,20 @@
 </head>
 <body>
     
-    <div class="quiz-container memory-mode">
+    <div class="themed-container quiz-container memory-mode" data-theme-page="memory">
         
         <div id="start-screen" class="quiz-section">
-            <h1 id="memory-title-text" class="title">Juego de Memoria <span class="icon-memory">🧠</span></h1>
-            <p class="mb-4">Ingresa tu nombre para comenzar a encontrar las parejas:</p>
+            <h1 id="memory-title-text" class="themed-text title" data-theme-key="memory-title">Juego de Memoria <span class="icon-memory">🧠</span></h1>
+            <p class="themed-text mb-4" data-theme-key="memory-subtitle">Ingresa tu nombre para comenzar a encontrar las parejas:</p>
             
-            <label for="player-name-input" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
+            <label for="player-name-input" class="themed-text" data-theme-key="memory-input-label" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
 
-            <input type="text" id="player-name-input" class="text-input" placeholder="Tu Nombre" maxlength="20">
+            <input type="text" id="player-name-input" class="themed-input text-input" data-theme-key="memory-player-name" placeholder="Tu Nombre" maxlength="20">
             
-            <button id="start-btn" class="save-btn mt-4" style="background: var(--honey-gold);">¡Comenzar!</button>
+            <button id="start-btn" class="themed-button save-btn mt-4" data-theme-key="memory-start-button">¡Comenzar!</button>
 
             <div style="text-align: center; margin-top: 20px;">
-                <button onclick="window.location.href='index.html'" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
+                <button onclick="window.location.href='index.html'" class="themed-button" data-theme-key="memory-back-button" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
                     Volver al Portal
                 </button>
             </div>
@@ -193,8 +192,8 @@
         <div id="modal-memory-game" class="modal-full-screen hidden">
             
             <div id="game-mode-container" class="quiz-section-floating"> 
-                <div id="game-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: #fff8e1; border-radius: 10px;">
-                    <div id="player-name-display" style="font-weight: bold;">Jugador: -</div> 
+                <div id="game-header" class="themed-container" data-theme-key="memory-game-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: #fff8e1; border-radius: 10px;">
+                    <div id="player-name-display" class="themed-text" data-theme-key="memory-player-display" style="font-weight: bold;">Jugador: -</div> 
                     <div id="timer" class="timer">Tiempo: <span>0</span>s</div>
                     <button id="close-modal-btn" class="close-btn" style="background: none; border: none; font-size: 1.5em; cursor: pointer; color: var(--bee-black); padding: 5px;">✖️</button>
                 </div>
@@ -205,11 +204,11 @@
             </div>
 
             <div id="results" class="results-container hidden">
-                <h2><span class="icon-win">🎉</span> ¡Memoria Completada! <span class="icon-win">🎉</span></h2>
-                <p id="final-time">Tu tiempo fue de: 0 segundos</p>
+                <h2 class="themed-text" data-theme-key="memory-results-title"><span class="icon-win">🎉</span> ¡Memoria Completada! <span class="icon-win">🎉</span></h2>
+                <p id="final-time" class="themed-text" data-theme-key="memory-results-subtitle">Tu tiempo fue de: 0 segundos</p>
                 
-                <button onclick="window.location.href='index.html'" class="save-btn mt-4" style="background: var(--honey-gold);">Volver al Portal</button>
-                <button id="play-again-modal-btn" class="save-btn mt-4" style="background: var(--spring-green);">Jugar de Nuevo</button>
+                <button onclick="window.location.href='index.html'" class="themed-button save-btn mt-4" data-theme-key="memory-back-button">Volver al Portal</button>
+                <button id="play-again-modal-btn" class="themed-button save-btn mt-4" data-theme-key="memory-play-again-button">Jugar de Nuevo</button>
             </div>
 
         </div>

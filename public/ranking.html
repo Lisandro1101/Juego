@@ -40,12 +40,12 @@
         }
 
         /* Usamos una clase nueva para no entrar en conflicto con .portal-container */
-        .ranking-box.ranking-mode {
+        .themed-container[data-theme-page="ranking"] {
             background-color: var(--ranking-container-bg);
             padding: 20px;
             border-radius: var(--ranking-container-border-radius);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            width: 100%;
+            width: 100%; 
             max-width: 650px; /* Le damos un ancho máximo */
             margin: 20px auto;
             text-align: left;
@@ -82,26 +82,26 @@
 </head>
 <body>
 
-    <h1 id="ranking-title-text"><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
+    <h1 id="ranking-title-text" class="themed-text" data-theme-key="ranking-title"><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
 
-    <div class="ranking-box ranking-mode">
-        <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
+    <div class="themed-container ranking-box" data-theme-page="ranking">
+        <h2 class="themed-text text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2" data-theme-key="ranking-trivia-title">
             <span class="text-yellow-500 text-3xl icon-trivia">✍️</span>
             <span>Ranking de la Colmena (Trivia)</span>
         </h2>
-        <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Puntuación y luego menor tiempo.</p>
+        <p class="themed-text text-xs text-gray-600 mb-3 text-center" data-theme-key="ranking-trivia-subtitle">Clasificado por: Puntuación y luego menor tiempo.</p>
         
         <ul id="ranking-list" class="space-y-2">
             <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
         </ul>
     </div>
 
-    <div class="ranking-box ranking-mode">
-        <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
+    <div class="themed-container ranking-box" data-theme-page="ranking">
+        <h2 class="themed-text text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2" data-theme-key="ranking-memory-title">
             <span class="text-blue-500 text-3xl icon-memory">🧠</span>
             <span>Ranking de Memoria</span>
         </h2>
-        <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Menor tiempo.</p>
+        <p class="themed-text text-xs text-gray-600 mb-3 text-center" data-theme-key="ranking-memory-subtitle">Clasificado por: Menor tiempo.</p>
         
         <ul id="memory-ranking-list" class="space-y-2">
             <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>

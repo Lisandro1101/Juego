@@ -30,6 +30,28 @@
             --btn-host-bg: var(--bee-black);
             --btn-host-text-color: var(--bee-yellow);
             --btn-host-border-color: var(--bee-yellow);
+            --btn-host-font-family: var(--font-family); /* Hereda la fuente global por defecto */
+            --btn-host-text-stroke-width: 0px;
+            --btn-host-text-stroke-color: #000000;
+        }
+
+        /* 4. Motor de Texto Genérico (¡La clave de la personalización!) */
+        .themed-text {
+            color: var(--text-color);
+            font-size: var(--text-font-size);
+            font-family: var(--text-font-family);
+            letter-spacing: var(--text-letter-spacing);
+            -webkit-text-stroke-width: var(--text-stroke-width);
+            -webkit-text-stroke-color: var(--text-stroke-color);
+        }
+        .themed-button {
+            background-color: var(--btn-host-bg);
+            color: var(--btn-host-text-color);
+            border: 3px solid var(--btn-host-border-color);
+            box-shadow: 0 4px var(--btn-host-border-color);
+            font-family: var(--btn-host-font-family);
+            -webkit-text-stroke-width: var(--btn-host-text-stroke-width);
+            -webkit-text-stroke-color: var(--btn-host-text-stroke-color);
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -144,11 +166,11 @@
 <body class="p-4 sm:p-8">
 
     <div id="host-login-container" class="container" style="max-width: 400px; display: none;">
-        <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">
+        <h1 id="host-login-title-text" class="themed-text text-3xl font-black text-gray-800 flex items-center justify-center space-x-2" data-theme-key="host-login-title">
             <span class="text-yellow-500 text-5xl">🛠️</span>
-            <span id="host-login-title-text">Acceso de Anfitrión</span>
+            <span>Acceso de Anfitrión</span>
         </h1>
-        <p class="text-center text-gray-600 my-4">Ingresa para administrar tu evento.</p>
+        <p class="themed-text text-center text-gray-600 my-4" data-theme-key="host-login-subtitle">Ingresa para administrar tu evento.</p>
         
         <form id="host-login-form" class="space-y-4">
             <div>
@@ -159,7 +181,7 @@
                 <label for="host-login-password" class="block text-sm font-bold text-gray-700">Contraseña:</label>
                 <input type="password" id="host-login-password" class="w-full p-3 border border-yellow-300 rounded-lg" required autocomplete="current-password">
             </div>
-            <button type="submit" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+            <button type="submit" class="themed-button w-full btn-bee mt-4" data-theme-key="host-main-button" style="border-width: 3px;">
                 Ingresar
             </button>
             <p id="host-login-error" class="text-center text-red-500 mt-4"></p>
@@ -168,14 +190,14 @@
     <div id="host-panel-container" class="container admin-mode" style="display: none;">
         
         <header class="text-center mb-6">
-            <h1 class="text-3xl font-black text-gray-800 flex items-center justify-center space-x-2">
+            <h1 id="host-panel-title-text" class="themed-text text-3xl font-black text-gray-800 flex items-center justify-center space-x-2" data-theme-key="host-panel-title">
                 <span class="text-yellow-500 text-5xl">🛠️</span>
-                <span id="host-panel-title-text">Panel de Control</span>
+                <span>Panel de Control</span>
                 <span class="text-yellow-500 text-5xl icon-main">⚙️</span>
             </h1>
             
             <!-- ⭐️ NUEVO: Botón de Exportación ⭐️ -->
-            <button id="export-memories-btn" class="w-full mb-6 bg-blue-600 text-white hover:bg-blue-700 delete-btn border-none" style="box-shadow: none; padding: 10px; font-size: 1em;">
+            <button id="export-memories-btn" class="themed-button w-full mb-6 bg-blue-600 text-white hover:bg-blue-700 delete-btn border-none" data-theme-key="host-secondary-button" style="box-shadow: none; padding: 10px; font-size: 1em; border-width: 0;">
                 Exportar Todos los Recuerdos (HTML)
             </button>
 
@@ -213,7 +235,7 @@
                            class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
                 </div>
 
-                <button type="submit" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                <button type="submit" class="themed-button w-full btn-bee mt-4" data-theme-key="host-main-button" style="border-width: 3px;">
                     Guardar Pregunta
                 </button>
             </form>
@@ -224,7 +246,7 @@
                     </ul>
             </div>
 
-            <button id="clear-all-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
+            <button id="clear-all-btn" class="themed-button w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" data-theme-key="host-danger-button" style="box-shadow: none; border-width: 0;">
                 Limpiar Todas las Preguntas
             </button>
         </div>
@@ -249,7 +271,7 @@
                     </div>
                 </div>
 
-                <button type="submit" id="save-memory-images-btn" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                <button type="submit" id="save-memory-images-btn" class="themed-button w-full btn-bee mt-4" data-theme-key="host-main-button" style="border-width: 3px;">
                     Subir y Guardar Imágenes
                 </button>
             </form>
@@ -261,7 +283,7 @@
                 </ul>
             </div>
 
-            <button id="clear-memory-images-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
+            <button id="clear-memory-images-btn" class="themed-button w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" data-theme-key="host-danger-button" style="box-shadow: none; border-width: 0;">
                 Limpiar Todas las Imágenes
             </button>
         </div>
@@ -276,7 +298,7 @@
                            class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
                            style="text-transform: uppercase;">
                 </div>
-                <button type="submit" id="save-hangman-word-btn" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                <button type="submit" id="save-hangman-word-btn" class="themed-button w-full btn-bee mt-4" data-theme-key="host-main-button" style="border-width: 3px;">
                     Guardar Palabra
                 </button>
             </form>
@@ -288,7 +310,7 @@
                 </ul>
             </div>
 
-            <button id="clear-hangman-words-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
+            <button id="clear-hangman-words-btn" class="themed-button w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" data-theme-key="host-danger-button" style="box-shadow: none; border-width: 0;">
                 Limpiar Todas las Palabras
             </button>
         </div>

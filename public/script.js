@@ -1458,13 +1458,14 @@ function handleHostAuth() {
         submitButton.disabled = true;
         
         // ⭐️ CORRECCIÓN: Usar el nombre de usuario correcto desde la configuración de autenticación.
-        // El error estaba en que se usaba EVENT_ID en lugar del usuario guardado.
         const username = window.eventConfig.auth.username; 
         if (!username) {
             loginError.textContent = "Error: Evento no configurado para login de anfitrión.";
             submitButton.disabled = false;
             return;
         }
+        // ⭐️ CORRECCIÓN CLAVE: Construir el email completo para el login.
+        const email = `${username}@tufiestadigital.com.ar`;
         const password = document.getElementById('host-login-password').value;
 
         try {

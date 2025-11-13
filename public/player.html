@@ -39,9 +39,9 @@
         }
         
         /* ⭐️ NUEVO: Estilos para el contenedor de Trivia */
-        .quiz-container.player-mode {
-            background-color: var(--trivia-container-bg, rgba(255, 255, 255, 0.9));
-            border-radius: var(--trivia-container-border-radius, 15px);
+        .themed-container[data-theme-page="player"] {
+            background-color: var(--trivia-container-bg);
+            border-radius: var(--trivia-container-border-radius);
         }
 
         .quiz-section {
@@ -65,6 +65,9 @@
             border: 3px solid var(--btn-trivia-border-color);
             color: var(--btn-trivia-text-color);
             box-shadow: var(--btn-trivia-shadow) var(--btn-trivia-shadow-color);
+            font-family: var(--btn-trivia-font-family);
+            -webkit-text-stroke-width: var(--btn-trivia-text-stroke-width);
+            -webkit-text-stroke-color: var(--btn-trivia-text-stroke-color);
         }
 
         .option-btn:hover:not(:disabled) {
@@ -106,52 +109,53 @@
 </head>
 <body>
 
-    <div class="quiz-container player-mode">
-        <h1 id="trivia-title-text"><span class="icon-trivia">✍️</span> Trivia del Evento <span class="icon-main">🐝</span></h1>
+    <div class="themed-container quiz-container player-mode" data-theme-page="player">
+        <h1 id="trivia-title-text" class="themed-text" data-theme-key="trivia-title"><span class="icon-trivia">✍️</span> Trivia del Evento <span class="icon-main">🐝</span></h1>
         
         <form id="start-form">
             <div id="start-screen" class="quiz-section" style="padding: 20px;">
-                <h2 id="trivia-welcome-text" style="color: #333; margin-bottom: 15px;">¡Bienvenido a la Colmena!</h2>
-                <h3 id="trivia-subtitle-text" style="color: #333; margin-bottom: 10px;">¿Cuanto sabes de Amo?</h3>
-<label for="player-name-input" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
-                <input type="text" id="player-name-input" required placeholder="Escribe tu nombre" 
+                <h2 id="trivia-welcome-text" class="themed-text" data-theme-key="trivia-welcome" style="color: #333; margin-bottom: 15px;">¡Bienvenido a la Colmena!</h2>
+                <h3 id="trivia-subtitle-text" class="themed-text" data-theme-key="trivia-subtitle" style="color: #333; margin-bottom: 10px;">¿Cuanto sabes de Amo?</h3>
+                <label for="player-name-input" class="themed-text" data-theme-key="trivia-input-label" style="display: block; font-weight: bold; margin-bottom: 5px;">Tu Nombre de Jugador:</label>
+                <input type="text" id="player-name-input" class="themed-input" data-theme-key="trivia-player-name" required placeholder="Escribe tu nombre" 
                        style="width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 15px; border: 2px solid #ffcc00; border-radius: 5px;"
                        maxlength="20">
 
-                <p id="player-no-questions-msg" style="color: red; font-weight: bold;" class="hidden">El anfitrión debe cargar las preguntas primero.</p>
+                <p id="player-no-questions-msg" class="themed-text" data-theme-key="trivia-no-questions-msg" style="color: red; font-weight: bold;" class="hidden">El anfitrión debe cargar las preguntas primero.</p>
                 
-                <button type="submit" id="start-game-btn" class="save-btn" style="background: #4caf50;">INICIAR JUEGO</button>
+                <button type="submit" id="start-game-btn" class="themed-button save-btn" data-theme-key="trivia-start-button" style="background: #4caf50;">INICIAR JUEGO</button>
                 
                 <div style="text-align: center; margin-top: 20px;">
-                    <button type="button" onclick="window.location.href='index.html'" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
+                    <button type="button" onclick="window.location.href='index.html'" class="themed-button" data-theme-key="trivia-back-button" style="background: none; border: none; color: #666; font-size: 0.9em; cursor: pointer;">
                         Volver al Portal
                     </button>
                 </div>
 
             </div>
         </form>
-        <div id="game-mode" class="quiz-section hidden">
+        <div id="game-mode" class="quiz-section hidden" >
             
-            <div id="quiz-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: #fff8e1; border-radius: 10px;">
-                <div id="player-name-display" style="font-weight: bold;">Jugador: -</div> 
-                <div id="timer" class="timer">Tiempo: <span>10</span>s</div>
-                <div id="score" class="score">Puntos: <span>0</span></div>
+            <div id="quiz-header" class="themed-container" data-theme-key="trivia-game-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: #fff8e1; border-radius: 10px;">
+                <div id="player-name-display" class="themed-text" data-theme-key="trivia-player-display" style="font-weight: bold;">Jugador: -</div> 
+                <div id="timer" class="themed-text timer" data-theme-key="trivia-timer">Tiempo: <span>10</span>s</div>
+                <div id="score" class="themed-text score" data-theme-key="trivia-score">Puntos: <span>0</span></div>
             </div>
             
             <div id="question-area">
-                <h2 id="question"></h2>
+                <h2 id="question" class="themed-text" data-theme-key="trivia-question-text"></h2>
                 <div id="options-container" class="options-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
-                    </div>
+                    <!-- Los botones de opción se generan dinámicamente con la clase 'themed-button' y 'data-theme-key="trivia-option-button"' -->
+                </div>
             </div>
             
-            <button id="next-btn" class.name="save-btn mt-4" style="background: var(--honey-gold);">Siguiente Pregunta</button>
+            <button id="next-btn" class="themed-button save-btn mt-4" data-theme-key="trivia-next-button" style="background: var(--honey-gold);">Siguiente Pregunta</button>
 
         </div>
 
         <div id="results" class="results-container hidden">
-            <h2><span class="icon-win">🎉</span> ¡Resultados Finales! <span class="icon-win">🎉</span></h2>
-            <p id="final-score">Tu puntuación es de: 0</p>
-            <button onclick="location.reload()" style="background: #e69900; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Jugar de Nuevo</button>
+            <h2 class="themed-text" data-theme-key="trivia-results-title"><span class="icon-win">🎉</span> ¡Resultados Finales! <span class="icon-win">🎉</span></h2>
+            <p id="final-score" class="themed-text" data-theme-key="trivia-results-score">Tu puntuación es de: 0</p>
+            <button onclick="location.reload()" class="themed-button" data-theme-key="trivia-play-again-button" style="background: #e69900; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 10px;">Jugar de Nuevo</button>
         </div>
     </div>
     <script type="module" src="script.js?v=1.0"></script>

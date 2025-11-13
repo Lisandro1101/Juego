@@ -429,6 +429,31 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
     }
 
     /**
+     * ⭐️ NUEVO: Obtiene el valor de un elemento de forma segura.
+     * @param {string} id - El ID del elemento HTML.
+     * @param {string} [property='value'] - La propiedad a leer (ej: 'value', 'checked').
+     * @returns {*} El valor de la propiedad o `undefined` si no se encuentra.
+     */
+    function getValue(id, property = 'value') {
+        const element = document.getElementById(id);
+        return element ? element[property] : undefined;
+    }
+
+    /**
+     * ⭐️ NUEVO: Asigna un valor a la propiedad de un elemento de forma segura.
+     * Evita errores si el elemento no existe en el HTML.
+     * @param {string} id - El ID del elemento HTML.
+     * @param {string} value - El valor a asignar.
+     * @param {string} [property='value'] - La propiedad a modificar (ej: 'value', 'checked').
+     */
+    function safeSet(id, value, property = 'value') {
+        const element = document.getElementById(id);
+        if (element) {
+            element[property] = value;
+        }
+    }
+
+    /**
      * Rellena el formulario con datos de Firebase
      */
     function populateForm(config) {
@@ -442,175 +467,217 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         const authConfig = config.auth || {};
 
         // Rellenar Funcionalidades y Estado
-        document.getElementById('games-enabled').checked = features.games_enabled !== false;
-        document.getElementById('event-active').checked = status.is_active !== false;
+        safeSet('games-enabled', features.games_enabled !== false, 'checked');
+        safeSet('event-active', status.is_active !== false, 'checked');
 
 
         // Rellenar Tema Global
         // ⭐️ NUEVO: Rellenar campos de autenticación
-        document.getElementById('auth-event-username').value = authConfig.username || '';
-        document.getElementById('auth-event-password').value = authConfig.password || '';
+        safeSet('auth-event-username', authConfig.username || '');
+        safeSet('auth-event-password', authConfig.password || '');
 
-        document.getElementById('color-primary').value = theme.color_primary || '#FACC15';
-        document.getElementById('color-secondary').value = theme.color_secondary || '#F59E0B';
-        document.getElementById('color-text').value = theme.color_text || '#1F2937';
-        document.getElementById('color-success').value = theme.color_success || '#4CAF50';
-        document.getElementById('color-danger').value = theme.color_danger || '#E53935';
-        document.getElementById('color-text-light').value = theme.color_text_light || '#FFFFFF';
-        document.getElementById('font-family').value = theme.font_family || "'Inter', sans-serif";
-        document.getElementById('btn-shadow').value = theme.btn_shadow || '0 5px';
+        safeSet('color-primary', theme.color_primary || '#FACC15');
+        safeSet('color-secondary', theme.color_secondary || '#F59E0B');
+        safeSet('color-text', theme.color_text || '#1F2937');
+        safeSet('color-success', theme.color_success || '#4CAF50');
+        safeSet('color-danger', theme.color_danger || '#E53935');
+        safeSet('color-text-light', theme.color_text_light || '#FFFFFF');
+        safeSet('font-family', theme.font_family || "'Inter', sans-serif");
+        safeSet('btn-shadow', theme.btn_shadow || '0 5px');
 
         // ⭐️ NUEVO: Rellenar contorno de texto
-        document.getElementById('text-stroke-width').value = theme.text_stroke_width || '';
-        document.getElementById('text-stroke-color').value = theme.text_stroke_color || '#000000';
+        safeSet('text-stroke-width', theme.text_stroke_width || '');
+        safeSet('text-stroke-color', theme.text_stroke_color || '#000000');
 
         // Rellenar Textos
-        document.getElementById('text-portal-greeting').value = texts.portal_greeting || '¡Bienvenido a la Colmena!';
-        document.getElementById('text-portal-greeting-color').value = texts.portal_greeting_color || '#6B7280';
-        document.getElementById('text-portal-greeting-font-size').value = texts.portal_greeting_font_size || '';
-        document.getElementById('text-portal-greeting-font-family').value = texts.portal_greeting_font_family || '';
-        document.getElementById('text-portal-greeting-letter-spacing').value = texts.portal_greeting_letter_spacing || '';
+        safeSet('text-portal-greeting', texts.portal_greeting || '¡Bienvenido a la Colmena!');
+        safeSet('text-portal-greeting-color', texts.portal_greeting_color || '#6B7280');
+        safeSet('text-portal-greeting-font-size', texts.portal_greeting_font_size || '');
+        safeSet('text-portal-greeting-font-family', texts.portal_greeting_font_family || '');
+        safeSet('text-portal-greeting-letter-spacing', texts.portal_greeting_letter_spacing || '');
+        safeSet('text-portal-greeting-stroke-width', texts.portal_greeting_stroke_width || '');
+        safeSet('text-portal-greeting-stroke-color', texts.portal_greeting_stroke_color || '#000000');
 
-        document.getElementById('text-portal-title').value = texts.portal_title || 'Portal de Recuerdos 🍯';
-        document.getElementById('text-portal-title-font-family').value = texts.portal_title_font_family || '';
-        document.getElementById('text-portal-title-letter-spacing').value = texts.portal_title_letter_spacing || '';
+        safeSet('text-portal-title', texts.portal_title || 'Portal de Recuerdos 🍯');
+        safeSet('portal-title-color', theme.portal_title_color || '#1F2937');
+        safeSet('portal-title-font-size', theme.portal_title_font_size || '');
+        safeSet('text-portal-title-font-family', texts.portal_title_font_family || '');
+        safeSet('text-portal-title-letter-spacing', texts.portal_title_letter_spacing || '');
+        safeSet('text-portal-title-stroke-width', texts.portal_title_stroke_width || '');
+        safeSet('text-portal-title-stroke-color', texts.portal_title_stroke_color || '#000000');
 
-        document.getElementById('text-portal-subtitle').value = texts.portal_subtitle || 'Deja un mensaje, una foto o video capturado.';
-        document.getElementById('text-portal-subtitle-color').value = texts.portal_subtitle_color || '#4B5563';
-        document.getElementById('text-portal-subtitle-font-family').value = texts.portal_subtitle_font_family || '';
-        document.getElementById('text-portal-subtitle-letter-spacing').value = texts.portal_subtitle_letter_spacing || '';
+        safeSet('text-portal-subtitle', texts.portal_subtitle || 'Deja un mensaje, una foto o video capturado.');
+        safeSet('text-portal-subtitle-color', texts.portal_subtitle_color || '#4B5563');
+        safeSet('text-portal-subtitle-font-size', texts.portal_subtitle_font_size || '');
+        safeSet('text-portal-subtitle-font-family', texts.portal_subtitle_font_family || '');
+        safeSet('text-portal-subtitle-letter-spacing', texts.portal_subtitle_letter_spacing || '');
+        safeSet('text-portal-subtitle-stroke-width', texts.portal_subtitle_stroke_width || '');
+        safeSet('text-portal-subtitle-stroke-color', texts.portal_subtitle_stroke_color || '#000000');
 
-        document.getElementById('text-memories-section-title').value = texts.memories_section_title || 'Deja tu Recuerdo';
-        document.getElementById('text-memories-section-title-color').value = texts.memories_section_title_color || '#1F2937';
-        document.getElementById('text-memories-section-title-font-family').value = texts.memories_section_title_font_family || '';
-        document.getElementById('text-memories-section-title-letter-spacing').value = texts.memories_section_title_letter_spacing || '';
-        document.getElementById('text-portal-subtitle-font-size').value = texts.portal_subtitle_font_size || '';
+        safeSet('text-memories-section-title', texts.memories_section_title || 'Deja tu Recuerdo');
+        safeSet('text-memories-section-title-color', texts.memories_section_title_color || '#1F2937');
+        safeSet('text-memories-section-title-font-family', texts.memories_section_title_font_family || '');
+        safeSet('text-memories-section-title-letter-spacing', texts.memories_section_title_letter_spacing || '');
+        safeSet('text-memories-section-title-stroke-width', texts.memories_section_title_stroke_width || '');
+        safeSet('text-memories-section-title-stroke-color', texts.memories_section_title_stroke_color || '#000000');
 
-        document.getElementById('text-memories-list-title').value = texts.memories_list_title || 'Recuerdos de la Colmena';
-        document.getElementById('text-memories-list-title-color').value = texts.memories_list_title_color || '#4B5563';
+        safeSet('text-memories-list-title', texts.memories_list_title || 'Recuerdos de la Colmena');
+        safeSet('text-memories-list-title-color', texts.memories_list_title_color || '#4B5563');
+        safeSet('text-memories-list-title-font-size', texts.memories_list_title_font_size || '');
+        safeSet('text-memories-list-title-font-family', texts.memories_list_title_font_family || '');
+        safeSet('text-memories-list-title-letter-spacing', texts.memories_list_title_letter_spacing || '');
+        safeSet('text-memories-list-title-stroke-width', texts.memories_list_title_stroke_width || '');
+        safeSet('text-memories-list-title-stroke-color', texts.memories_list_title_stroke_color || '#000000');
 
         // ⭐️ NUEVO: Rellenar textos de botones de juegos
-        document.getElementById('text-juegos-menu-trivia').value = texts.juegos_menu_trivia || '¿Cuanto conoces a Amo?';
-        document.getElementById('text-juegos-menu-memory').value = texts.juegos_menu_memory || 'Memoria con Amo';
-        document.getElementById('text-juegos-menu-hangman').value = texts.juegos_menu_hangman || 'Ahorcado';
+        safeSet('text-juegos-menu-trivia', texts.juegos_menu_trivia || '¿Cuanto conoces a Amo?');
+        safeSet('text-juegos-menu-memory', texts.juegos_menu_memory || 'Memoria con Amo');
+        safeSet('text-juegos-menu-hangman', texts.juegos_menu_hangman || 'Ahorcado');
 
 
         // Rellenar Iconos
-        document.getElementById('icon-main').value = icons.icon_main || '🐝'; // Valor por defecto si no existe
-        document.getElementById('icon-portal').value = icons.icon_portal || '💬'; // Valor por defecto si no existe
-        document.getElementById('icon-trivia').value = icons.icon_trivia || '✍️'; // Valor por defecto si no existe
-        document.getElementById('icon-memory').value = icons.icon_memory || '🧠'; // Valor por defecto si no existe
-        document.getElementById('icon-hangman').value = icons.icon_hangman || '💀'; // Valor por defecto si no existe
-        document.getElementById('icon-ranking').value = icons.icon_ranking || '🏆'; // Valor por defecto si no existe
-        document.getElementById('icon-win').value = icons.icon_win || '🎉'; // Valor por defecto si no existe
-        document.getElementById('icon-games').value = icons.icon_games || '🕹️';
-        document.getElementById('icon-like').value = icons.icon_like || '❤️';
-        document.getElementById('icon-memories').value = icons.icon_memories || '💖';
+        safeSet('icon-main', icons.icon_main || '🐝');
+        safeSet('icon-portal', icons.icon_portal || '💬');
+        safeSet('icon-trivia', icons.icon_trivia || '✍️');
+        safeSet('icon-memory', icons.icon_memory || '🧠');
+        safeSet('icon-hangman', icons.icon_hangman || '💀');
+        safeSet('icon-ranking', icons.icon_ranking || '🏆');
+        safeSet('icon-win', icons.icon_win || '🎉');
+        safeSet('icon-games', icons.icon_games || '🕹️');
+        safeSet('icon-like', icons.icon_like || '❤️');
+        safeSet('icon-memories', icons.icon_memories || '💖');
 
 
         // Rellenar Personalización del Portal
         // ⭐️ MODIFICADO: Usar la función de conversión para 'portal_bg'
         const portalBg = rgbaToHexAndOpacity(theme.portal_bg);
-        document.getElementById('portal-bg').value = portalBg.hex;
-        document.getElementById('portal-bg-opacity').value = portalBg.opacity;
+        safeSet('portal-bg', portalBg.hex);
+        safeSet('portal-bg-opacity', portalBg.opacity);
         
-        document.getElementById('portal-border-radius').value = theme.portal_border_radius || '';
-        document.getElementById('portal-title-color').value = theme.portal_title_color || '#1F2937';
-        document.getElementById('portal-title-font-size').value = theme.portal_title_font_size || '';
-        document.getElementById('btn-portal-bg').value = theme.btn_portal_bg || '#FACC15';
-        document.getElementById('btn-portal-text-color').value = theme.btn_portal_text_color || '#1F2937';
-        document.getElementById('btn-portal-border-radius').value = theme.btn_portal_border_radius || '';
-        document.getElementById('btn-portal-shadow-color').value = theme.btn_portal_shadow_color || '#F59E0B';
-        document.getElementById('btn-portal-shadow-color-hover').value = theme.btn_portal_shadow_color_hover || '#dd6b20';
+        safeSet('portal-border-radius', theme.portal_border_radius || '');
+        safeSet('portal-title-color', theme.portal_title_color || '#1F2937');
+        safeSet('btn-portal-bg', theme.btn_portal_bg || '#FACC15');
+        safeSet('btn-portal-text-color', theme.btn_portal_text_color || '#1F2937');
+        safeSet('btn-portal-border-radius', theme.btn_portal_border_radius || '');
+        safeSet('btn-portal-shadow-color', theme.btn_portal_shadow_color || '#F59E0B');
+        safeSet('btn-portal-shadow-color-hover', theme.btn_portal_shadow_color_hover || '#dd6b20');
+        safeSet('btn-portal-font-family', theme.btn_portal_font_family || '');
+        safeSet('btn-portal-text-stroke-width', theme.btn_portal_text_stroke_width || '');
+        safeSet('btn-portal-text-stroke-color', theme.btn_portal_text_stroke_color || '#000000');
 
         // ⭐️ NUEVO: Rellenar Personalización de Botones del Menú de Juegos
-        document.getElementById('btn-juegos-menu-bg').value = theme.btn_juegos_menu_bg || '#66BB6A';
-        document.getElementById('btn-juegos-menu-text-color').value = theme.btn_juegos_menu_text_color || '#FFFFFF';
-        document.getElementById('btn-juegos-menu-border-color').value = theme.btn_juegos_menu_border_color || '#388E3C';
-        document.getElementById('btn-juegos-menu-shadow-color').value = theme.btn_juegos_menu_shadow_color || '#388E3C';
-        document.getElementById('btn-juegos-menu-border-radius').value = theme.btn_juegos_menu_border_radius || '';
+        safeSet('btn-juegos-menu-bg', theme.btn_juegos_menu_bg || '#66BB6A');
+        safeSet('btn-juegos-menu-text-color', theme.btn_juegos_menu_text_color || '#FFFFFF');
+        safeSet('btn-juegos-menu-border-color', theme.btn_juegos_menu_border_color || '#388E3C');
+        safeSet('btn-juegos-menu-shadow-color', theme.btn_juegos_menu_shadow_color || '#388E3C');
+        safeSet('btn-juegos-menu-border-radius', theme.btn_juegos_menu_border_radius || '');
+        safeSet('btn-juegos-menu-font-family', theme.btn_juegos_menu_font_family || '');
+        safeSet('btn-juegos-menu-text-stroke-width', theme.btn_juegos_menu_text_stroke_width || '');
+        safeSet('btn-juegos-menu-text-stroke-color', theme.btn_juegos_menu_text_stroke_color || '#000000');
 
         // ⭐️ NUEVO: Rellenar Personalización de Trivia (Contenedor y Textos)
         const triviaContainerBg = rgbaToHexAndOpacity(theme.trivia_container_bg);
-        document.getElementById('trivia-container-bg').value = triviaContainerBg.hex;
-        document.getElementById('trivia-container-bg-opacity').value = triviaContainerBg.opacity;
-        document.getElementById('trivia-container-border-radius').value = theme.trivia_container_border_radius || '';
-        document.getElementById('text-trivia-title').value = texts.trivia_title || 'Trivia del Evento 🐝';
-        document.getElementById('text-trivia-welcome').value = texts.trivia_welcome || '¡Bienvenido a la Colmena!';
-        document.getElementById('text-trivia-subtitle').value = texts.trivia_subtitle || '¿Cuanto sabes de Amo?';
-        document.getElementById('text-trivia-title-font-family').value = texts.trivia_title_font_family || '';
-        document.getElementById('text-trivia-title-letter-spacing').value = texts.trivia_title_letter_spacing || '';
-        document.getElementById('text-trivia-welcome-font-family').value = texts.trivia_welcome_font_family || '';
-        document.getElementById('text-trivia-welcome-letter-spacing').value = texts.trivia_welcome_letter_spacing || '';
+        safeSet('trivia-container-bg', triviaContainerBg.hex);
+        safeSet('trivia-container-bg-opacity', triviaContainerBg.opacity);
+        safeSet('trivia-container-border-radius', theme.trivia_container_border_radius || '');
+        safeSet('text-trivia-title', texts.trivia_title || 'Trivia del Evento 🐝');
+        safeSet('text-trivia-welcome', texts.trivia_welcome || '¡Bienvenido a la Colmena!');
+        safeSet('text-trivia-subtitle', texts.trivia_subtitle || '¿Cuanto sabes de Amo?');
+        safeSet('text-trivia-title-font-family', texts.trivia_title_font_family || '');
+        safeSet('text-trivia-title-stroke-width', texts.trivia_title_stroke_width || '');
+        safeSet('text-trivia-title-stroke-color', texts.trivia_title_stroke_color || '#000000');
+        safeSet('text-trivia-title-letter-spacing', texts.trivia_title_letter_spacing || '');
+        safeSet('text-trivia-welcome-font-family', texts.trivia_welcome_font_family || '');
+        safeSet('text-trivia-welcome-letter-spacing', texts.trivia_welcome_letter_spacing || '');
+        safeSet('text-trivia-start-button', texts.trivia_start_button || 'INICIAR JUEGO');
+        safeSet('text-trivia-next-button', texts.trivia_next_button || 'Siguiente Pregunta');
 
         // Rellenar Personalización de Trivia
-        document.getElementById('btn-trivia-bg').value = theme.btn_trivia_bg || '#ffb300';
-        document.getElementById('btn-trivia-bg-hover').value = theme.btn_trivia_bg_hover || '#ff9900';
-        document.getElementById('btn-trivia-text-color').value = theme.btn_trivia_text_color || '#FFFFFF';
-        document.getElementById('btn-trivia-border-color').value = theme.btn_trivia_border_color || '#e69900';
-        document.getElementById('btn-trivia-shadow-color').value = theme.btn_trivia_shadow_color || '#e69900';
-        document.getElementById('btn-trivia-border-radius').value = theme.btn_trivia_border_radius || '';
-        document.getElementById('btn-trivia-font-size').value = theme.btn_trivia_font_size || '';
-        document.getElementById('btn-trivia-padding').value = theme.btn_trivia_padding || '';
+        safeSet('btn-trivia-bg', theme.btn_trivia_bg || '#ffb300');
+        safeSet('btn-trivia-bg-hover', theme.btn_trivia_bg_hover || '#ff9900');
+        safeSet('btn-trivia-text-color', theme.btn_trivia_text_color || '#FFFFFF');
+        safeSet('btn-trivia-border-color', theme.btn_trivia_border_color || '#e69900');
+        safeSet('btn-trivia-shadow-color', theme.btn_trivia_shadow_color || '#e69900');
+        safeSet('btn-trivia-border-radius', theme.btn_trivia_border_radius || '');
+        safeSet('btn-trivia-font-size', theme.btn_trivia_font_size || '');
+        safeSet('btn-trivia-padding', theme.btn_trivia_padding || '');
+        safeSet('btn-trivia-font-family', theme.btn_trivia_font_family || '');
+        safeSet('btn-trivia-text-stroke-width', theme.btn_trivia_text_stroke_width || '');
+        safeSet('btn-trivia-text-stroke-color', theme.btn_trivia_text_stroke_color || '#000000');
 
         // Rellenar Personalización de Memoria
         const memoryContainerBg = rgbaToHexAndOpacity(theme.memory_container_bg);
-        document.getElementById('memory-container-bg').value = memoryContainerBg.hex;
-        document.getElementById('memory-container-bg-opacity').value = memoryContainerBg.opacity;
-        document.getElementById('memory-container-border-radius').value = theme.memory_container_border_radius || '';
-        document.getElementById('text-memory-title').value = texts.memory_title || 'Juego de Memoria 🧠';
-        document.getElementById('text-memory-title-font-family').value = texts.memory_title_font_family || '';
-        document.getElementById('text-memory-title-letter-spacing').value = texts.memory_title_letter_spacing || '';
+        safeSet('memory-container-bg', memoryContainerBg.hex);
+        safeSet('memory-container-bg-opacity', memoryContainerBg.opacity);
+        safeSet('memory-container-border-radius', theme.memory_container_border_radius || '');
+        safeSet('text-memory-title', texts.memory_title || 'Juego de Memoria 🧠');
+        safeSet('text-memory-title-font-family', texts.memory_title_font_family || '');
+        safeSet('text-memory-title-letter-spacing', texts.memory_title_letter_spacing || '');
+        safeSet('text-memory-title-stroke-width', texts.memory_title_stroke_width || '');
+        safeSet('text-memory-title-stroke-color', texts.memory_title_stroke_color || '#000000');
+        safeSet('text-memory-start-button', texts.memory_start_button || '¡Comenzar!');
 
         // Rellenar Personalización de Memoria (Cartas)
-        document.getElementById('mem-card-back-bg').value = theme.mem_card_back_bg || '#F59E0B';
-        document.getElementById('mem-card-back-border-color').value = theme.mem_card_back_border_color || '#1F2937';
-        document.getElementById('mem-card-height').value = theme.mem_card_height || '';
-        document.getElementById('mem-card-border-radius').value = theme.mem_card_border_radius || '';
+        safeSet('mem-card-back-bg', theme.mem_card_back_bg || '#F59E0B');
+        safeSet('mem-card-back-border-color', theme.mem_card_back_border_color || '#1F2937');
+        safeSet('mem-card-height', theme.mem_card_height || '');
+        safeSet('mem-card-border-radius', theme.mem_card_border_radius || '');
 
         // ⭐️ NUEVO: Rellenar Personalización de Ahorcado
         const hangmanContainerBg = rgbaToHexAndOpacity(theme.hangman_container_bg);
-        document.getElementById('hangman-container-bg').value = hangmanContainerBg.hex;
-        document.getElementById('hangman-container-bg-opacity').value = hangmanContainerBg.opacity;
-        document.getElementById('hangman-container-border-radius').value = theme.hangman_container_border_radius || '';
-        document.getElementById('text-hangman-title').value = texts.hangman_title || 'El Ahorcado 💀';
-        document.getElementById('text-hangman-subtitle').value = texts.hangman_subtitle || 'Adivina la palabra secreta...';
-        document.getElementById('text-hangman-title-font-family').value = texts.hangman_title_font_family || '';
-        document.getElementById('text-hangman-title-letter-spacing').value = texts.hangman_title_letter_spacing || '';
-        document.getElementById('text-hangman-subtitle-font-family').value = texts.hangman_subtitle_font_family || '';
-        document.getElementById('text-hangman-subtitle-letter-spacing').value = texts.hangman_subtitle_letter_spacing || '';
+        safeSet('hangman-container-bg', hangmanContainerBg.hex);
+        safeSet('hangman-container-bg-opacity', hangmanContainerBg.opacity);
+        safeSet('hangman-container-border-radius', theme.hangman_container_border_radius || '');
+        safeSet('text-hangman-title', texts.hangman_title || 'El Ahorcado 💀');
+        safeSet('text-hangman-subtitle', texts.hangman_subtitle || 'Adivina la palabra secreta...');
+        safeSet('text-hangman-title-font-family', texts.hangman_title_font_family || '');
+        safeSet('text-hangman-title-letter-spacing', texts.hangman_title_letter_spacing || '');
+        safeSet('text-hangman-title-stroke-width', texts.hangman_title_stroke_width || '');
+        safeSet('text-hangman-title-stroke-color', texts.hangman_title_stroke_color || '#000000');
+        safeSet('text-hangman-subtitle-font-family', texts.hangman_subtitle_font_family || '');
+        safeSet('text-hangman-subtitle-letter-spacing', texts.hangman_subtitle_letter_spacing || '');
+        safeSet('text-hangman-start-button', texts.hangman_start_button || '¡Comenzar!');
 
-        document.getElementById('btn-hangman-bg').value = theme.btn_hangman_bg || '#FACC15';
-        document.getElementById('btn-hangman-text-color').value = theme.btn_hangman_text_color || '#1F2937';
-        document.getElementById('btn-hangman-border-color').value = theme.btn_hangman_border_color || '#F59E0B';
-        document.getElementById('btn-hangman-shadow-color').value = theme.btn_hangman_shadow_color || '#F59E0B';
+        safeSet('btn-hangman-bg', theme.btn_hangman_bg || '#FACC15');
+        safeSet('btn-hangman-text-color', theme.btn_hangman_text_color || '#1F2937');
+        safeSet('btn-hangman-border-color', theme.btn_hangman_border_color || '#F59E0B');
+        safeSet('btn-hangman-shadow-color', theme.btn_hangman_shadow_color || '#F59E0B');
+        safeSet('btn-hangman-font-family', theme.btn_hangman_font_family || '');
+        safeSet('btn-hangman-text-stroke-width', theme.btn_hangman_text_stroke_width || '');
+        safeSet('btn-hangman-text-stroke-color', theme.btn_hangman_text_stroke_color || '#000000');
 
         // Rellenar Personalización de Rankings
         const rankingContainerBg = rgbaToHexAndOpacity(theme.ranking_container_bg);
-        document.getElementById('ranking-container-bg').value = rankingContainerBg.hex;
-        document.getElementById('ranking-container-bg-opacity').value = rankingContainerBg.opacity;
-        document.getElementById('ranking-container-border-radius').value = theme.ranking_container_border_radius || '';
-        document.getElementById('text-ranking-title').value = texts.ranking_title || 'Rankings de la Colmena 🏆';
-        document.getElementById('text-ranking-title-font-family').value = texts.ranking_title_font_family || '';
-        document.getElementById('text-ranking-title-letter-spacing').value = texts.ranking_title_letter_spacing || '';
+        safeSet('ranking-container-bg', rankingContainerBg.hex);
+        safeSet('ranking-container-bg-opacity', rankingContainerBg.opacity);
+        safeSet('ranking-container-border-radius', theme.ranking_container_border_radius || '');
+        safeSet('text-ranking-title', texts.ranking_title || 'Rankings de la Colmena 🏆');
+        safeSet('text-ranking-title-font-family', texts.ranking_title_font_family || '');
+        safeSet('text-ranking-title-letter-spacing', texts.ranking_title_letter_spacing || '');
+        safeSet('text-ranking-title-stroke-width', texts.ranking_title_stroke_width || '');
+        safeSet('text-ranking-title-stroke-color', texts.ranking_title_stroke_color || '#000000');
 
         // Rellenar Personalización de Rankings (Ganadores)
-        document.getElementById('ranking-trivia-winner-bg').value = theme.ranking_trivia_winner_bg || '#FFCC00';
-        document.getElementById('ranking-trivia-winner-text').value = theme.ranking_trivia_winner_text || '#1F2937';
-        document.getElementById('ranking-trivia-winner-border').value = theme.ranking_trivia_winner_border || '#F59E0B';
-        document.getElementById('ranking-memory-winner-bg').value = theme.ranking_memory_winner_bg || '#cceeff';
-        document.getElementById('ranking-memory-winner-text').value = theme.ranking_memory_winner_text || '#0056b3';
-        document.getElementById('ranking-memory-winner-border').value = theme.ranking_memory_winner_border || '#007bff';
+        safeSet('ranking-trivia-winner-bg', theme.ranking_trivia_winner_bg || '#FFCC00');
+        safeSet('ranking-trivia-winner-text', theme.ranking_trivia_winner_text || '#1F2937');
+        safeSet('ranking-trivia-winner-border', theme.ranking_trivia_winner_border || '#F59E0B');
+        safeSet('ranking-memory-winner-bg', theme.ranking_memory_winner_bg || '#cceeff');
+        safeSet('ranking-memory-winner-text', theme.ranking_memory_winner_text || '#0056b3');
+        safeSet('ranking-memory-winner-border', theme.ranking_memory_winner_border || '#007bff');
 
         // ⭐️ NUEVO: Rellenar Personalización de Anfitrión
-        document.getElementById('host-container-bg').value = theme.host_container_bg || '#FFFFFF';
-        document.getElementById('host-container-border-radius').value = theme.host_container_border_radius || '';
-        document.getElementById('text-host-login-title').value = texts.host_login_title || 'Acceso de Anfitrión';
-        document.getElementById('text-host-panel-title').value = texts.host_panel_title || 'Panel de Control';
-        document.getElementById('text-host-document-title').value = texts.host_document_title || 'Panel de Anfitrión';
-        document.getElementById('btn-host-bg').value = theme.btn_host_bg || '#1F2937';
-        document.getElementById('btn-host-text-color').value = theme.btn_host_text_color || '#FACC15';
-        document.getElementById('btn-host-border-color').value = theme.btn_host_border_color || '#FACC15';
+        safeSet('host-container-bg', theme.host_container_bg || '#FFFFFF');
+        safeSet('host-container-border-radius', theme.host_container_border_radius || '');
+        safeSet('text-host-login-title', texts.host_login_title || 'Acceso de Anfitrión');
+        safeSet('text-host-login-subtitle', texts.host_login_subtitle || 'Ingresa para administrar tu evento.');
+        safeSet('text-host-panel-title', texts.host_panel_title || 'Panel de Control');
+        safeSet('text-host-document-title', texts.host_document_title || 'Panel de Anfitrión');
+        safeSet('btn-host-bg', theme.btn_host_bg || '#1F2937');
+        safeSet('btn-host-text-color', theme.btn_host_text_color || '#FACC15');
+        safeSet('btn-host-border-color', theme.btn_host_border_color || '#FACC15');
+        safeSet('btn-host-font-family', theme.btn_host_font_family || '');
+        safeSet('btn-host-text-stroke-width', theme.btn_host_text_stroke_width || '');
+        safeSet('btn-host-text-stroke-color', theme.btn_host_text_stroke_color || '#000000');
 
         // Rellenar previsualización de imagen
         const preview = document.getElementById('bg-image-preview');
@@ -624,19 +691,19 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         }
 
         // ⭐️ NUEVO: Rellenar ajuste y posición de fondo
-        document.getElementById('background-image-size').value = theme.background_image_size || 'cover';
-        document.getElementById('background-image-position').value = theme.background_image_position || 'center';
+        safeSet('background-image-size', theme.background_image_size || 'cover');
+        safeSet('background-image-position', theme.background_image_position || 'center');
 
         // ⭐️ NUEVO: Rellenar campos de stickers (lógica mejorada)
         const populateStickerFields = (type, index, stickerData) => {
             const s = stickerData || {};
-            document.getElementById(`sticker_${type}_${index}_file`).value = '';
-            document.getElementById(`sticker_${type}_${index}_width`).value = s.width || '';
-            document.getElementById(`sticker_${type}_${index}_transform`).value = s.transform || '';
-            document.getElementById(`sticker_${type}_${index}_top`).value = s.top || '';
-            document.getElementById(`sticker_${type}_${index}_bottom`).value = s.bottom || '';
-            document.getElementById(`sticker_${type}_${index}_left`).value = s.left || '';
-            document.getElementById(`sticker_${type}_${index}_right`).value = s.right || '';
+            safeSet(`sticker_${type}_${index}_file`, '');
+            safeSet(`sticker_${type}_${index}_width`, s.width || '');
+            safeSet(`sticker_${type}_${index}_transform`, s.transform || '');
+            safeSet(`sticker_${type}_${index}_top`, s.top || '');
+            safeSet(`sticker_${type}_${index}_bottom`, s.bottom || '');
+            safeSet(`sticker_${type}_${index}_left`, s.left || '');
+            safeSet(`sticker_${type}_${index}_right`, s.right || '');
 
             const preview = document.getElementById(`sticker_${type}_${index}_preview`);
             if (s.url) {
@@ -651,7 +718,7 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         populateStickerFields('juegos', 1, theme.juegos_stickers?.[0]);
         populateStickerFields('juegos', 2, theme.juegos_stickers?.[1]);
 
-        document.getElementById('bg-image').value = '';
+        safeSet('bg-image', '');
     }
 
     /**
@@ -690,178 +757,221 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         }
         
         // ⭐️ MODIFICADO: Combinar 'portal_bg' y 'portal_bg_opacity'
-        const portalBgColor = document.getElementById('portal-bg').value;
-        const portalBgOpacity = document.getElementById('portal-bg-opacity').value;
+        const portalBgColor = getValue('portal-bg');
+        const portalBgOpacity = getValue('portal-bg-opacity');
         const portalBgRgba = hexToRgba(portalBgColor, portalBgOpacity);
 
         const themeConfig = {
             // Tema Global
-            color_primary: document.getElementById('color-primary').value,
-            color_secondary: document.getElementById('color-secondary').value,
-            color_text: document.getElementById('color-text').value,
-            color_success: document.getElementById('color-success').value,
-            color_danger: document.getElementById('color-danger').value,
-            color_text_light: document.getElementById('color-text-light').value,
-            font_family: document.getElementById('font-family').value,
-            btn_shadow: document.getElementById('btn-shadow').value.trim() || null,
+            color_primary: getValue('color-primary'),
+            color_secondary: getValue('color-secondary'),
+            color_text: getValue('color-text'),
+            color_success: getValue('color-success'),
+            color_danger: getValue('color-danger'),
+            color_text_light: getValue('color-text-light'),
+            font_family: getValue('font-family'),
+            btn_shadow: (getValue('btn-shadow') || '').trim() || null,
             
             // ⭐️ NUEVO: Guardar contorno de texto
-            text_stroke_width: document.getElementById('text-stroke-width').value.trim() || null,
-            text_stroke_color: document.getElementById('text-stroke-color').value,
+            text_stroke_width: (getValue('text-stroke-width') || '').trim() || null,
+            text_stroke_color: getValue('text-stroke-color'),
 
             // ⭐️ NUEVO: Guardar ajuste y posición de fondo
-            background_image_size: document.getElementById('background-image-size').value,
-            background_image_position: document.getElementById('background-image-position').value,
+            background_image_size: getValue('background-image-size'),
+            background_image_position: getValue('background-image-position'),
 
             icons: {
-                icon_main: document.getElementById('icon-main').value || '🐝',
-                icon_portal: document.getElementById('icon-portal').value || '🎁',
-                icon_trivia: document.getElementById('icon-trivia').value || '✍️',
-                icon_memory: document.getElementById('icon-memory').value || '🧠',
-                icon_hangman: document.getElementById('icon-hangman').value || '💀',
-                icon_ranking: document.getElementById('icon-ranking').value || '🏆',
-                icon_win: document.getElementById('icon-win').value || '🎉',
-                icon_games: document.getElementById('icon-games').value || '🕹️',
-                icon_memories: document.getElementById('icon-memories').value || '💖',
-                icon_like: document.getElementById('icon-like').value || '❤️'
+                icon_main: getValue('icon-main') || '🐝',
+                icon_portal: getValue('icon-portal') || '🎁',
+                icon_trivia: getValue('icon-trivia') || '✍️',
+                icon_memory: getValue('icon-memory') || '🧠',
+                icon_hangman: getValue('icon-hangman') || '💀',
+                icon_ranking: getValue('icon-ranking') || '🏆',
+                icon_win: getValue('icon-win') || '🎉',
+                icon_games: getValue('icon-games') || '🕹️',
+                icon_memories: getValue('icon-memories') || '💖',
+                icon_like: getValue('icon-like') || '❤️'
             },
             
             // Personalización del Portal
             portal_bg: portalBgRgba, // ⭐️ Guardar el valor combinado
-            portal_border_radius: document.getElementById('portal-border-radius').value.trim() || null,
-            portal_title_color: document.getElementById('portal-title-color').value,
-            portal_title_font_size: document.getElementById('portal-title-font-size').value.trim() || null,
-            btn_portal_bg: document.getElementById('btn-portal-bg').value,
-            btn_portal_text_color: document.getElementById('btn-portal-text-color').value,
-            btn_portal_border_radius: document.getElementById('btn-portal-border-radius').value.trim() || null,
-            btn_portal_shadow_color: document.getElementById('btn-portal-shadow-color').value,
-            btn_portal_shadow_color_hover: document.getElementById('btn-portal-shadow-color-hover').value,
+            portal_border_radius: (getValue('portal-border-radius') || '').trim() || null,
+            portal_title_color: getValue('portal-title-color'),
+            portal_title_font_size: (getValue('portal-title-font-size') || '').trim() || null,
+            btn_portal_bg: getValue('btn-portal-bg'),
+            btn_portal_text_color: getValue('btn-portal-text-color'),
+            btn_portal_border_radius: (getValue('btn-portal-border-radius') || '').trim() || null,
+            btn_portal_shadow_color: getValue('btn-portal-shadow-color'),
+            btn_portal_shadow_color_hover: getValue('btn-portal-shadow-color-hover'),
+            btn_portal_font_family: (getValue('btn-portal-font-family') || '').trim() || null,
+            btn_portal_text_stroke_width: (getValue('btn-portal-text-stroke-width') || '').trim() || null,
+            btn_portal_text_stroke_color: (getValue('btn-portal-text-stroke-color') || '').trim() || null,
 
             // ⭐️ NUEVO: Personalización de Botones del Menú de Juegos
-            btn_juegos_menu_bg: document.getElementById('btn-juegos-menu-bg').value.trim() || null,
-            btn_juegos_menu_text_color: document.getElementById('btn-juegos-menu-text-color').value.trim() || null,
-            btn_juegos_menu_border_color: document.getElementById('btn-juegos-menu-border-color').value.trim() || null,
-            btn_juegos_menu_shadow_color: document.getElementById('btn-juegos-menu-shadow-color').value.trim() || null,
-            btn_juegos_menu_border_radius: document.getElementById('btn-juegos-menu-border-radius').value.trim() || null,
+            btn_juegos_menu_bg: (getValue('btn-juegos-menu-bg') || '').trim() || null,
+            btn_juegos_menu_text_color: (getValue('btn-juegos-menu-text-color') || '').trim() || null,
+            btn_juegos_menu_border_color: (getValue('btn-juegos-menu-border-color') || '').trim() || null,
+            btn_juegos_menu_shadow_color: (getValue('btn-juegos-menu-shadow-color') || '').trim() || null,
+            btn_juegos_menu_border_radius: (getValue('btn-juegos-menu-border-radius') || '').trim() || null,
+            btn_juegos_menu_font_family: (getValue('btn-juegos-menu-font-family') || '').trim() || null,
+            btn_juegos_menu_text_stroke_width: (getValue('btn-juegos-menu-text-stroke-width') || '').trim() || null,
+            btn_juegos_menu_text_stroke_color: (getValue('btn-juegos-menu-text-stroke-color') || '').trim() || null,
 
             // ⭐️ NUEVO: Personalización de Trivia (Contenedor)
-            trivia_container_bg: hexToRgba(document.getElementById('trivia-container-bg').value, document.getElementById('trivia-container-bg-opacity').value),
-            trivia_container_border_radius: document.getElementById('trivia-container-border-radius').value.trim() || null,
+            trivia_container_bg: hexToRgba(getValue('trivia-container-bg'), getValue('trivia-container-bg-opacity')),
+            trivia_container_border_radius: (getValue('trivia-container-border-radius') || '').trim() || null,
 
 
             // Personalización de Trivia
-            btn_trivia_bg: document.getElementById('btn-trivia-bg').value.trim() || null,
-            btn_trivia_bg_hover: document.getElementById('btn-trivia-bg-hover').value.trim() || null,
-            btn_trivia_text_color: document.getElementById('btn-trivia-text-color').value.trim() || null,
-            btn_trivia_border_color: document.getElementById('btn-trivia-border-color').value.trim() || null,
-            btn_trivia_shadow_color: document.getElementById('btn-trivia-shadow-color').value.trim() || null,
-            btn_trivia_border_radius: document.getElementById('btn-trivia-border-radius').value.trim() || null,
-            btn_trivia_font_size: document.getElementById('btn-trivia-font-size').value.trim() || null,
-            btn_trivia_padding: document.getElementById('btn-trivia-padding').value.trim() || null,
+            btn_trivia_bg: (getValue('btn-trivia-bg') || '').trim() || null,
+            btn_trivia_bg_hover: (getValue('btn-trivia-bg-hover') || '').trim() || null,
+            btn_trivia_text_color: (getValue('btn-trivia-text-color') || '').trim() || null,
+            btn_trivia_border_color: (getValue('btn-trivia-border-color') || '').trim() || null,
+            btn_trivia_shadow_color: (getValue('btn-trivia-shadow-color') || '').trim() || null,
+            btn_trivia_border_radius: (getValue('btn-trivia-border-radius') || '').trim() || null,
+            btn_trivia_font_size: (getValue('btn-trivia-font-size') || '').trim() || null,
+            btn_trivia_padding: (getValue('btn-trivia-padding') || '').trim() || null,
+            btn_trivia_font_family: (getValue('btn-trivia-font-family') || '').trim() || null,
+            btn_trivia_text_stroke_width: (getValue('btn-trivia-text-stroke-width') || '').trim() || null,
+            btn_trivia_text_stroke_color: (getValue('btn-trivia-text-stroke-color') || '').trim() || null,
 
             // Personalización de Memoria
-            memory_container_bg: hexToRgba(document.getElementById('memory-container-bg').value, document.getElementById('memory-container-bg-opacity').value),
-            memory_container_border_radius: document.getElementById('memory-container-border-radius').value.trim() || null,
+            memory_container_bg: hexToRgba(getValue('memory-container-bg'), getValue('memory-container-bg-opacity')),
+            memory_container_border_radius: (getValue('memory-container-border-radius') || '').trim() || null,
 
 
             // Personalización de Memoria (Cartas)
-            mem_card_back_bg: document.getElementById('mem-card-back-bg').value.trim() || null,
-            mem_card_back_border_color: document.getElementById('mem-card-back-border-color').value.trim() || null,
-            mem_card_height: document.getElementById('mem-card-height').value.trim() || null,
-            mem_card_border_radius: document.getElementById('mem-card-border-radius').value.trim() || null,
+            mem_card_back_bg: (getValue('mem-card-back-bg') || '').trim() || null,
+            mem_card_back_border_color: (getValue('mem-card-back-border-color') || '').trim() || null,
+            mem_card_height: (getValue('mem-card-height') || '').trim() || null,
+            mem_card_border_radius: (getValue('mem-card-border-radius') || '').trim() || null,
 
             // ⭐️ NUEVO: Personalización de Ahorcado
-            hangman_container_bg: hexToRgba(document.getElementById('hangman-container-bg').value, document.getElementById('hangman-container-bg-opacity').value),
-            hangman_container_border_radius: document.getElementById('hangman-container-border-radius').value.trim() || null,
-            btn_hangman_bg: document.getElementById('btn-hangman-bg').value.trim() || null,
-            btn_hangman_text_color: document.getElementById('btn-hangman-text-color').value.trim() || null,
-            btn_hangman_border_color: document.getElementById('btn-hangman-border-color').value.trim() || null,
-            btn_hangman_shadow_color: document.getElementById('btn-hangman-shadow-color').value.trim() || null,
+            hangman_container_bg: hexToRgba(getValue('hangman-container-bg'), getValue('hangman-container-bg-opacity')),
+            hangman_container_border_radius: (getValue('hangman-container-border-radius') || '').trim() || null,
+            btn_hangman_bg: (getValue('btn-hangman-bg') || '').trim() || null,
+            btn_hangman_text_color: (getValue('btn-hangman-text-color') || '').trim() || null,
+            btn_hangman_border_color: (getValue('btn-hangman-border-color') || '').trim() || null,
+            btn_hangman_shadow_color: (getValue('btn-hangman-shadow-color') || '').trim() || null,
+            btn_hangman_font_family: (getValue('btn-hangman-font-family') || '').trim() || null,
+            btn_hangman_text_stroke_width: (getValue('btn-hangman-text-stroke-width') || '').trim() || null,
+            btn_hangman_text_stroke_color: (getValue('btn-hangman-text-stroke-color') || '').trim() || null,
 
 
             // Personalización de Rankings
-            ranking_container_bg: hexToRgba(document.getElementById('ranking-container-bg').value, document.getElementById('ranking-container-bg-opacity').value),
-            ranking_container_border_radius: document.getElementById('ranking-container-border-radius').value.trim() || null,
+            ranking_container_bg: hexToRgba(getValue('ranking-container-bg'), getValue('ranking-container-bg-opacity')),
+            ranking_container_border_radius: (getValue('ranking-container-border-radius') || '').trim() || null,
 
 
             // Personalización de Rankings (Ganadores)
-            ranking_trivia_winner_bg: document.getElementById('ranking-trivia-winner-bg').value.trim() || null,
-            ranking_trivia_winner_text: document.getElementById('ranking-trivia-winner-text').value.trim() || null,
-            ranking_trivia_winner_border: document.getElementById('ranking-trivia-winner-border').value.trim() || null,
-            ranking_memory_winner_bg: document.getElementById('ranking-memory-winner-bg').value.trim() || null,
-            ranking_memory_winner_text: document.getElementById('ranking-memory-winner-text').value.trim() || null,
-            ranking_memory_winner_border: document.getElementById('ranking-memory-winner-border').value.trim() || null,
+            ranking_trivia_winner_bg: (getValue('ranking-trivia-winner-bg') || '').trim() || null,
+            ranking_trivia_winner_text: (getValue('ranking-trivia-winner-text') || '').trim() || null,
+            ranking_trivia_winner_border: (getValue('ranking-trivia-winner-border') || '').trim() || null,
+            ranking_memory_winner_bg: (getValue('ranking-memory-winner-bg') || '').trim() || null,
+            ranking_memory_winner_text: (getValue('ranking-memory-winner-text') || '').trim() || null,
+            ranking_memory_winner_border: (getValue('ranking-memory-winner-border') || '').trim() || null,
 
             // ⭐️ NUEVO: Personalización de Anfitrión
-            host_container_bg: document.getElementById('host-container-bg').value.trim() || null,
-            host_container_border_radius: document.getElementById('host-container-border-radius').value.trim() || null,
-            btn_host_bg: document.getElementById('btn-host-bg').value.trim() || null,
-            btn_host_text_color: document.getElementById('btn-host-text-color').value.trim() || null,
-            btn_host_border_color: document.getElementById('btn-host-border-color').value.trim() || null,
+            host_container_bg: (getValue('host-container-bg') || '').trim() || null,
+            host_container_border_radius: (getValue('host-container-border-radius') || '').trim() || null,
+            btn_host_bg: (getValue('btn-host-bg') || '').trim() || null,
+            btn_host_text_color: (getValue('btn-host-text-color') || '').trim() || null,
+            btn_host_border_color: (getValue('btn-host-border-color') || '').trim() || null,
+            btn_host_font_family: (getValue('btn-host-font-family') || '').trim() || null,
+            btn_host_text_stroke_width: (getValue('btn-host-text-stroke-width') || '').trim() || null,
+            btn_host_text_stroke_color: (getValue('btn-host-text-stroke-color') || '').trim() || null,
 
         };
 
         const textsConfig = {
-            portal_greeting: document.getElementById('text-portal-greeting').value.trim() || null,
-            portal_greeting_color: document.getElementById('text-portal-greeting-color').value.trim() || null,
-            portal_greeting_font_size: document.getElementById('text-portal-greeting-font-size').value.trim() || null,
-            portal_greeting_font_family: document.getElementById('text-portal-greeting-font-family').value.trim() || null,
-            portal_greeting_letter_spacing: document.getElementById('text-portal-greeting-letter-spacing').value.trim() || null,
+            portal_greeting: (getValue('text-portal-greeting') || '').trim() || null,
+            portal_greeting_color: (getValue('text-portal-greeting-color') || '').trim() || null,
+            portal_greeting_font_size: (getValue('text-portal-greeting-font-size') || '').trim() || null,
+            portal_greeting_font_family: (getValue('text-portal-greeting-font-family') || '').trim() || null,
+            portal_greeting_letter_spacing: (getValue('text-portal-greeting-letter-spacing') || '').trim() || null,
+            portal_greeting_stroke_width: (getValue('text-portal-greeting-stroke-width') || '').trim() || null,
+            portal_greeting_stroke_color: (getValue('text-portal-greeting-stroke-color') || '').trim() || null,
 
-            portal_title: document.getElementById('text-portal-title').value.trim() || null,
-            portal_title_font_family: document.getElementById('text-portal-title-font-family').value.trim() || null,
-            portal_title_letter_spacing: document.getElementById('text-portal-title-letter-spacing').value.trim() || null,
+            portal_title: (getValue('text-portal-title') || '').trim() || null,
+            portal_title_font_family: (getValue('text-portal-title-font-family') || '').trim() || null,
+            portal_title_letter_spacing: (getValue('text-portal-title-letter-spacing') || '').trim() || null,
+            portal_title_stroke_width: (getValue('text-portal-title-stroke-width') || '').trim() || null,
+            portal_title_stroke_color: (getValue('text-portal-title-stroke-color') || '').trim() || null,
 
-            portal_subtitle: document.getElementById('text-portal-subtitle').value.trim() || null,
-            portal_subtitle_color: document.getElementById('text-portal-subtitle-color').value.trim() || null,
-            portal_subtitle_font_size: document.getElementById('text-portal-subtitle-font-size').value.trim() || null,
-            portal_subtitle_font_family: document.getElementById('text-portal-subtitle-font-family').value.trim() || null,
-            portal_subtitle_letter_spacing: document.getElementById('text-portal-subtitle-letter-spacing').value.trim() || null,
 
-            memories_section_title: document.getElementById('text-memories-section-title').value.trim() || null,
-            memories_section_title_color: document.getElementById('text-memories-section-title-color').value.trim() || null,
-            memories_section_title_font_family: document.getElementById('text-memories-section-title-font-family').value.trim() || null,
-            memories_section_title_letter_spacing: document.getElementById('text-memories-section-title-letter-spacing').value.trim() || null,
+            portal_subtitle: (getValue('text-portal-subtitle') || '').trim() || null,
+            portal_subtitle_color: (getValue('text-portal-subtitle-color') || '').trim() || null,
+            portal_subtitle_font_size: (getValue('text-portal-subtitle-font-size') || '').trim() || null,
+            portal_subtitle_font_family: (getValue('text-portal-subtitle-font-family') || '').trim() || null,
+            portal_subtitle_letter_spacing: (getValue('text-portal-subtitle-letter-spacing') || '').trim() || null,
 
-            memories_list_title: document.getElementById('text-memories-list-title').value.trim() || null,
-            memories_list_title_color: document.getElementById('text-memories-list-title-color').value.trim() || null,
+            portal_subtitle_stroke_width: (getValue('text-portal-subtitle-stroke-width') || '').trim() || null,
+            portal_subtitle_stroke_color: (getValue('text-portal-subtitle-stroke-color') || '').trim() || null,
+
+            memories_section_title: (getValue('text-memories-section-title') || '').trim() || null,
+            memories_section_title_color: (getValue('text-memories-section-title-color') || '').trim() || null,
+            memories_section_title_font_family: (getValue('text-memories-section-title-font-family') || '').trim() || null,
+            memories_section_title_letter_spacing: (getValue('text-memories-section-title-letter-spacing') || '').trim() || null,
+
+            memories_section_title_stroke_width: (getValue('text-memories-section-title-stroke-width') || '').trim() || null,
+            memories_section_title_stroke_color: (getValue('text-memories-section-title-stroke-color') || '').trim() || null,
+            memories_list_title: (getValue('text-memories-list-title') || '').trim() || null,
+            memories_list_title_color: (getValue('text-memories-list-title-color') || '').trim() || null,
+            memories_list_title_font_size: (getValue('text-memories-list-title-font-size') || '').trim() || null,
+            memories_list_title_font_family: (getValue('text-memories-list-title-font-family') || '').trim() || null,
+            memories_list_title_letter_spacing: (getValue('text-memories-list-title-letter-spacing') || '').trim() || null,
+            memories_list_title_stroke_width: (getValue('text-memories-list-title-stroke-width') || '').trim() || null,
+            memories_list_title_stroke_color: (getValue('text-memories-list-title-stroke-color') || '').trim() || null,
             
             // ⭐️ NUEVO: Textos de botones de juegos
-            juegos_menu_trivia: document.getElementById('text-juegos-menu-trivia').value.trim() || null,
-            juegos_menu_memory: document.getElementById('text-juegos-menu-memory').value.trim() || null,
-            juegos_menu_hangman: document.getElementById('text-juegos-menu-hangman').value.trim() || null,
+            juegos_menu_trivia: (getValue('text-juegos-menu-trivia') || '').trim() || null,
+            juegos_menu_memory: (getValue('text-juegos-menu-memory') || '').trim() || null,
+            juegos_menu_hangman: (getValue('text-juegos-menu-hangman') || '').trim() || null,
 
             // ⭐️ NUEVO: Textos de Trivia
-            trivia_title: document.getElementById('text-trivia-title').value.trim() || null,
-            trivia_title_font_family: document.getElementById('text-trivia-title-font-family').value.trim() || null,
-            trivia_title_letter_spacing: document.getElementById('text-trivia-title-letter-spacing').value.trim() || null,
-            trivia_welcome: document.getElementById('text-trivia-welcome').value.trim() || null,
-            trivia_welcome_font_family: document.getElementById('text-trivia-welcome-font-family').value.trim() || null,
-            trivia_welcome_letter_spacing: document.getElementById('text-trivia-welcome-letter-spacing').value.trim() || null,
-            trivia_subtitle: document.getElementById('text-trivia-subtitle').value.trim() || null,
+            trivia_title: (getValue('text-trivia-title') || '').trim() || null,
+            trivia_title_font_family: (getValue('text-trivia-title-font-family') || '').trim() || null,
+            trivia_title_letter_spacing: (getValue('text-trivia-title-letter-spacing') || '').trim() || null,
+            trivia_title_stroke_width: (getValue('text-trivia-title-stroke-width') || '').trim() || null,
+            trivia_title_stroke_color: (getValue('text-trivia-title-stroke-color') || '').trim() || null,
+            trivia_welcome: (getValue('text-trivia-welcome') || '').trim() || null,
+            trivia_welcome_font_family: (getValue('text-trivia-welcome-font-family') || '').trim() || null,
+            trivia_welcome_letter_spacing: (getValue('text-trivia-welcome-letter-spacing') || '').trim() || null,
+            trivia_subtitle: (getValue('text-trivia-subtitle') || '').trim() || null,
+            trivia_start_button: (getValue('text-trivia-start-button') || '').trim() || 'INICIAR JUEGO',
+            trivia_next_button: (getValue('text-trivia-next-button') || '').trim() || 'Siguiente Pregunta',
 
             // ⭐️ NUEVO: Textos de Memoria
-            memory_title: document.getElementById('text-memory-title').value.trim() || null,
-            memory_title_font_family: document.getElementById('text-memory-title-font-family').value.trim() || null,
-            memory_title_letter_spacing: document.getElementById('text-memory-title-letter-spacing').value.trim() || null,
+            memory_title: (getValue('text-memory-title') || '').trim() || null,
+            memory_title_font_family: (getValue('text-memory-title-font-family') || '').trim() || null,
+            memory_title_letter_spacing: (getValue('text-memory-title-letter-spacing') || '').trim() || null,
+            memory_title_stroke_width: (getValue('text-memory-title-stroke-width') || '').trim() || null,
+            memory_title_stroke_color: (getValue('text-memory-title-stroke-color') || '').trim() || null,
+            memory_start_button: (getValue('text-memory-start-button') || '').trim() || '¡Comenzar!',
 
             // ⭐️ NUEVO: Textos de Ahorcado
-            hangman_title: document.getElementById('text-hangman-title').value.trim() || null,
-            hangman_title_font_family: document.getElementById('text-hangman-title-font-family').value.trim() || null,
-            hangman_title_letter_spacing: document.getElementById('text-hangman-title-letter-spacing').value.trim() || null,
-            hangman_subtitle: document.getElementById('text-hangman-subtitle').value.trim() || null,
-            hangman_subtitle_font_family: document.getElementById('text-hangman-subtitle-font-family').value.trim() || null,
-            hangman_subtitle_letter_spacing: document.getElementById('text-hangman-subtitle-letter-spacing').value.trim() || null,
+            hangman_title: (getValue('text-hangman-title') || '').trim() || null,
+            hangman_title_font_family: (getValue('text-hangman-title-font-family') || '').trim() || null,
+            hangman_title_letter_spacing: (getValue('text-hangman-title-letter-spacing') || '').trim() || null,
+            hangman_title_stroke_width: (getValue('text-hangman-title-stroke-width') || '').trim() || null,
+            hangman_title_stroke_color: (getValue('text-hangman-title-stroke-color') || '').trim() || null,
+            hangman_subtitle: (getValue('text-hangman-subtitle') || '').trim() || null,
+            hangman_subtitle_font_family: (getValue('text-hangman-subtitle-font-family') || '').trim() || null,
+            hangman_subtitle_letter_spacing: (getValue('text-hangman-subtitle-letter-spacing') || '').trim() || null,
+            hangman_start_button: (getValue('text-hangman-start-button') || '').trim() || '¡Comenzar!',
 
             // ⭐️ NUEVO: Textos de Ranking
-            ranking_title: document.getElementById('text-ranking-title').value.trim() || null,
-            ranking_title_font_family: document.getElementById('text-ranking-title-font-family').value.trim() || null,
-            ranking_title_letter_spacing: document.getElementById('text-ranking-title-letter-spacing').value.trim() || null,
+            ranking_title: (getValue('text-ranking-title') || '').trim() || null,
+            ranking_title_font_family: (getValue('text-ranking-title-font-family') || '').trim() || null,
+            ranking_title_letter_spacing: (getValue('text-ranking-title-letter-spacing') || '').trim() || null,
+            ranking_title_stroke_width: (getValue('text-ranking-title-stroke-width') || '').trim() || null,
+            ranking_title_stroke_color: (getValue('text-ranking-title-stroke-color') || '').trim() || null,
 
             // ⭐️ NUEVO: Textos de Anfitrión
-            host_login_title: document.getElementById('text-host-login-title').value.trim() || null,
-            host_panel_title: document.getElementById('text-host-panel-title').value.trim() || null,
-            host_document_title: document.getElementById('text-host-document-title').value.trim() || null,
+            host_login_title: (getValue('text-host-login-title') || '').trim() || null,
+            host_login_subtitle: (getValue('text-host-login-subtitle') || '').trim() || null,
+            host_panel_title: (getValue('text-host-panel-title') || '').trim() || null,
+            host_document_title: (getValue('text-host-document-title') || '').trim() || null,
         };
         
         const fullConfig = {
@@ -871,8 +981,8 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
             status: { is_active: document.getElementById('event-active').checked, },
             // ⭐️ NUEVO: Guardar la configuración de autenticación
             auth: {
-                username: document.getElementById('auth-event-username').value.trim() || null,
-                password: document.getElementById('auth-event-password').value.trim() || null,
+                username: (getValue('auth-event-username') || '').trim() || null,
+                password: (getValue('auth-event-password') || '').trim() || null,
             }
         };
 
