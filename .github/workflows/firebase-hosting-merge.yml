@@ -22,10 +22,19 @@ jobs:
       - name: Install and Build vidriera
         run: npm ci && npm run build
         working-directory: ./vidriera # ❗️ Le decimos que trabaje dentro de la carpeta 'vidriera'
-      - uses: FirebaseExtended/action-hosting-deploy@v0
+      - name: Deploy to Firebase Hosting (web-publica)
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JUEGOS_CUMPLE }}
           projectId: juegos-cumple
           channelId: live
-          # Al no especificar 'channelId', se despliega en "live" (producción)
+          target: web-publica # Despliega el sitio de la vidriera
+      - name: Deploy to Firebase Hosting (app-juego)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JUEGOS_CUMPLE }}
+          projectId: juegos-cumple
+          channelId: live
+          target: app-juego # Despliega el sitio del juego
