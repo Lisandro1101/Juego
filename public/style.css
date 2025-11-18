@@ -73,7 +73,8 @@ h1 {
 
 /* 💡 MEJORA: Estilo para títulos dentro de la sección de recuerdos */
 .memory-section-bg {
-    background-color: rgba(255, 255, 255, 0.75); /* ⭐️ CORREGIDO: Fondo blanco semitransparente para legibilidad */
+    /* ⭐️ CORRECCIÓN: Usar una variable para la opacidad controlada desde el super-admin */
+    background-color: rgba(255, 255, 255, var(--memories-section-bg-opacity, 0.75));
     backdrop-filter: blur(3px);
     border-radius: 25px; /* Le damos los bordes redondeados a este contenedor */
 }
@@ -91,7 +92,7 @@ h1 {
     border-radius: var(--btn-portal-border-radius, 1.5rem);
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     text-decoration: none;
-    box-shadow: var(--btn-shadow, 0 4px) var(--btn-portal-shadow-color, var(--color-secondary));
+    box-shadow: var(--btn-shadow, 0 4px) var(--btn-portal-shadow-color, var(--color-secondary)); /* ⭐️ CORRECCIÓN: Usar la variable completa para la sombra */
     border: 2px solid var(--btn-portal-shadow-color, var(--color-secondary));
     background-color: var(--btn-portal-bg, var(--color-primary));
     color: var(--btn-portal-text-color, var(--color-text-light));
@@ -151,31 +152,27 @@ h1 {
 }
 /* Botones de Opción de Trivia */
 .option-btn {
-    /* Estilos base del botón */
     width: 100%;
-    padding: 12px 15px;
+    /* ⭐️ CORRECCIÓN: Usar las variables del super-admin */
+    padding: var(--btn-trivia-padding, 12px 15px);
     margin: 5px 0;
-    border-radius: 8px;
-    font-size: 1.1em;
+    border-radius: var(--btn-trivia-border-radius, 8px);
+    font-size: var(--btn-trivia-font-size, 1.1em);
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     text-align: center;
-    
-    /* Tema Colmena (Yellow/Black) */
-    background-color: white; 
-    border: 2px solid var(--honey-gold);
-    color: var(--bee-black);
-    box-shadow: 0 4px var(--honey-gold); /* Sombra "presionable" */
-    
-    /* 🚨 Desactivar text-shadow en botones, ya tienen alto contraste */
+    background-color: var(--btn-trivia-bg, white);
+    border: 3px solid var(--btn-trivia-border-color, var(--honey-gold));
+    color: var(--btn-trivia-text-color, var(--bee-black));
+    box-shadow: var(--btn-shadow, 0 4px) var(--btn-trivia-shadow-color, var(--honey-gold));
     text-shadow: none !important;
 }
 
 .option-btn:hover:not(:disabled) {
-    background-color: #ffc107; 
+    background-color: var(--btn-trivia-bg-hover, #ffc107);
     transform: translateY(-3px);
-    box-shadow: 0 6px var(--honey-gold);
+    box-shadow: 0 6px var(--btn-trivia-shadow-color, var(--honey-gold));
 }
 
 .option-btn:active {

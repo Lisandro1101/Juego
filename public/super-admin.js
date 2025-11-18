@@ -489,6 +489,10 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
 
         document.getElementById('text-memories-list-title').value = texts.memories_list_title || 'Recuerdos de la Colmena';
         document.getElementById('text-memories-list-title-color').value = texts.memories_list_title_color || '#4B5563';
+        // ⭐️ NUEVO: Rellenar campos de fuente y espaciado para la lista de recuerdos
+        document.getElementById('text-memories-list-title-font-family').value = texts.memories_list_title_font_family || '';
+        document.getElementById('text-memories-list-title-letter-spacing').value = texts.memories_list_title_letter_spacing || '';
+
 
         // ⭐️ NUEVO: Rellenar textos de botones de juegos
         document.getElementById('text-juegos-menu-trivia').value = texts.juegos_menu_trivia || '¿Cuanto conoces a Amo?';
@@ -594,6 +598,8 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         document.getElementById('text-ranking-title').value = texts.ranking_title || 'Rankings de la Colmena 🏆';
         document.getElementById('text-ranking-title-font-family').value = texts.ranking_title_font_family || '';
         document.getElementById('text-ranking-title-letter-spacing').value = texts.ranking_title_letter_spacing || '';
+        // ⭐️ NUEVO: Rellenar el campo de tamaño de fuente del ranking
+        document.getElementById('text-ranking-title-font-size').value = texts.ranking_title_font_size || '';
 
         // Rellenar Personalización de Rankings (Ganadores)
         document.getElementById('ranking-trivia-winner-bg').value = theme.ranking_trivia_winner_bg || '#FFCC00';
@@ -694,6 +700,9 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         const portalBgColor = document.getElementById('portal-bg').value;
         const portalBgOpacity = document.getElementById('portal-bg-opacity').value;
         const portalBgRgba = hexToRgba(portalBgColor, portalBgOpacity);
+        // ⭐️ NUEVO: Obtener la opacidad de la sección de recuerdos
+        const memoriesSectionBgOpacity = document.getElementById('memories-section-bg-opacity').value;
+
 
         const themeConfig = {
             // Tema Global
@@ -729,6 +738,8 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
             
             // Personalización del Portal
             portal_bg: portalBgRgba, // ⭐️ Guardar el valor combinado
+            // ⭐️ NUEVO: Guardar la opacidad de la sección de recuerdos
+            memories_section_bg_opacity: memoriesSectionBgOpacity,
             portal_border_radius: document.getElementById('portal-border-radius').value.trim() || null,
             portal_title_color: document.getElementById('portal-title-color').value,
             portal_title_font_size: document.getElementById('portal-title-font-size').value.trim() || null,
@@ -826,6 +837,10 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
 
             memories_list_title: document.getElementById('text-memories-list-title').value.trim() || null,
             memories_list_title_color: document.getElementById('text-memories-list-title-color').value.trim() || null,
+            // ⭐️ NUEVO: Guardar campos de fuente y espaciado
+            memories_list_title_font_family: document.getElementById('text-memories-list-title-font-family').value.trim() || null,
+            memories_list_title_letter_spacing: document.getElementById('text-memories-list-title-letter-spacing').value.trim() || null,
+
             
             // ⭐️ NUEVO: Textos de botones de juegos
             juegos_menu_trivia: document.getElementById('text-juegos-menu-trivia').value.trim() || null,
@@ -858,6 +873,8 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
             ranking_title: document.getElementById('text-ranking-title').value.trim() || null,
             ranking_title_font_family: document.getElementById('text-ranking-title-font-family').value.trim() || null,
             ranking_title_letter_spacing: document.getElementById('text-ranking-title-letter-spacing').value.trim() || null,
+            // ⭐️ NUEVO: Guardar el tamaño de fuente del ranking
+            ranking_title_font_size: document.getElementById('text-ranking-title-font-size').value.trim() || null,
 
             // ⭐️ NUEVO: Textos de Anfitrión
             host_login_title: document.getElementById('text-host-login-title').value.trim() || null,

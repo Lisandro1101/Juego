@@ -88,10 +88,7 @@ function getEventId() {
  * ⭐️ Motor de Temas Dinámico
  * (Tu código original, sin cambios)
  */
-function applyDynamicTheme(themeConfig) {
-    // ⭐️ NUEVO: Añadir la configuración de textos también
-    const textsConfig = window.eventConfig ? window.eventConfig.texts : {};
-
+function applyDynamicTheme(themeConfig, textsConfig) { // ⭐️ CORRECCIÓN: Aceptar textsConfig como argumento
     if (!themeConfig) {
         console.warn("No se encontró tema, usando defaults.");
         return;
@@ -113,8 +110,8 @@ function applyDynamicTheme(themeConfig) {
         cssVariables += `    ${cssVarName}: ${value};\n`;
     }
     cssVariables += "}\n";
-
-    // 2. ⭐️ NUEVO: Iterar sobre las claves de TEXTOS
+    
+    // ⭐️ CORRECCIÓN: Iterar sobre las claves de TEXTOS (Esta era la parte que faltaba)
     if (textsConfig) {
         for (const key in textsConfig) {
             if (textsConfig[key]) cssVariables += `    --${key.replace(/_/g, '-')}: ${textsConfig[key]};\n`;
@@ -143,7 +140,7 @@ function applyDynamicTheme(themeConfig) {
 
     // ⭐️ NUEVO: Manejar el sticker de los juegos
     // ⭐️ CORRECCIÓN FINAL (DE NUEVO): La ruta correcta es directamente themeConfig.juegos_stickers
-    if (themeConfig.juegos_stickers && Array.isArray(themeConfig.juegos_stickers)) {
+    if (themeConfig.juegos_stickers && Array.isArray(themeConfig.juegos_stickers)) { // ⭐️ CORRECCIÓN: Se eliminó la línea 'if' duplicada.
         themeConfig.juegos_stickers.forEach(sticker => {
             if (!sticker || !sticker.url) return;
 
@@ -163,8 +160,7 @@ function applyDynamicTheme(themeConfig) {
 
             document.body.appendChild(stickerImg);
         });
-    }
-
+    } // ⭐️ CORRECCIÓN: El corchete de cierre se movió aquí para envolver correctamente el bucle.
 
     // ⭐️ NUEVO: Manejar el contorno de texto
     if (themeConfig.text_stroke_width && themeConfig.text_stroke_color) {
@@ -251,7 +247,7 @@ async function loadEventConfig(eventId) {
     }
 
     // --- 2. APLICAR TEMA VISUAL ---
-    applyDynamicTheme(config.theme || {});
+    applyDynamicTheme(config.theme || {}, config.texts || {}); // ⭐️ CORRECCIÓN: Pasar ambos objetos de configuración
     
     // --- 3. APLICAR FUNCIONALIDADES (Juegos) ---
     if (config.features && config.features.games_enabled === false) {
@@ -341,9 +337,11 @@ async function loadEventConfig(eventId) {
         // ⭐️ NUEVO: Textos de Ranking
         const rankingTitle = document.getElementById('ranking-title-text');
         if (rankingTitle) {
-            rankingTitle.innerHTML = config.texts.ranking_title || '';
-            if(config.texts.ranking_title_font_family) rankingTitle.style.fontFamily = config.texts.ranking_title_font_family;
-            if(config.texts.ranking_title_letter_spacing) rankingTitle.style.letterSpacing = config.texts.ranking_title_letter_spacing;
+            rankingTitle.innerHTML = config.texts.ranking_title || 'Rankings';
+            // ⭐️ CORRECCIÓN DEFINITIVA: Aplicar estilos directamente para asegurar prioridad.
+            if (config.texts.ranking_title_font_family) rankingTitle.style.fontFamily = config.texts.ranking_title_font_family;
+            if (config.texts.ranking_title_letter_spacing) rankingTitle.style.letterSpacing = config.texts.ranking_title_letter_spacing;
+            if (config.texts.ranking_title_font_size) rankingTitle.style.fontSize = config.texts.ranking_title_font_size;
         }
 
         // ⭐️ NUEVO: Textos de Anfitrión
@@ -1457,14 +1455,14 @@ function handleHostAuth() {
         const submitButton = loginForm.querySelector('button[type="submit"]');
         submitButton.disabled = true;
         
-        // ⭐️ CORRECCIÓN: Usar el nombre de usuario correcto desde la configuración de autenticación.
-        // El error estaba en que se usaba EVENT_ID en lugar del usuario guardado.
-        const username = window.eventConfig.auth.username; 
+        // ⭐️ CORRECCIÓN: Obtener el nombre de usuario de la configuración del evento.
+        const username = window.eventConfig && window.eventConfig.auth ? window.eventConfig.auth.username : null;
         if (!username) {
             loginError.textContent = "Error: Evento no configurado para login de anfitrión.";
             submitButton.disabled = false;
             return;
         }
+        const email = `${username}@tufiestadigital.com.ar`;
         const password = document.getElementById('host-login-password').value;
 
         try {

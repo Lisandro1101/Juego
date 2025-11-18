@@ -271,7 +271,9 @@ async function loadEventConfig(eventId) {
         const memoriesListTitleText = document.getElementById('memories-list-title-text');
         if (memoriesListTitleText) {
             memoriesListTitleText.textContent = config.texts.memories_list_title || '';
-            // No aplicamos personalización extra aquí para mantenerlo simple
+            // ⭐️ CORRECCIÓN: Aplicar estilos directamente al elemento.
+            if (config.texts.memories_list_title_font_family) memoriesListTitleText.style.fontFamily = config.texts.memories_list_title_font_family; // Aplicar fuente
+            if (config.texts.memories_list_title_letter_spacing) memoriesListTitleText.style.letterSpacing = config.texts.memories_list_title_letter_spacing; // Aplicar espaciado
         }
 
 
