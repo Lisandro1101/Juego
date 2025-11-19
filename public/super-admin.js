@@ -308,8 +308,8 @@ function initializeSuperAdminPanel() {
 
         // Lista de fuentes populares de Google Fonts
         const fontList = [
-            // Fuente estilo Pokémon / Retro
-            "'Lasirenita, cursive",
+            // ⭐️ SOLUCIÓN: Corregir la definición de la fuente 'Lasirenita'.
+            "'Lasirenita', cursive", // La coma y 'cursive' van fuera de las comillas del nombre.
             "'Pokemon Solid', sans-serif", // ⭐️ ¡NUEVA FUENTE PERSONALIZADA! ⭐️
             "'Press Start 2P', cursive",
 

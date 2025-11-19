@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ranking <span class="icon-ranking">🏆</span></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- ⭐️ CORRECCIÓN: Importación de todas las fuentes para que se vean en móvil ⭐️ -->
+    <!-- ⭐️ SOLUCIÓN: Importación de la lista COMPLETA de Google Fonts ⭐️ -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Caveat&family=Creepster&family=EB+Garamond&family=Inter&family=Lato&family=Lobster&family=Lora&family=Luckiest+Guy&family=Merriweather&family=Montserrat&family=Nunito&family=Open+Sans&family=Oswald&family=PT+Serif&family=Pacifico&family=Playfair+Display&family=Poppins&family=Press+Start+2P&family=Righteous&family=Roboto&family=Roboto+Mono&family=Special+Elite&display=swap" rel="stylesheet">
@@ -34,9 +34,11 @@
             background: linear-gradient(135deg, #FFFDE7 0%, var(--spring-bg) 100%);
         }
 
+        /* ⭐️ SOLUCIÓN: Ajustar la regla H1 para que herede los estilos globales de style.css */
         h1 {
             text-align: center;
             margin-bottom: 2rem;
+            /* Se eliminan otros estilos para que no anulen los globales */
         }
 
         /* Usamos una clase nueva para no entrar en conflicto con .portal-container */
@@ -82,32 +84,48 @@
 </head>
 <body>
 
-    <h1 id="ranking-title-text"><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
+    <!-- ⭐️ SOLUCIÓN: Envolver todo en un contenedor principal para consistencia -->
+    <div class="quiz-container ranking-mode">
+        <h1 id="ranking-title-text"><span class="icon-ranking">🏆</span> Rankings de la Colmena <span class="icon-main">🐝</span></h1>
 
-    <div class="ranking-box ranking-mode">
-        <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-            <span class="text-yellow-500 text-3xl icon-trivia">✍️</span>
-            <span>Ranking de la Colmena (Trivia)</span>
-        </h2>
-        <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Puntuación y luego menor tiempo.</p>
-        
-        <ul id="ranking-list" class="space-y-2">
-            <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
-        </ul>
+        <div class="ranking-box ranking-mode">
+            <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
+                <span class="text-yellow-500 text-3xl icon-trivia">✍️</span>
+                <span>Ranking de la Colmena (Trivia)</span>
+            </h2>
+            <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Puntuación y luego menor tiempo.</p>
+            
+            <ul id="ranking-list" class="space-y-2">
+                <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
+            </ul>
+        </div>
+
+        <div class="ranking-box ranking-mode">
+            <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
+                <span class="text-blue-500 text-3xl icon-memory">🧠</span>
+                <span>Ranking de Memoria</span>
+            </h2>
+            <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Menor tiempo.</p>
+            
+            <ul id="memory-ranking-list" class="space-y-2">
+                <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
+            </ul>
+        </div>
+
+        <!-- ⭐️ INICIO DE LA SOLUCIÓN ⭐️ -->
+        <!-- 1. Se importa el script principal que contiene la lógica de Firebase. -->
+        <script type="module" src="script.js?v=1.0"></script>
+
+        <!-- 2. Se añade un pequeño script para ejecutar la lógica específica de la página de ranking. -->
+        <script type="module">
+            // Importa la función para inicializar la página desde el script principal.
+            import { initializePage } from './script.js';
+
+            // Llama a la función de inicialización, pasándole 'ranking' como el modo actual.
+            // Esto le dirá a script.js que cargue el tema y los datos del ranking.
+            initializePage('ranking');
+        </script>
+        <!-- ⭐️ FIN DE LA SOLUCIÓN ⭐️ -->
     </div>
-
-    <div class="ranking-box ranking-mode">
-        <h2 class="text-2xl font-black mb-4 text-gray-800 flex items-center justify-center space-x-2">
-            <span class="text-blue-500 text-3xl icon-memory">🧠</span>
-            <span>Ranking de Memoria</span>
-        </h2>
-        <p class="text-xs text-gray-600 mb-3 text-center">Clasificado por: Menor tiempo.</p>
-        
-        <ul id="memory-ranking-list" class="space-y-2">
-            <li class="p-2 text-gray-500 italic text-center">Cargando resultados...</li>
-        </ul>
-    </div>
-
-    <script type="module" src="script.js?v=1.0"></script>
 </body>
 </html>

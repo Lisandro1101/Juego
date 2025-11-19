@@ -341,8 +341,14 @@ async function loadEventConfig(eventId) {
         const rankingTitle = document.getElementById('ranking-title-text');
         if (rankingTitle) {
             rankingTitle.innerHTML = config.texts.ranking_title || 'Rankings';
-            // ⭐️ CORRECCIÓN DEFINITIVA: Aplicar estilos directamente para asegurar prioridad.
-            if (config.texts.ranking_title_font_family) rankingTitle.style.fontFamily = config.texts.ranking_title_font_family;
+            
+            // ⭐️ SOLUCIÓN: Aplicar la fuente de forma consistente, igual que en los otros juegos.
+            // Solo aplicamos una fuente si está definida específicamente para este título.
+            // Si no, heredará la fuente global del body, manteniendo la consistencia.
+            if (config.texts.ranking_title_font_family) {
+                rankingTitle.style.fontFamily = config.texts.ranking_title_font_family;
+            }
+
             if (config.texts.ranking_title_letter_spacing) rankingTitle.style.letterSpacing = config.texts.ranking_title_letter_spacing;
             if (config.texts.ranking_title_font_size) rankingTitle.style.fontSize = config.texts.ranking_title_font_size;
             if (config.texts.ranking_title_color) rankingTitle.style.color = config.texts.ranking_title_color;
