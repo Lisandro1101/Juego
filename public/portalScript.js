@@ -348,55 +348,51 @@ function handleReaction(memoryId, reactionType) {
         return;
     }
 
-    const userReactionPath = `events/${EVENT_ID}/data/memories/${memoryId}/userReactions/${GUEST_UNIQUE_ID}`;
     const memoryRef = dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}`);
 
-    runTransaction(dbRef(database, userReactionPath), (currentReaction) => {
-        let oldReactionType = null;
-        if (currentReaction) {
-            oldReactionType = currentReaction.type;
+    // ⭐️ CORRECCIÓN DEFINITIVA: Se utiliza una única transacción sobre el recuerdo completo.
+    // Esto garantiza que todas las actualizaciones (conteos y reacción del usuario) ocurran
+    // de forma atómica y segura, evitando la pérdida de datos por concurrencia.
+    runTransaction(memoryRef, (memoryData) => {
+        if (!memoryData) {
+            return memoryData; // Si el recuerdo no existe, no hacer nada.
         }
 
-        if (oldReactionType === reactionType) {
-            // User is un-reacting (clicked the same reaction again)
-            return null; // Remove the reaction
-        } else {
-            // User is reacting or changing reaction
-            return { type: reactionType, timestamp: Date.now() };
-        }
-    }).then(() => {
-        // After user reaction is updated, re-calculate the summary
-        get(memoryRef).then(snapshot => {
-            if (snapshot.exists()) {
-                const memoryData = snapshot.val();
-                const allUserReactions = memoryData.userReactions || {};
-                const newSummary = {};
-                let totalReactions = 0;
+        // 1. Inicializar las estructuras de datos si no existen.
+        memoryData.userReactions = memoryData.userReactions || {};
+        memoryData.reactionSummary = memoryData.reactionSummary || {};
+        memoryData.totalReactions = memoryData.totalReactions || 0;
 
-                for (const userId in allUserReactions) {
-                    const type = allUserReactions[userId].type;
-                    newSummary[type] = (newSummary[type] || 0) + 1;
-                    totalReactions++;
-                }
-                
-                // Find the most popular reaction
-                let mostPopularReaction = null;
-                let maxCount = 0;
-                for (const type in newSummary) {
-                    if (newSummary[type] > maxCount) {
-                        maxCount = newSummary[type];
-                        mostPopularReaction = type;
-                    }
-                }
+        const oldReaction = memoryData.userReactions[GUEST_UNIQUE_ID]?.type;
 
-                // Update the memory with the new summary and total count
-                push(dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/reactionSummary`), newSummary);
-                push(dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/totalReactions`), totalReactions);
-                push(dbRef(database, `events/${EVENT_ID}/data/memories/${memoryId}/mostPopularReaction`), mostPopularReaction);
+        // 2. Lógica para decrementar el contador de la reacción anterior (si existía).
+        if (oldReaction) {
+            memoryData.reactionSummary[oldReaction] = (memoryData.reactionSummary[oldReaction] || 1) - 1;
+            memoryData.totalReactions = (memoryData.totalReactions || 1) - 1;
+            // Limpiar el contador si llega a cero.
+            if (memoryData.reactionSummary[oldReaction] <= 0) {
+                delete memoryData.reactionSummary[oldReaction];
             }
-        });
+        }
+
+        // 3. Lógica para la nueva reacción.
+        if (oldReaction !== reactionType) {
+            // Si es una reacción nueva o un cambio, se incrementa el nuevo contador.
+            memoryData.reactionSummary[reactionType] = (memoryData.reactionSummary[reactionType] || 0) + 1;
+            memoryData.totalReactions = (memoryData.totalReactions || 0) + 1;
+            memoryData.userReactions[GUEST_UNIQUE_ID] = { type: reactionType, timestamp: Date.now() };
+        } else {
+            // Si el usuario hace clic en la misma reacción, se considera "quitar reacción".
+            // El contador ya fue decrementado, así que solo borramos su registro.
+            delete memoryData.userReactions[GUEST_UNIQUE_ID];
+        }
+
+        // 4. Recalcular la reacción más popular.
+        memoryData.mostPopularReaction = Object.keys(memoryData.reactionSummary).reduce((a, b) => memoryData.reactionSummary[a] > memoryData.reactionSummary[b] ? a : b, null);
+
+        return memoryData; // Devolver los datos actualizados para que Firebase los guarde.
     }).catch(error => {
-        console.error("Error al registrar la reacción:", error);
+        console.error("Error en la transacción de la reacción:", error);
     });
 }
 

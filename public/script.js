@@ -1736,19 +1736,30 @@ async function exportMemoriesToHTML(eventId) {
             }
         `;
 
-        // ⭐️ NUEVO: Generar HTML para los stickers
+        // ⭐️ CORRECCIÓN: Generar HTML solo para los primeros dos stickers del portal
         let stickersHtml = '';
-        const addSticker = (sticker) => {
-            if (!sticker || !sticker.url) return;
-            let style = `position: fixed; z-index: -1; pointer-events: none;`;
-            if (sticker.width) style += ` width: ${sticker.width};`;
-            if (sticker.transform) style += ` transform: ${sticker.transform};`;
-            if (sticker.top) style += ` top: ${sticker.top};`;
-            if (sticker.bottom) style += ` bottom: ${sticker.bottom};`;
-            if (sticker.left) style += ` left: ${sticker.left};`;
-            if (sticker.right) style += ` right: ${sticker.right};`;
-            stickersHtml += `<img src="${sticker.url}" style="${style}">`;
-        };
+        if (theme.portal_stickers && Array.isArray(theme.portal_stickers)) {
+            // Tomamos solo los primeros 2 stickers del portal
+            const stickersToExport = theme.portal_stickers.slice(0, 2);
+
+            stickersToExport.forEach(sticker => {
+                if (!sticker || !sticker.url) return;
+
+                // Construimos el tag <img> con los estilos en línea
+                stickersHtml += `
+                    <img src="${sticker.url}" alt="Sticker Decorativo" style="
+                        position: fixed;
+                        z-index: 1000;
+                        pointer-events: none;
+                        ${sticker.width ? `width: ${sticker.width};` : ''}
+                        ${sticker.transform ? `transform: ${sticker.transform};` : ''}
+                        ${sticker.top ? `top: ${sticker.top};` : ''}
+                        ${sticker.bottom ? `bottom: ${sticker.bottom};` : ''}
+                        ${sticker.left ? `left: ${sticker.left};` : ''}
+                        ${sticker.right ? `right: ${sticker.right};` : ''}
+                    ">`;
+            });
+        }
 
         // ⭐️ INICIO DE LA SOLUCIÓN MEJORADA: Generar un script de personalización completo ⭐️
         let dynamicApplicationScript = `
@@ -1810,14 +1821,6 @@ async function exportMemoriesToHTML(eventId) {
             });
         `;
         // ⭐️ FIN DE LA SOLUCIÓN MEJORADA ⭐️
-
-        if (theme.portal_stickers && Array.isArray(theme.portal_stickers)) {
-            theme.portal_stickers.forEach(addSticker);
-        }
-        // También incluimos los stickers de juegos por si se quiere unificar el diseño
-        if (theme.juegos_stickers && Array.isArray(theme.juegos_stickers)) {
-            theme.juegos_stickers.forEach(addSticker);
-        }
 
 
         const finalHtml = `
