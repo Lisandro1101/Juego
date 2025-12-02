@@ -278,12 +278,17 @@ async function loadEventConfig(eventId) {
              `;
         }
 
-        if (!isHost && !isRanking) {
+        // ⭐️ CORRECCIÓN: Este bloqueo solo debe aplicarse a las páginas de juegos, no a todas las páginas.
+        const isGamePage = window.location.pathname.includes('player.html') ||
+                             window.location.pathname.includes('memory.html') ||
+                             window.location.pathname.includes('hangman.html');
+
+        if (isGamePage) { // Si estamos en una página de juego y los juegos están deshabilitados...
             document.body.innerHTML = `
                 <div style="padding: 40px; text-align: center; font-family: sans-serif; color: #333;">
                     <h1>Módulo de Juegos Deshabilitado</h1>
                     <p>Este módulo no está activo para este evento.</p>
-                    <a href="index.html?event=${eventId}">Volver al portal</a>
+                    <a href="index.html?event=${eventId}" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background-color: #333; color: #fff; text-decoration: none; border-radius: 5px;">Volver al portal</a>
                 </div>
             `;
             throw new Error("Módulo de juegos deshabilitado.");

@@ -328,6 +328,11 @@ async function loadEventConfig(eventId) {
             const parentDiv = gamesMenuToggle.parentElement;
             if (parentDiv) parentDiv.style.display = 'none';
         }
+        // ⭐️ NUEVO: Ocultar también el botón de ranking si los juegos están deshabilitados.
+        const rankingTrophyBtn = document.getElementById('ranking-trophy-btn');
+        if (rankingTrophyBtn) {
+            rankingTrophyBtn.style.display = 'none';
+        }
     }
 
     // --- NUEVO: Ocultar la subida de archivos si está deshabilitada ---
