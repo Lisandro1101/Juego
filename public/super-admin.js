@@ -467,6 +467,7 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         // Rellenar Funcionalidades y Estado
         document.getElementById('games-enabled').checked = features.games_enabled !== false;
         document.getElementById('event-active').checked = status.is_active !== false;
+        document.getElementById('camera-enabled').checked = features.camera_enabled !== false;
 
 
         // Rellenar Tema Global
@@ -972,7 +973,10 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         const fullConfig = {
             theme: themeConfig,
             texts: textsConfig,
-            features: { games_enabled: document.getElementById('games-enabled').checked, },
+            features: { 
+                games_enabled: document.getElementById('games-enabled').checked,
+                camera_enabled: document.getElementById('camera-enabled').checked
+            },
             status: { is_active: document.getElementById('event-active').checked, },
             // ⭐️ NUEVO: Guardar la configuración de autenticación
             auth: {

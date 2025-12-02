@@ -20,7 +20,7 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const storage = getStorage(app); 
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+const MAX_FILE_SIZE = 200 * 1024 * 1024; // 50 MB
 
 // =======================================================================
 // VARIABLES GLOBALES DE ARQUITECTURA (NUEVO)
@@ -327,6 +327,22 @@ async function loadEventConfig(eventId) {
             // Oculta el botón y el div relativo que lo contiene
             const parentDiv = gamesMenuToggle.parentElement;
             if (parentDiv) parentDiv.style.display = 'none';
+        }
+    }
+
+    // --- NUEVO: Ocultar la subida de archivos si está deshabilitada ---
+    if (config.features && config.features.camera_enabled === false) {
+        // ⭐️ CORRECCIÓN: En lugar de ocultar todo el formulario,
+        // ocultamos solo los elementos relacionados con la subida de archivos.
+        const photoInputWrapper = document.getElementById('guest-file-photo')?.closest('.file-input-wrapper');
+        const videoInputWrapper = document.getElementById('guest-file-video')?.closest('.file-input-wrapper');
+        const fileNameDisplay = document.getElementById('file-name-display');
+
+        if (photoInputWrapper) {
+            photoInputWrapper.style.display = 'none';
+        }
+        if (videoInputWrapper) {
+            videoInputWrapper.style.display = 'none';
         }
     }
 }
@@ -735,7 +751,7 @@ function initializePortal() {
                 return;
             }
             if (file && file.size > MAX_FILE_SIZE) {
-                alert('El archivo es demasiado grande. Límite: 10MB.');
+                alert('El archivo es demasiado grande.');
                 return;
             }
 
