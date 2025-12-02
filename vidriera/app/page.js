@@ -36,24 +36,24 @@ export default function LandingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // ⭐️ CORREGIDO: Ahora la función devuelve el estado del evento
+  // ⭐️ CORREGIDO: Ahora la función solo valida si el evento existe y está activo.
   const getEventStatus = async (eventId) => {
     setLoading(true);
     setError('');
     try {
-      const eventRef = ref(database, `events/${eventId}`);
+      const eventRef = ref(database, `events/${eventId}/config/status`);
       const snapshot = await get(eventRef);
       if (snapshot.exists()) {
-        const eventData = snapshot.val();
-        // El interruptor controla config.features.games_enabled. Por defecto es true.
-        const gamesEnabled = eventData.config?.features?.games_enabled !== false;
-        return { exists: true, gamesEnabled: gamesEnabled };
+        const status = snapshot.val();
+        if (status.is_active !== false) {
+          return { exists: true };
+        }
       }
-      return { exists: false, gamesEnabled: false };
+      return { exists: false };
     } catch (err) {
       console.error("Error verificando el evento:", err);
       setError("Error de conexión. Inténtalo de nuevo.");
-      return { exists: false, gamesEnabled: false };
+      return { exists: false };
     }
   };
 
@@ -142,11 +142,7 @@ export default function LandingPage() {
                     if (eventId) {
                       const status = await getEventStatus(eventId);
                       if (status.exists) {
-                        if (status.gamesEnabled) {
                         window.location.href = `https://app.tufiestadigital.com.ar/index.html?event=${eventId}`;
-                      } else {
-                          setError(`El módulo de juegos para "${eventId}" está deshabilitado por el anfitrión.`);
-                        }
                       } else {
                         setError(`El evento "${eventId}" no fue encontrado. Verifica el ID.`);
                       }
@@ -186,11 +182,7 @@ export default function LandingPage() {
                     if (eventId) {
                       const status = await getEventStatus(eventId);
                       if (status.exists) {
-                        if (status.gamesEnabled) {
                         window.location.href = `https://app.tufiestadigital.com.ar/host.html?event=${eventId}`;
-                      } else {
-                          setError(`El módulo de juegos para "${eventId}" está deshabilitado. Actívalo desde el panel de super-admin.`);
-                        }
                       } else {
                         setError(`El evento "${eventId}" no fue encontrado. Verifica el ID.`);
                       }
