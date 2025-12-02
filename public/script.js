@@ -638,10 +638,67 @@ function renderMemoryRanking(results) {
 // =======================================================================
 
 function initializeHost() {
+    // --- ⭐️ NUEVO: Lógica del submenú de Host ⭐️ ---
+    const mainMenu = document.getElementById('host-main-menu');
+    const gameConfigSections = document.getElementById('game-config-sections');
+    const showGameConfigBtn = document.getElementById('show-game-config-btn');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
+
+    // --- ⭐️ NUEVO: Lógica del submenú de Proyector ⭐️ ---
+    const projectorMenu = document.getElementById('projector-menu-sections');
+    const showProjectorMenuBtn = document.getElementById('show-projector-menu-btn');
+    const backToMenuFromProjectorBtn = document.getElementById('back-to-menu-from-projector-btn');
+    const shareProjectorLinkBtn = document.getElementById('share-projector-link-btn');
+
+    if (showProjectorMenuBtn) {
+        showProjectorMenuBtn.addEventListener('click', () => {
+            if (mainMenu) mainMenu.style.display = 'none';
+            if (projectorMenu) projectorMenu.style.display = 'block';
+        });
+    }
+
+    if (backToMenuFromProjectorBtn) {
+        backToMenuFromProjectorBtn.addEventListener('click', () => {
+            if (mainMenu) mainMenu.style.display = 'block';
+            if (projectorMenu) projectorMenu.style.display = 'none';
+        });
+    }
+    // --- Fin de la lógica del submenú de Proyector ---
+
+
+    if (showGameConfigBtn) {
+        showGameConfigBtn.addEventListener('click', () => {
+            if (mainMenu) mainMenu.style.display = 'none';
+            if (gameConfigSections) gameConfigSections.style.display = 'block';
+        });
+    }
+
+    if (backToMenuBtn) {
+        backToMenuBtn.addEventListener('click', () => {
+            if (mainMenu) mainMenu.style.display = 'block';
+            if (gameConfigSections) gameConfigSections.style.display = 'none';
+        });
+    }
+    // --- Fin de la lógica del submenú ---
+
+
     // --- NUEVO: Actualizar enlaces del host ---
     document.querySelectorAll('a[href="player.html"]').forEach(a => a.href = `player.html?event=${EVENT_ID}`);
     document.querySelectorAll('a[href="memory.html"]').forEach(a => a.href = `memory.html?event=${EVENT_ID}`);
-    document.querySelectorAll('a[href="hangman.html"]').forEach(a => a.href = `hangman.html?event=${EVENT_ID}`);
+    document.querySelectorAll('a[href="slideshow.html"]').forEach(a => a.href = `slideshow.html?event=${EVENT_ID}`);
+
+    // --- ⭐️ NUEVO: Lógica para compartir enlace del proyector ⭐️ ---
+    if (shareProjectorLinkBtn) {
+        shareProjectorLinkBtn.addEventListener('click', () => {
+            const projectorUrl = `https://app.tufiestadigital.com.ar/slideshow.html?event=${EVENT_ID}`;
+            navigator.clipboard.writeText(projectorUrl).then(() => {
+                alert('¡Enlace del proyector copiado al portapapeles!');
+            }).catch(err => {
+                console.error('Error al copiar el enlace: ', err);
+                alert('No se pudo copiar el enlace. Por favor, cópialo manually.');
+            });
+        });
+    }
     // Actualiza el título del header
     // ⭐️ CORREGIDO: Ahora usa el texto personalizado y reemplaza {EVENT_ID}
     const hostPanelTitle = document.getElementById('host-panel-title-text');

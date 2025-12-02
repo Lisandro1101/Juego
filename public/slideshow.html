@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyector de Recuerdos</title>
+    <style>
+        :root {
+            --background-color: #000;
+            --text-color: #fff;
+            --text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: sans-serif;
+        }
+
+        body.live {
+            cursor: none;
+        }
+
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: #111;
+            z-index: 100;
+            position: fixed;
+        }
+
+        #start-button {
+            padding: 20px 40px;
+            font-size: 2rem;
+            cursor: pointer;
+            border-radius: 15px;
+            border: 2px solid #fff;
+            background-color: #333;
+            color: #fff;
+        }
+
+        #slideshow-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 4vw;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide .media {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide .info {
+            position: absolute;
+            bottom: 5vh;
+            left: 5vw;
+            right: 5vw;
+            text-align: center;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 2vw;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .slide .info h3 {
+            margin: 0;
+            font-size: 2.5vw;
+            text-shadow: var(--text-shadow);
+        }
+
+        .slide .info p {
+            margin: 0.5vw 0 0;
+            font-size: 1.8vw;
+            text-shadow: var(--text-shadow);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen">
+        <h1 style="font-size: 3rem;">Modo Proyector</h1>
+        <button id="start-button">📽️ Iniciar</button>
+    </div>
+
+    <div id="slideshow-container">
+        <!-- Las diapositivas se insertarán aquí dinámicamente -->
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDRsS6YQ481KQadSk8gf9QtxVt_asnrDlc",
+            authDomain: "juegos-cumple.firebaseapp.com",
+            databaseURL: "https://juegos-cumple-default-rtdb.firebaseio.com",
+            projectId: "juegos-cumple",
+            storageBucket: "juegos-cumple.firebasestorage.app",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        const SLIDE_INTERVAL = 8000; // 8 segundos
+        let memories = [];
+        let currentIndex = 0;
+        let slideshowInterval;
+
+        function getEventId() {
+            const params = new URLSearchParams(window.location.search);
+            const eventId = params.get('event');
+            if (!eventId) throw new Error('ID de evento no encontrado en la URL.');
+            return eventId;
+        }
+
+        async function applyTheme(eventId) {
+            const configRef = ref(database, `events/${eventId}/config/theme`);
+            const snapshot = await get(configRef);
+            if (snapshot.exists()) {
+                const theme = snapshot.val();
+                if (theme.background_image_url) {
+                    document.body.style.backgroundImage = `url('${theme.background_image_url}')`;
+                    document.body.style.backgroundSize = theme.background_image_size || 'cover';
+                    document.body.style.backgroundPosition = theme.background_image_position || 'center';
+                    document.body.style.backgroundRepeat = 'no-repeat';
+                }
+            }
+        }
+
+        function showNextSlide() {
+            const container = document.getElementById('slideshow-container');
+            if (memories.length === 0) return;
+
+            // Limpia el slide anterior
+            const currentActive = container.querySelector('.slide.active');
+            if (currentActive) currentActive.classList.remove('active');
+
+            // Prepara el nuevo slide
+            const memory = memories[currentIndex];
+            const slideId = `slide-${memory.id}`;
+
+            let slide = document.getElementById(slideId);
+            if (!slide) {
+                slide = document.createElement('div');
+                slide.id = slideId;
+                slide.className = 'slide';
+
+                const isVideo = memory.fileType && memory.fileType.startsWith('video');
+                const mediaElement = isVideo ? document.createElement('video') : document.createElement('img');
+                mediaElement.src = memory.fileUrl;
+                mediaElement.className = 'media';
+                if (isVideo) {
+                    mediaElement.autoplay = true;
+                    mediaElement.muted = true;
+                    mediaElement.loop = true;
+                    mediaElement.playsInline = true;
+                }
+                slide.appendChild(mediaElement);
+
+                if (memory.name || memory.message) {
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'info';
+                    infoDiv.innerHTML = `<h3>${memory.name || ''}</h3><p>${memory.message || ''}</p>`;
+                    slide.appendChild(infoDiv);
+                }
+                container.appendChild(slide);
+            }
+
+            // Muestra el nuevo slide
+            setTimeout(() => slide.classList.add('active'), 100);
+
+            currentIndex = (currentIndex + 1) % memories.length;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const startButton = document.getElementById('start-button');
+            const startScreen = document.getElementById('start-screen');
+
+            startButton.addEventListener('click', async () => {
+                try {
+                    const eventId = getEventId();
+                    await applyTheme(eventId);
+
+                    const memoriesRef = ref(database, `events/${eventId}/data/memories`);
+                    onValue(memoriesRef, (snapshot) => {
+                        if (!snapshot.exists()) return;
+                        const data = snapshot.val();
+                        memories = Object.keys(data)
+                            .map(key => ({ id: key, ...data[key] }))
+                            .filter(m => m.fileUrl) // Solo mostrar recuerdos con foto o video
+                            .sort((a, b) => a.timestamp - b.timestamp); // Ordenar por más antiguo primero
+
+                        if (!slideshowInterval && memories.length > 0) {
+                            showNextSlide(); // Mostrar el primero inmediatamente
+                            slideshowInterval = setInterval(showNextSlide, SLIDE_INTERVAL);
+                        }
+                    });
+
+                    // Entrar en modo fullscreen y ocultar pantalla de inicio
+                    document.documentElement.requestFullscreen();
+                    document.body.classList.add('live');
+                    startScreen.style.display = 'none';
+
+                } catch (error) {
+                    document.body.innerHTML = `<h1 style="color: red; text-align: center; padding: 50px;">${error.message}</h1>`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

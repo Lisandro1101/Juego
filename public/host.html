@@ -173,125 +173,146 @@
                 <span id="host-panel-title-text">Panel de Control</span>
                 <span class="text-yellow-500 text-5xl icon-main">⚙️</span>
             </h1>
-            
-            <!-- ⭐️ NUEVO: Botón de Exportación ⭐️ -->
-            <button id="export-memories-btn" class="w-full mb-6 bg-blue-600 text-white hover:bg-blue-700 delete-btn border-none" style="box-shadow: none; padding: 10px; font-size: 1em;">
-                Descargar Todos los Recuerdos
-            </button>
 
         </header>
 
-        <div class="mode-selector mb-6 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-            <p class="text-sm text-gray-700">Enlaces para jugadores:</p>
-            <a href="player.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Trivia <span class="icon-trivia">✍️</span>]</a>
-            <br>
-            <a href="memory.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Memoria <span class="icon-memory">🧠</span>]</a>
-            <br>
-            <a href="hangman.html" target="_blank" class="text-blue-600 hover:text-blue-800 font-medium break-all">[Jugar Ahorcado <span class="icon-hangman">💀</span>]</a>
+        <!-- ⭐️ INICIO: NUEVA ESTRUCTURA DE MENÚ ⭐️ -->
+        <div id="host-main-menu" class="space-y-4">
+            <button id="show-game-config-btn" class="w-full btn-bee">
+                ⚙️ Configurar Juegos
+            </button>
+            <button id="show-projector-menu-btn" class="w-full btn-bee">
+                📽️ Abrir Modo Proyector
+            </button>
+            <button id="export-memories-btn" class="w-full bg-blue-600 text-white hover:bg-blue-700 delete-btn border-none" style="box-shadow: none; padding: 10px; font-size: 1em;">
+                📥 Descargar Recuerdos
+            </button>
         </div>
+        <!-- ⭐️ Contenedor para todas las secciones de configuración de juegos ⭐️ -->
+        <div id="game-config-sections" style="display: none;">
+            <button id="back-to-menu-btn" class="w-full btn-bee bg-gray-400 text-gray-800 border-gray-500 mb-6" style="box-shadow: 0 4px #9ca3af;">
+                ← Volver al Menú Principal
+            </button>
 
-        <div id="admin-mode" class="quiz-section p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <h2 class="text-xl font-bold mb-4 text-gray-800"><span class="icon-trivia">✍️</span> Cargar y Editar Preguntas (Trivia)</h2>
-            
-            <form id="question-form" class="space-y-3">
+            <div id="admin-mode" class="quiz-section p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <h2 class="text-xl font-bold mb-4 text-gray-800"><span class="icon-trivia">✍️</span> Cargar y Editar Preguntas (Trivia)</h2>
                 
-                <div>
-                    <label for="q-text" class="block text-sm font-bold text-gray-700">Pregunta:</label>
-                    <input type="text" id="q-text" required placeholder="Escribe la pregunta aquí"
-                           class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
-                </div>
-
-                <div>
-                    <label for="q-options" class="block text-sm font-bold text-gray-700">Opciones (separadas por coma):</label>
-                    <input type="text" id="q-options" required placeholder="Opción A, Opción B, Opción C, Opción D"
-                           class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
-                </div>
-
-                <div>
-                    <label for="q-answer" class="block text-sm font-bold text-gray-700">Respuesta Correcta (Debe coincidir):</label>
-                    <input type="text" id="q-answer" required placeholder="Opción B"
-                           class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
-                </div>
-
-                <button type="submit" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
-                    Guardar Pregunta
-                </button>
-            </form>
-
-            <div class="mt-6">
-                <h3 class="text-xl font-bold mb-3 text-gray-800">Banco de Preguntas</h3>
-                <ul id="questions-list" class="space-y-2">
-                    </ul>
-            </div>
-
-            <button id="clear-all-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
-                Limpiar Todas las Preguntas
-            </button>
-        </div>
-        <div id="memory-game-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <h2 class="text-xl font-bold mb-4 text-gray-800">⚙️ Imágenes del Juego de Memoria</h2>
-            
-            <form id="memory-image-form" class="space-y-3">
-                <div>
-                    <label for="memory-files" class="block text-sm font-bold text-gray-700">Subir Imágenes (Recomendado 6 u 8):</label>
-                    <input type="file" id="memory-files" 
-                           class="w-full p-3 border border-yellow-300 rounded-lg" 
-                           accept="image/*" 
-                           multiple 
-                           required>
-                    <p class="text-xs text-gray-500 mt-1">El juego usará estas fotos para crear los pares.</p>
-                </div>
-
-                <div id="memory-upload-progress-bar-container" class="hidden">
-                    <p id="memory-upload-status" class="text-xs text-gray-600 mb-1 text-left">Subiendo...</p>
-                    <div id="memory-upload-progress-bar">
-                        <div id="memory-upload-progress" style="width: 0%; height: 10px; background-color: #4CAF50; border-radius: 5px;"></div>
+                <form id="question-form" class="space-y-3">
+                    
+                    <div>
+                        <label for="q-text" class="block text-sm font-bold text-gray-700">Pregunta:</label>
+                        <input type="text" id="q-text" required placeholder="Escribe la pregunta aquí"
+                               class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
                     </div>
+
+                    <div>
+                        <label for="q-options" class="block text-sm font-bold text-gray-700">Opciones (separadas por coma):</label>
+                        <input type="text" id="q-options" required placeholder="Opción A, Opción B, Opción C, Opción D"
+                               class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+
+                    <div>
+                        <label for="q-answer" class="block text-sm font-bold text-gray-700">Respuesta Correcta (Debe coincidir):</label>
+                        <input type="text" id="q-answer" required placeholder="Opción B"
+                               class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+
+                    <button type="submit" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                        Guardar Pregunta
+                    </button>
+                </form>
+
+                <div class="mt-6">
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Banco de Preguntas</h3>
+                    <ul id="questions-list" class="space-y-2">
+                        </ul>
                 </div>
 
-                <button type="submit" id="save-memory-images-btn" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
-                    Subir y Guardar Imágenes
+                <button id="clear-all-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
+                    Limpiar Todas las Preguntas
                 </button>
-            </form>
-
-            <div class="mt-6">
-                <h3 class="text-xl font-bold mb-3 text-gray-800">Imágenes Cargadas</h3>
-                <ul id="memory-images-list" class="space-y-2">
-                    <li class="p-2 text-gray-500 italic text-center">Aún no hay imágenes...</li>
-                </ul>
             </div>
+            <div id="memory-game-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <h2 class="text-xl font-bold mb-4 text-gray-800">⚙️ Imágenes del Juego de Memoria</h2>
+                
+                <form id="memory-image-form" class="space-y-3">
+                    <div>
+                        <label for="memory-files" class="block text-sm font-bold text-gray-700">Subir Imágenes (Recomendado 6 u 8):</label>
+                        <input type="file" id="memory-files" 
+                               class="w-full p-3 border border-yellow-300 rounded-lg" 
+                               accept="image/*" 
+                               multiple 
+                               required>
+                        <p class="text-xs text-gray-500 mt-1">El juego usará estas fotos para crear los pares.</p>
+                    </div>
 
-            <button id="clear-memory-images-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
-                Limpiar Todas las Imágenes
-            </button>
-        </div>
+                    <div id="memory-upload-progress-bar-container" class="hidden">
+                        <p id="memory-upload-status" class="text-xs text-gray-600 mb-1 text-left">Subiendo...</p>
+                        <div id="memory-upload-progress-bar">
+                            <div id="memory-upload-progress" style="width: 0%; height: 10px; background-color: #4CAF50; border-radius: 5px;"></div>
+                        </div>
+                    </div>
 
-        <div id="hangman-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
-            <h2 class="text-xl font-bold mb-4 text-gray-800"><span class="icon-hangman">💀</span> Palabras para el Ahorcado</h2>
-            
-            <form id="hangman-word-form" class="space-y-3">
-                <div>
-                    <label for="h-word" class="block text-sm font-bold text-gray-700">Palabra/Frase Secreta:</label>
-                    <input type="text" id="h-word" required placeholder="Ej: ABEJITA CHIQUITITA"
-                           class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
-                           style="text-transform: uppercase;">
+                    <button type="submit" id="save-memory-images-btn" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                        Subir y Guardar Imágenes
+                    </button>
+                </form>
+
+                <div class="mt-6">
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Imágenes Cargadas</h3>
+                    <ul id="memory-images-list" class="space-y-2">
+                        <li class="p-2 text-gray-500 italic text-center">Aún no hay imágenes...</li>
+                    </ul>
                 </div>
-                <button type="submit" id="save-hangman-word-btn" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
-                    Guardar Palabra
-                </button>
-            </form>
 
-            <div class="mt-6">
-                <h3 class="text-xl font-bold mb-3 text-gray-800">Banco de Palabras (Ahorcado)</h3>
-                <ul id="hangman-words-list" class="space-y-2">
-                    <li class="p-2 text-gray-500 italic text-center">Aún no hay palabras...</li>
-                </ul>
+                <button id="clear-memory-images-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
+                    Limpiar Todas las Imágenes
+                </button>
             </div>
 
-            <button id="clear-hangman-words-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
-                Limpiar Todas las Palabras
-            </button>
+            <div id="hangman-admin" class="mt-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                <h2 class="text-xl font-bold mb-4 text-gray-800"><span class="icon-hangman">💀</span> Palabras para el Ahorcado</h2>
+                
+                <form id="hangman-word-form" class="space-y-3">
+                    <div>
+                        <label for="h-word" class="block text-sm font-bold text-gray-700">Palabra/Frase Secreta:</label>
+                        <input type="text" id="h-word" required placeholder="Ej: ABEJITA CHIQUITITA"
+                               class="w-full p-3 border border-yellow-300 rounded-lg focus:ring-yellow-500 focus:border-yellow-500"
+                               style="text-transform: uppercase;">
+                    </div>
+                    <button type="submit" id="save-hangman-word-btn" class="w-full btn-bee bg-gray-800 text-yellow-400 mt-4">
+                        Guardar Palabra
+                    </button>
+                </form>
+
+                <div class="mt-6">
+                    <h3 class="text-xl font-bold mb-3 text-gray-800">Banco de Palabras (Ahorcado)</h3>
+                    <ul id="hangman-words-list" class="space-y-2">
+                        <li class="p-2 text-gray-500 italic text-center">Aún no hay palabras...</li>
+                    </ul>
+                </div>
+
+                <button id="clear-hangman-words-btn" class="w-full mt-6 bg-red-600 text-white hover:bg-red-700 delete-btn border-none" style="box-shadow: none;">
+                    Limpiar Todas las Palabras
+                </button>
+            </div>
         </div>
+
+        <!-- ⭐️ INICIO: NUEVO SUBMENÚ PARA PROYECTOR ⭐️ -->
+        <div id="projector-menu-sections" style="display: none;">
+            <button id="back-to-menu-from-projector-btn" class="w-full btn-bee bg-gray-400 text-gray-800 border-gray-500 mb-6" style="box-shadow: 0 4px #9ca3af;">
+                ← Volver al Menú Principal
+            </button>
+            <div class="space-y-4">
+                <a href="slideshow.html" target="_blank" id="open-projector-link" class="w-full btn-bee text-center block">
+                    Proyectar
+                </a>
+                <button id="share-projector-link-btn" class="w-full btn-bee bg-blue-500 text-white border-blue-700" style="box-shadow: 0 4px #1d4ed8;">
+                    Compartir Link de Proyección
+                </button>
+            </div>
+        </div>
+        <!-- ⭐️ FIN: NUEVO SUBMENÚ PARA PROYECTOR ⭐️ -->
 
     </div>
     <script type="module" src="script.js?v=1.0"></script>
