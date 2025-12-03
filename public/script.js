@@ -295,6 +295,15 @@ async function loadEventConfig(eventId) {
         }
     }
 
+    // --- 4. ⭐️ NUEVO: APLICAR FUNCIONALIDAD DE PROYECTOR ---
+    if (config.features && config.features.projector_enabled === false) {
+        // Si el proyector está deshabilitado, oculta el botón del menú principal del host.
+        const showProjectorMenuBtn = document.getElementById('show-projector-menu-btn');
+        if (showProjectorMenuBtn) {
+            showProjectorMenuBtn.style.display = 'none';
+        }
+    }
+
     // --- 4. ⭐️ NUEVO: APLICAR TEXTOS DINÁMICOS ---
     if (config.texts) {
         const triviaTitle = document.getElementById('trivia-title-text');

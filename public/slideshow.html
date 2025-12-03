@@ -145,6 +145,21 @@
             return eventId;
         }
 
+        /**
+         * ⭐️ NUEVO: Valida si la funcionalidad del proyector está habilitada.
+         * Si no lo está, lanza un error para detener la ejecución.
+         */
+        async function validateFeature(eventId) {
+            const featureRef = ref(database, `events/${eventId}/config/features/projector_enabled`);
+            const snapshot = await get(featureRef);
+            // Si el flag existe y es `false`, la funcionalidad está deshabilitada.
+            if (snapshot.exists() && snapshot.val() === false) {
+                throw new Error('El Modo Proyector está deshabilitado para este evento.');
+            }
+            // Si el flag no existe, se asume que está habilitado por defecto.
+        }
+
+
         async function applyTheme(eventId) {
             const configRef = ref(database, `events/${eventId}/config/theme`);
             const snapshot = await get(configRef);
@@ -211,6 +226,7 @@
             startButton.addEventListener('click', async () => {
                 try {
                     const eventId = getEventId();
+                    await validateFeature(eventId); // ⭐️ NUEVO: Validar antes de continuar
                     await applyTheme(eventId);
 
                     const memoriesRef = ref(database, `events/${eventId}/data/memories`);

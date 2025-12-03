@@ -468,6 +468,7 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
         document.getElementById('games-enabled').checked = features.games_enabled !== false;
         document.getElementById('event-active').checked = status.is_active !== false;
         document.getElementById('camera-enabled').checked = features.camera_enabled !== false;
+        document.getElementById('projector-enabled').checked = features.projector_enabled !== false;
 
 
         // Rellenar Tema Global
@@ -975,7 +976,8 @@ const applyTemplateBtn = document.getElementById('apply-template-btn');
             texts: textsConfig,
             features: { 
                 games_enabled: document.getElementById('games-enabled').checked,
-                camera_enabled: document.getElementById('camera-enabled').checked
+                camera_enabled: document.getElementById('camera-enabled').checked,
+                projector_enabled: document.getElementById('projector-enabled').checked,
             },
             status: { is_active: document.getElementById('event-active').checked, },
             // ⭐️ NUEVO: Guardar la configuración de autenticación
